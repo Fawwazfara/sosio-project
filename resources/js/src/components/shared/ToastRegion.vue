@@ -8,7 +8,7 @@
       <div
         v-for="item in toastState.items"
         :key="item.id"
-        class="pointer-events-auto flex items-start gap-3 px-4 py-3.5 rounded-[14px] border border-transparent text-sm font-medium bg-[#FDFCF9] text-[#1C1917] shadow-[var(--shadow-elevated)]"
+        class="pointer-events-auto flex items-start gap-3 px-4 py-3.5 rounded-[14px] border border-transparent text-sm font-medium bg-[#FFFFFF] text-[#0F172A] shadow-[var(--shadow-elevated)]"
       >
         <div
           class="w-7 h-7 rounded-[8px] flex items-center justify-center shrink-0 mt-0.5"
@@ -19,7 +19,7 @@
         <p class="flex-1 leading-snug pt-0.5">{{ item.message }}</p>
         <button
           @click="dismissToast(item.id)"
-          class="min-w-[32px] min-h-[32px] -mr-1.5 -mt-0.5 flex items-center justify-center rounded-[8px] text-[#78716C] hover:text-[#1C1917] hover:bg-[#ECE8DF] transition-[background-color,color,transform] duration-150 ease-out enabled:active:scale-[0.96]"
+          class="min-w-[32px] min-h-[32px] -mr-1.5 -mt-0.5 flex items-center justify-center rounded-[8px] text-[#64748B] hover:text-[#0F172A] hover:bg-[#EAEFF6] transition-[background-color,color,transform] duration-150 ease-out enabled:active:scale-[0.96]"
           aria-label="Tutup notifikasi"
         >
           <UiIcon name="close" :size="15" :weight="500" />
@@ -33,10 +33,10 @@
 import { toastState, dismissToast } from '@/utils/toast';
 
 const badgeStyle = (type) => {
-  if (type === 'error') return 'bg-[#FDF2F4] text-[#9F1239]';
+  if (type === 'error') return 'bg-[#FFF1F2] text-[#9F1239]';
   if (type === 'warning') return 'bg-[#FAF4E4] text-[#9A6B16]';
-  if (type === 'info') return 'bg-[#F9EFE7] text-[#A8551E]';
-  return 'bg-[#F2EFE8] text-[#292524]';
+  if (type === 'info') return 'bg-[#EFF6FF] text-[#1D4ED8]';
+  return 'bg-[#F2EFE8] text-[#163A70]';
 };
 
 const iconFor = (type) => {

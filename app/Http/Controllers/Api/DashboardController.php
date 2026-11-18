@@ -205,7 +205,7 @@ class DashboardController extends Controller
                 'pieData' => [
                     'labels' => ['Lunas', 'Menunggak'],
                     'datasets' => [[
-                        'backgroundColor' => ['#A8551E', '#D6CFC2'],
+                        'backgroundColor' => ['#1D4ED8', '#CBD5E1'],
                         'borderWidth' => 0,
                         'data' => [$lunas, $nunggak]
                     ]]

@@ -2,21 +2,20 @@
   <div class="flex-1 flex flex-col min-w-0 h-full overflow-hidden relative">
     <!-- Mobile Header -->
     <div class="px-4 pt-5 pb-2 md:hidden" v-if="!activeChat">
-      <h1 class="text-2xl font-bold text-[#1C1917] tracking-tight">Pesan Internal</h1>
-      <p class="text-sm text-[#57534E] mt-0.5">Komunikasi Tata Usaha dengan para wali kelas.</p>
+      <h1 class="text-2xl font-bold text-[#0F172A] tracking-tight">Pesan Internal</h1>
     </div>
 
     <main class="w-full max-w-6xl mx-auto md:px-6 lg:px-8 md:py-6 flex flex-1 h-full overflow-hidden">
-      <div class="flex w-full h-full bg-[#FDFCF9] md:rounded-[18px] border border-transparent shadow-[var(--shadow-border)] overflow-hidden relative">
+      <div class="flex w-full h-full bg-[#FFFFFF] md:rounded-[18px] border border-transparent shadow-[var(--shadow-border)] overflow-hidden relative">
 
         <!-- Left: Contact List -->
         <div
           v-show="!activeChat || isDesktop"
-          class="w-full md:w-[340px] lg:w-[380px] flex flex-col h-full bg-[#FDFCF9] border-r border-black/[0.07] shrink-0"
+          class="w-full md:w-[340px] lg:w-[380px] flex flex-col h-full bg-[#FFFFFF] border-r border-black/[0.07] shrink-0"
         >
           <div class="p-4 border-b border-black/[0.07]">
             <div class="relative">
-              <UiIcon name="search" :size="18" :weight="500" class="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#78716C]" />
+              <UiIcon name="search" :size="18" :weight="500" class="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#64748B]" />
               <input
                 type="text"
                 v-model="searchQuery"
@@ -33,25 +32,25 @@
               type="button"
               @click="openChat(chat)"
               :class="[
-                'w-full text-left flex items-center gap-3.5 p-4 transition-[background-color,transform] duration-150 ease-out hover:bg-[#F7F4ED] active:scale-[0.99]',
-                activeChat && activeChat.id === chat.id ? 'bg-[#F9EFE7]' : ''
+                'w-full text-left flex items-center gap-3.5 p-4 transition-[background-color,transform] duration-150 ease-out hover:bg-[#F8FAFC] active:scale-[0.99]',
+                activeChat && activeChat.id === chat.id ? 'bg-[#EFF6FF]' : ''
               ]"
             >
-              <div class="w-11 h-11 rounded-[11px] bg-[#292524] text-white flex items-center justify-center font-bold text-sm overflow-hidden shrink-0">
+              <div class="w-11 h-11 rounded-[11px] bg-[#163A70] text-white flex items-center justify-center font-bold text-sm overflow-hidden shrink-0">
                 <span v-if="!chat.avatar">{{ getInitials(chat.name) }}</span>
                 <img v-else :src="chat.avatar" alt="Avatar" class="w-full h-full object-cover outline outline-1 -outline-offset-1 outline-black/10">
               </div>
 
               <div class="flex-1 min-w-0">
                 <div class="flex justify-between items-center gap-2">
-                  <h2 class="text-sm font-bold text-[#1C1917] truncate">{{ chat.name }}</h2>
-                  <span class="text-xs font-mono shrink-0 tabular-nums" :class="chat.unread > 0 ? 'text-[#A8551E] font-bold' : 'text-[#78716C]'">
+                  <h2 class="text-sm font-bold text-[#0F172A] truncate">{{ chat.name }}</h2>
+                  <span class="text-xs font-mono shrink-0 tabular-nums" :class="chat.unread > 0 ? 'text-[#1D4ED8] font-bold' : 'text-[#64748B]'">
                     {{ chat.lastTime }}
                   </span>
                 </div>
                 <div class="flex justify-between items-center gap-2 mt-1">
-                  <p class="text-xs text-[#78716C] truncate">{{ chat.lastMessage }}</p>
-                  <span v-if="chat.unread > 0" class="min-w-[20px] h-5 px-1.5 rounded-full bg-[#A8551E] text-white flex items-center justify-center text-xs font-bold tabular-nums shrink-0">
+                  <p class="text-xs text-[#64748B] truncate">{{ chat.lastMessage }}</p>
+                  <span v-if="chat.unread > 0" class="min-w-[20px] h-5 px-1.5 rounded-full bg-[#1D4ED8] text-white flex items-center justify-center text-xs font-bold tabular-nums shrink-0">
                     {{ chat.unread }}
                   </span>
                 </div>
@@ -64,41 +63,41 @@
         <div
           v-if="activeChat || isDesktop"
           :class="[
-            'flex-1 flex flex-col h-full bg-[#F5F3EE] relative',
+            'flex-1 flex flex-col h-full bg-[#F2F4F8] relative',
             !activeChat && isDesktop ? 'items-center justify-center' : ''
           ]"
         >
           <div v-if="!activeChat && isDesktop" class="text-center p-8 max-w-sm ui-stagger ui-stagger-1">
-            <div class="w-14 h-14 bg-[#FDFCF9] shadow-[var(--shadow-border)] rounded-[14px] flex items-center justify-center mx-auto mb-4 text-[#A8551E]">
+            <div class="w-14 h-14 bg-[#FFFFFF] shadow-[var(--shadow-border)] rounded-[14px] flex items-center justify-center mx-auto mb-4 text-[#1D4ED8]">
               <UiIcon name="forum" :size="26" :weight="500" />
             </div>
-            <h2 class="text-lg font-bold text-[#1C1917]">Pesan Internal Madrasah</h2>
-            <p class="text-sm text-[#78716C] mt-1.5">Pilih salah satu wali kelas di sebelah kiri untuk membuka percakapan.</p>
+            <h2 class="text-lg font-bold text-[#0F172A]">Pesan Internal Madrasah</h2>
+            <p class="text-sm text-[#64748B] mt-1.5">Pilih salah satu wali kelas di sebelah kiri untuk membuka percakapan.</p>
           </div>
 
           <template v-else-if="activeChat">
             <!-- Chat Header -->
-            <div class="h-[68px] px-4 sm:px-5 bg-[#FDFCF9] border-b border-black/[0.07] flex items-center gap-3 shrink-0">
+            <div class="h-[68px] px-4 sm:px-5 bg-[#FFFFFF] border-b border-black/[0.07] flex items-center gap-3 shrink-0">
               <button
-                class="md:hidden min-h-[40px] min-w-[40px] -ml-1 text-[#1C1917] rounded-[10px] hover:bg-[#ECE8DF] flex items-center justify-center transition-[background-color,transform] duration-150 ease-out active:scale-[0.96]"
+                class="md:hidden min-h-[40px] min-w-[40px] -ml-1 text-[#0F172A] rounded-[10px] hover:bg-[#EAEFF6] flex items-center justify-center transition-[background-color,transform] duration-150 ease-out active:scale-[0.96]"
                 aria-label="Kembali ke daftar kontak"
                 @click="closeChat"
               >
                 <UiIcon name="arrow_back" :size="19" :weight="600" directional />
               </button>
 
-              <div class="w-10 h-10 rounded-[10px] bg-[#F9EFE7] shadow-[inset_0_0_0_1px_oklch(0.55_0.13_42_/_0.2)] text-[#7C3A10] font-bold text-xs flex items-center justify-center overflow-hidden shrink-0">
+              <div class="w-10 h-10 rounded-[10px] bg-[#EFF6FF] shadow-[inset_0_0_0_1px_oklch(0.55_0.13_42_/_0.2)] text-[#1E3A8A] font-bold text-xs flex items-center justify-center overflow-hidden shrink-0">
                 <span v-if="!activeChat.avatar">{{ getInitials(activeChat.name) }}</span>
                 <img v-else :src="activeChat.avatar" alt="Avatar" class="w-full h-full object-cover outline outline-1 -outline-offset-1 outline-black/10">
               </div>
 
               <div class="flex-1 min-w-0">
-                <h2 class="text-sm font-bold text-[#1C1917] truncate">{{ activeChat.name }}</h2>
-                <p class="text-xs text-[#78716C] truncate">Wali Kelas Terdaftar</p>
+                <h2 class="text-sm font-bold text-[#0F172A] truncate">{{ activeChat.name }}</h2>
+                <p class="text-xs text-[#64748B] truncate">Wali Kelas Terdaftar</p>
               </div>
 
               <button
-                class="min-h-[40px] min-w-[40px] text-[#78716C] hover:text-[#1C1917] rounded-[10px] hover:bg-[#ECE8DF] flex items-center justify-center transition-[background-color,color,transform] duration-150 ease-out active:scale-[0.96]"
+                class="min-h-[40px] min-w-[40px] text-[#64748B] hover:text-[#0F172A] rounded-[10px] hover:bg-[#EAEFF6] flex items-center justify-center transition-[background-color,color,transform] duration-150 ease-out active:scale-[0.96]"
                 aria-label="Muat ulang percakapan"
                 @click="fetchConversation(activeChat.id)"
               >
@@ -118,15 +117,15 @@
                     :class="[
                       'max-w-[85%] md:max-w-[72%] rounded-[14px] px-4 py-3 text-sm',
                       msg.isSender
-                        ? 'bg-[#292524] text-white shadow-[0_2px_6px_-1px_oklch(0.2_0.02_55_/_0.22)]'
-                        : 'bg-[#FDFCF9] border border-transparent shadow-[var(--shadow-border)] text-[#1C1917]'
+                        ? 'bg-[#163A70] text-white shadow-[0_2px_6px_-1px_oklch(0.2_0.02_55_/_0.22)]'
+                        : 'bg-[#FFFFFF] border border-transparent shadow-[var(--shadow-border)] text-[#0F172A]'
                     ]"
                   >
                     <p class="leading-relaxed">{{ msg.text }}</p>
                     <p
                       :class="[
                         'text-xs font-mono text-right mt-1.5 flex items-center justify-end gap-1 tabular-nums',
-                        msg.isSender ? 'text-[#E7C0A1]' : 'text-[#78716C]'
+                        msg.isSender ? 'text-[#93C5FD]' : 'text-[#64748B]'
                       ]"
                     >
                       <span>{{ msg.time }}</span>
@@ -139,7 +138,7 @@
             </div>
 
             <!-- Input Footer -->
-            <div class="p-3.5 bg-[#FDFCF9] border-t border-black/[0.07] shrink-0">
+            <div class="p-3.5 bg-[#FFFFFF] border-t border-black/[0.07] shrink-0">
               <form @submit.prevent="sendMessage" class="flex items-center gap-2.5">
                 <input
                   v-model="newMessage"

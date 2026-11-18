@@ -1,3 +1,4 @@
+import { getRoleHome, getStoredUser } from '../utils/auth';
 import { createRouter, createWebHistory } from 'vue-router';
 import LoginView from '../views/auth/LoginView.vue';
 import AdminLayout from '../components/admin/AdminLayout.vue';
@@ -97,38 +98,18 @@ const router = createRouter({
   ],
 });
 
-router.beforeEach((to, from, next) => {
-  const publicPages = ['/login'];
-  const authRequired = !publicPages.includes(to.path);
-  let user = null;
-  try {
-    user = JSON.parse(localStorage.getItem('user') || 'null');
-  } catch {
-    user = null;
+router.beforeEach((to) => {
+  const user = getStoredUser();
+  const home = getRoleHome(user?.role);
+  if (!home) {
+    localStorage.removeItem('user');
+    return to.path === '/login' ? true : '/login';
   }
-
-  if (authRequired && !user) {
-    return next('/login');
-  }
-
-  if (to.path === '/login' && user?.role) {
-    if (user.role === 'admin') return next('/admin/dashboard');
-    if (user.role === 'guru') return next('/guru/dashboard');
-    if (user.role === 'wali') return next('/wali/dashboard');
-  }
-
-  // Enforce role namespace on client router
-  if (user?.role === 'wali' && (to.path.startsWith('/admin') || to.path.startsWith('/guru'))) {
-    return next('/wali/dashboard');
-  }
-  if (user?.role === 'guru' && (to.path.startsWith('/admin') || to.path.startsWith('/wali'))) {
-    return next('/guru/dashboard');
-  }
-  if (user?.role === 'admin' && to.path.startsWith('/wali')) {
-    return next('/admin/dashboard');
-  }
-
-  next();
+  if (to.path === '/login') return home;
+  const namespace = home.split('/')[1];
+  if (user.role === 'admin' && to.path.startsWith('/guru')) return true;
+  if (to.path.split('/')[1] !== namespace) return home;
+  return true;
 });
 
 export default router;

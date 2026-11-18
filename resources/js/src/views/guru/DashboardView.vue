@@ -3,8 +3,7 @@
     <!-- User Welcome -->
     <div class="ui-stagger ui-stagger-1 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
       <div>
-        <h1 class="text-2xl sm:text-[26px] font-bold text-[#1C1917] tracking-tight">Dashboard Wali Kelas</h1>
-        <p class="text-sm text-[#57534E] mt-1">Ringkasan penerimaan infak kelas binaan dan verifikasi setoran orang tua.</p>
+        <h1 class="text-2xl sm:text-[26px] font-bold text-[#0F172A] tracking-tight">Dashboard Wali Kelas</h1>
       </div>
       <div class="flex flex-wrap gap-2.5">
         <router-link to="/guru/setoran" class="ui-btn-primary ui-btn-icon-l">
@@ -19,7 +18,7 @@
     </div>
 
     <!-- Notice Banner -->
-    <section
+    <section v-if="totalNunggak > 0"
       class="ui-stagger ui-stagger-2 rounded-[16px] border border-transparent bg-[#FAF4E4] shadow-[0_0_0_1px_oklch(0.62_0.12_75_/_0.26),0_2px_6px_-1px_oklch(0.55_0.1_75_/_0.07)] p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
     >
       <div class="flex items-start gap-3.5">
@@ -31,7 +30,7 @@
             <span class="tabular-nums">{{ totalNunggak }}</span> Siswa di kelas Anda belum membayar infak bulan {{ currentMonth }}
           </h2>
           <p class="text-sm text-[#7D5714] mt-1">
-            Ingatkan orang tua atau konfirmasi pengajuan tunai mereka lewat menu Setoran Tunai Wali.
+            Periksa setoran tunai sebelum mengirim pengingat.
           </p>
         </div>
       </div>
@@ -44,16 +43,16 @@
     <section class="ui-stagger ui-stagger-3 grid grid-cols-1 md:grid-cols-2 gap-5">
       <div class="ui-panel-padded ui-panel-interactive flex flex-col justify-between min-h-[172px]">
         <div class="flex items-center justify-between gap-2">
-          <span class="text-xs font-semibold text-[#78716C]">Total Infak Kelas (Bulan Ini)</span>
-          <div class="w-9 h-9 rounded-[9px] bg-[#F9EFE7] text-[#A8551E] flex items-center justify-center">
+          <span class="text-xs font-semibold text-[#64748B]">Total Infak Kelas (Bulan Ini)</span>
+          <div class="w-9 h-9 rounded-[9px] bg-[#EFF6FF] text-[#1D4ED8] flex items-center justify-center">
             <UiIcon name="account_balance_wallet" :size="18" :weight="600" />
           </div>
         </div>
         <div class="mt-4">
-          <p class="text-3xl font-extrabold font-mono tabular-nums text-[#1C1917]">
+          <p class="text-3xl font-extrabold font-mono tabular-nums text-[#0F172A]">
             Rp {{ formatRupiah(stats.pemasukan_bulan_ini) }}
           </p>
-          <p class="text-xs font-semibold mt-2.5 flex items-center gap-1.5 tabular-nums" :class="stats.persen_pemasukan >= 0 ? 'text-[#A8551E]' : 'text-[#9F1239]'">
+          <p class="text-xs font-semibold mt-2.5 flex items-center gap-1.5 tabular-nums" :class="stats.persen_pemasukan >= 0 ? 'text-[#1D4ED8]' : 'text-[#9F1239]'">
             <UiIcon :name="stats.persen_pemasukan >= 0 ? 'trending_up' : 'trending_down'" :size="16" :weight="600" />
             <span>{{ stats.persen_pemasukan >= 0 ? '+' : '' }}{{ stats.persen_pemasukan }}% dari bulan lalu</span>
           </p>
@@ -66,7 +65,7 @@
           @click="prevSlide"
           :disabled="currentSlide === 0"
           aria-label="Kelas sebelumnya"
-          class="min-h-[44px] min-w-[44px] rounded-[11px] border border-transparent bg-[#F7F4ED] shadow-[var(--shadow-border)] hover:bg-[#FDFCF9] hover:shadow-[var(--shadow-border-hover)] text-[#1C1917] flex items-center justify-center shrink-0 transition-[background-color,box-shadow,transform] duration-150 ease-out enabled:active:scale-[0.96] disabled:opacity-40 disabled:cursor-not-allowed"
+          class="min-h-[44px] min-w-[44px] rounded-[11px] border border-transparent bg-[#F8FAFC] shadow-[var(--shadow-border)] hover:bg-[#FFFFFF] hover:shadow-[var(--shadow-border-hover)] text-[#0F172A] flex items-center justify-center shrink-0 transition-[background-color,box-shadow,transform] duration-150 ease-out enabled:active:scale-[0.96] disabled:opacity-40 disabled:cursor-not-allowed"
         >
           <UiIcon name="chevron_left" :size="20" :weight="600" directional />
         </button>
@@ -75,22 +74,22 @@
           <div class="w-[120px] h-[120px] relative shrink-0">
             <Doughnut :data="klassesData[currentSlide].pieData" :options="pieOptions" :key="'pie-' + currentSlide" />
             <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-              <span class="text-base font-extrabold font-mono tabular-nums text-[#1C1917]">
+              <span class="text-base font-extrabold font-mono tabular-nums text-[#0F172A]">
                 {{ klassesData[currentSlide].persentase }}%
               </span>
             </div>
           </div>
           <div class="flex flex-col gap-2.5 text-center sm:text-left">
-            <h3 class="text-base font-bold text-[#1C1917]">
+            <h3 class="text-base font-bold text-[#0F172A]">
               Kepatuhan {{ klassesData[currentSlide].nama_kelas }}
             </h3>
             <div class="flex flex-col gap-1.5 text-sm">
-              <span class="flex items-center justify-center sm:justify-start gap-2 font-semibold text-[#1C1917] tabular-nums">
-                <span class="w-2.5 h-2.5 rounded-[3px] bg-[#A8551E]"></span>
+              <span class="flex items-center justify-center sm:justify-start gap-2 font-semibold text-[#0F172A] tabular-nums">
+                <span class="w-2.5 h-2.5 rounded-[3px] bg-[#1D4ED8]"></span>
                 {{ klassesData[currentSlide].lunas }} Lunas
               </span>
-              <span class="flex items-center justify-center sm:justify-start gap-2 font-semibold text-[#57534E] tabular-nums">
-                <span class="w-2.5 h-2.5 rounded-[3px] bg-[#D6CFC2]"></span>
+              <span class="flex items-center justify-center sm:justify-start gap-2 font-semibold text-[#475569] tabular-nums">
+                <span class="w-2.5 h-2.5 rounded-[3px] bg-[#CBD5E1]"></span>
                 {{ klassesData[currentSlide].nunggak }} Menunggak
               </span>
             </div>
@@ -101,7 +100,7 @@
           @click="nextSlide"
           :disabled="currentSlide === klassesData.length - 1"
           aria-label="Kelas berikutnya"
-          class="min-h-[44px] min-w-[44px] rounded-[11px] border border-transparent bg-[#F7F4ED] shadow-[var(--shadow-border)] hover:bg-[#FDFCF9] hover:shadow-[var(--shadow-border-hover)] text-[#1C1917] flex items-center justify-center shrink-0 transition-[background-color,box-shadow,transform] duration-150 ease-out enabled:active:scale-[0.96] disabled:opacity-40 disabled:cursor-not-allowed"
+          class="min-h-[44px] min-w-[44px] rounded-[11px] border border-transparent bg-[#F8FAFC] shadow-[var(--shadow-border)] hover:bg-[#FFFFFF] hover:shadow-[var(--shadow-border-hover)] text-[#0F172A] flex items-center justify-center shrink-0 transition-[background-color,box-shadow,transform] duration-150 ease-out enabled:active:scale-[0.96] disabled:opacity-40 disabled:cursor-not-allowed"
         >
           <UiIcon name="chevron_right" :size="20" :weight="600" directional />
         </button>
@@ -111,8 +110,8 @@
     <!-- Chart -->
     <section class="ui-stagger ui-stagger-4 ui-panel-padded flex flex-col gap-4">
       <div>
-        <h2 class="text-lg font-bold text-[#1C1917]">Grafik Pemasukan Kelas (6 Bulan Terakhir)</h2>
-        <p class="text-xs text-[#78716C] mt-0.5">Tren pemasukan infak bulanan kelas binaan Anda</p>
+        <h2 class="text-lg font-bold text-[#0F172A]">Grafik Pemasukan Kelas (6 Bulan Terakhir)</h2>
+        <p class="text-xs text-[#64748B] mt-0.5">Tren pemasukan infak bulanan kelas binaan Anda</p>
       </div>
 
       <div class="w-full overflow-x-auto pb-2" v-if="chartReady">
@@ -120,7 +119,7 @@
           <Line :data="chartData" :options="chartOptions" />
         </div>
       </div>
-      <div v-else class="h-[250px] bg-[#F7F4ED] rounded-[12px] animate-pulse"></div>
+      <div v-else class="h-[250px] bg-[#F8FAFC] rounded-[12px] animate-pulse"></div>
     </section>
   </main>
 </template>
@@ -194,7 +193,7 @@ const pieOptions = ref({
   plugins: {
     legend: { display: false },
     tooltip: {
-      backgroundColor: '#1C1917',
+      backgroundColor: '#0F172A',
       padding: 10,
       cornerRadius: 8,
       callbacks: {
@@ -209,11 +208,11 @@ const chartData = ref({
   datasets: [
     {
       label: 'Pemasukan Kelas',
-      backgroundColor: 'rgba(168, 85, 30, 0.10)',
-      borderColor: '#A8551E',
+      backgroundColor: 'rgba(29, 78, 216, 0.06)',
+      borderColor: '#1D4ED8',
       borderWidth: 2,
-      pointBackgroundColor: '#FDFCF9',
-      pointBorderColor: '#A8551E',
+      pointBackgroundColor: '#FFFFFF',
+      pointBorderColor: '#1D4ED8',
       pointBorderWidth: 2,
       pointRadius: 4,
       fill: true,
@@ -229,7 +228,7 @@ const chartOptions = ref({
   plugins: {
     legend: { display: false },
     tooltip: {
-      backgroundColor: '#1C1917',
+      backgroundColor: '#0F172A',
       padding: 10,
       cornerRadius: 8,
       displayColors: false,
@@ -247,7 +246,7 @@ const chartOptions = ref({
   scales: {
     y: {
       beginAtZero: true,
-      grid: { color: '#E6E1D6', drawBorder: false },
+      grid: { color: '#E2E8F0', drawBorder: false },
       ticks: { display: false }
     },
     x: {

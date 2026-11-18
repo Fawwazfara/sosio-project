@@ -3,8 +3,7 @@
     <!-- Header & Search -->
     <div class="ui-stagger ui-stagger-1 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
       <div>
-        <h1 class="text-2xl sm:text-[26px] font-bold text-[#1C1917] tracking-tight">Riwayat Aktivitas &amp; Audit Kas</h1>
-        <p class="text-sm text-[#57534E] mt-1">Catatan seluruh pencatatan infak, pengeluaran, dan perubahan data sistem.</p>
+        <h1 class="text-2xl sm:text-[26px] font-bold text-[#0F172A] tracking-tight">Riwayat aktivitas</h1>
       </div>
 
       <div class="flex flex-wrap items-center gap-2.5">
@@ -21,7 +20,7 @@
 
     <!-- Search Input -->
     <div class="ui-stagger ui-stagger-2 relative max-w-md">
-      <UiIcon name="search" :size="18" :weight="500" class="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#78716C]" />
+      <UiIcon name="search" :size="18" :weight="500" class="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#64748B]" />
       <input
         v-model="searchQuery"
         type="text"
@@ -32,20 +31,20 @@
 
     <!-- Timeline Groups -->
     <div v-if="isLoading" class="ui-panel-padded space-y-4">
-      <div v-for="n in 4" :key="n" class="h-16 bg-[#F7F4ED] rounded-[12px] animate-pulse"></div>
+      <div v-for="n in 4" :key="n" class="h-16 bg-[#F8FAFC] rounded-[12px] animate-pulse"></div>
     </div>
 
     <div v-else-if="groupedLogs.length === 0" class="ui-panel-padded text-center py-14 ui-stagger ui-stagger-2">
-      <div class="w-12 h-12 mx-auto rounded-[12px] bg-[#ECE8DF] text-[#78716C] flex items-center justify-center mb-3">
+      <div class="w-12 h-12 mx-auto rounded-[12px] bg-[#EAEFF6] text-[#64748B] flex items-center justify-center mb-3">
         <UiIcon name="history" :size="24" :weight="500" />
       </div>
-      <p class="text-base font-bold text-[#1C1917]">Belum ada log aktivitas ditemukan</p>
-      <p class="text-sm text-[#57534E] mt-1">Setiap perubahan transaksi dan data siswa akan otomatis terekam di sini.</p>
+      <p class="text-base font-bold text-[#0F172A]">Belum ada log aktivitas ditemukan</p>
+      <p class="text-sm text-[#475569] mt-1">Setiap perubahan transaksi dan data siswa akan otomatis terekam di sini.</p>
     </div>
 
     <div v-else class="flex flex-col gap-6 ui-stagger ui-stagger-3">
       <section v-for="group in groupedLogs" :key="group.dateLabel" class="flex flex-col gap-3">
-        <h2 class="text-sm font-bold text-[#44403C] pb-1.5 border-b border-black/[0.07]">
+        <h2 class="text-sm font-bold text-[#334155] pb-1.5 border-b border-black/[0.07]">
           {{ group.dateLabel }}
         </h2>
 
@@ -63,8 +62,8 @@
                 <UiIcon :name="getIconName(item.type)" :size="18" :weight="600" />
               </div>
               <div class="min-w-0">
-                <p class="text-sm font-bold text-[#1C1917]">{{ item.title }}</p>
-                <p class="text-xs text-[#57534E] mt-0.5 leading-relaxed">{{ item.description }}</p>
+                <p class="text-sm font-bold text-[#0F172A]">{{ item.title }}</p>
+                <p class="text-xs text-[#475569] mt-0.5 leading-relaxed">{{ item.description }}</p>
               </div>
             </div>
 
@@ -72,11 +71,11 @@
               <span
                 v-if="item.amount"
                 class="text-sm font-extrabold font-mono tabular-nums"
-                :class="item.type === 'expense' ? 'text-[#9F1239]' : 'text-[#A8551E]'"
+                :class="item.type === 'expense' ? 'text-[#9F1239]' : 'text-[#1D4ED8]'"
               >
                 {{ item.type === 'expense' ? '-' : '+' }} Rp {{ formatRupiah(item.amount) }}
               </span>
-              <span class="text-xs font-mono text-[#78716C] tabular-nums">{{ item.time }}</span>
+              <span class="text-xs font-mono text-[#64748B] tabular-nums">{{ item.time }}</span>
             </div>
           </div>
         </div>
@@ -181,10 +180,10 @@ const getIconName = (type) => {
 
 const getIconBgColor = (type) => {
   switch (type) {
-    case 'income': return 'bg-[#A8551E]';
+    case 'income': return 'bg-[#1D4ED8]';
     case 'expense': return 'bg-[#9F1239]';
-    case 'system': return 'bg-[#57534E]';
-    default: return 'bg-[#292524]';
+    case 'system': return 'bg-[#475569]';
+    default: return 'bg-[#163A70]';
   }
 };
 
