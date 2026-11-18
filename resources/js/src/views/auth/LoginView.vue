@@ -81,13 +81,13 @@
           <div class="mb-7">
             <h2 class="text-2xl font-bold text-[#1C1917] tracking-tight">Masuk ke Portal Infak</h2>
             <p class="text-sm text-[#57534E] mt-1.5 leading-relaxed">
-              Masukkan email akun Anda atau nomor NIS siswa (khusus akun Orang Tua / Wali).
+              Masukkan username, email, atau nomor NIS siswa (khusus akun Orang Tua / Wali).
             </p>
           </div>
 
           <form class="flex flex-col gap-5" @submit.prevent="handleLogin">
             <div class="flex flex-col gap-1.5">
-              <label class="text-xs font-semibold text-[#44403C]" for="email">Email atau NIS Siswa</label>
+              <label class="text-xs font-semibold text-[#44403C]" for="email">Username, Email, atau NIS Siswa</label>
               <input
                 v-model="form.email"
                 id="email"
@@ -95,7 +95,7 @@
                 type="text"
                 required
                 autocomplete="username"
-                placeholder="Contoh: wali1@assajjad.com atau 2026001"
+                placeholder="Contoh: wali, guru, admin, atau 2026001"
                 class="ui-input"
               >
             </div>
@@ -171,36 +171,36 @@
             <div v-if="showDemo" class="mt-3 p-1.5 rounded-[16px] bg-[#ECE8DF] flex flex-col gap-1.5">
               <button
                 type="button"
-                @click="fillDemo('wali1@assajjad.com', 'wali123')"
+                @click="fillDemo('wali', 'wali')"
                 class="w-full text-left px-3.5 py-2.5 rounded-[10px] bg-[#FDFCF9] border border-transparent shadow-[var(--shadow-border)] hover:shadow-[var(--shadow-border-hover)] hover:bg-white transition-[box-shadow,background-color,transform] duration-150 ease-out enabled:active:scale-[0.96] flex items-center justify-between gap-3"
               >
                 <div class="min-w-0">
                   <p class="text-xs font-bold text-[#1C1917]">Orang Tua / Wali Siswa</p>
-                  <p class="text-xs font-mono text-[#78716C] truncate mt-0.5 tabular-nums">wali1@assajjad.com · NIS 2026001 · wali123</p>
+                  <p class="text-xs font-mono text-[#78716C] truncate mt-0.5 tabular-nums">user: wali · pw: wali</p>
                 </div>
                 <span class="text-xs font-semibold px-2.5 py-1 rounded-[7px] bg-[#F9EFE7] text-[#A8551E] shrink-0">QRIS / Tunai</span>
               </button>
 
               <button
                 type="button"
-                @click="fillDemo('erawati@assajjad.com', 'era123')"
+                @click="fillDemo('guru', 'guru')"
                 class="w-full text-left px-3.5 py-2.5 rounded-[10px] bg-[#FDFCF9] border border-transparent shadow-[var(--shadow-border)] hover:shadow-[var(--shadow-border-hover)] hover:bg-white transition-[box-shadow,background-color,transform] duration-150 ease-out enabled:active:scale-[0.96] flex items-center justify-between gap-3"
               >
                 <div class="min-w-0">
                   <p class="text-xs font-bold text-[#1C1917]">Guru / Wali Kelas</p>
-                  <p class="text-xs font-mono text-[#78716C] truncate mt-0.5 tabular-nums">erawati@assajjad.com · era123</p>
+                  <p class="text-xs font-mono text-[#78716C] truncate mt-0.5 tabular-nums">user: guru · pw: guru</p>
                 </div>
                 <span class="text-xs font-semibold px-2.5 py-1 rounded-[7px] bg-[#FAF4E4] text-[#9A6B16] shrink-0">Terima Tunai</span>
               </button>
 
               <button
                 type="button"
-                @click="fillDemo('fawwazfara11@assajjad.com', 'fwaz000165')"
+                @click="fillDemo('admin', 'admin')"
                 class="w-full text-left px-3.5 py-2.5 rounded-[10px] bg-[#FDFCF9] border border-transparent shadow-[var(--shadow-border)] hover:shadow-[var(--shadow-border-hover)] hover:bg-white transition-[box-shadow,background-color,transform] duration-150 ease-out enabled:active:scale-[0.96] flex items-center justify-between gap-3"
               >
                 <div class="min-w-0">
                   <p class="text-xs font-bold text-[#1C1917]">Admin Tata Usaha</p>
-                  <p class="text-xs font-mono text-[#78716C] truncate mt-0.5 tabular-nums">fawwazfara11@assajjad.com · fwaz000165</p>
+                  <p class="text-xs font-mono text-[#78716C] truncate mt-0.5 tabular-nums">user: admin · pw: admin</p>
                 </div>
                 <span class="text-xs font-semibold px-2.5 py-1 rounded-[7px] bg-[#ECE8DF] text-[#292524] shrink-0">Kelola Penuh</span>
               </button>

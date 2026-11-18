@@ -21,12 +21,10 @@ class AuthController extends Controller
         $identifier = strtolower(trim($request->email));
         $remember = (bool) $request->boolean('remember');
 
-        // Izinkan login pakai Email (Admin/Guru/Wali) atau NIS siswa (khusus akun Wali)
+        // Izinkan login pakai Username/Email (Admin/Guru/Wali) atau NIS siswa (khusus akun Wali)
         $user = null;
-        if (str_contains($identifier, '@')) {
-            if (Auth::attempt(['email' => $identifier, 'password' => $request->password], $remember)) {
-                $user = Auth::user();
-            }
+        if (Auth::attempt(['email' => $identifier, 'password' => $request->password], $remember)) {
+            $user = Auth::user();
         } else {
             $siswa = Siswa::with('waliUser')->where('nis', trim($request->email))->first();
             if ($siswa && $siswa->waliUser && Hash::check($request->password, $siswa->waliUser->password)) {

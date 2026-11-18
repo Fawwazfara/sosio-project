@@ -32,12 +32,30 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        // 2. Create Guru (Ibu Erawati)
+        User::firstOrCreate(
+            ['email' => 'admin'],
+            [
+                'name' => 'Admin Demo',
+                'password' => Hash::make('admin'),
+                'role' => 'admin',
+            ]
+        );
+
+        // 2. Create Guru (Ibu Erawati & Guru Demo)
         $erawati = User::firstOrCreate(
             ['email' => 'erawati@assajjad.com'],
             [
                 'name' => 'Ibu Erawati',
                 'password' => Hash::make('era123'),
+                'role' => 'guru',
+            ]
+        );
+
+        $guruDemo = User::firstOrCreate(
+            ['email' => 'guru'],
+            [
+                'name' => 'Guru Demo',
+                'password' => Hash::make('guru'),
                 'role' => 'guru',
             ]
         );
@@ -50,7 +68,12 @@ class DatabaseSeeder extends Seeder
 
         $kelasList = [];
         foreach ($kelasNames as $nama) {
-            $guruId = in_array($nama, ['Kelas 1', 'Kelas 2'], true) ? $erawati->id : null;
+            $guruId = null;
+            if (in_array($nama, ['Kelas 1', 'Kelas 2'], true)) {
+                $guruId = $erawati->id;
+            } elseif (in_array($nama, ['Kelas 3', 'Kelas 4A'], true)) {
+                $guruId = $guruDemo->id;
+            }
             $kelasList[$nama] = Kelas::firstOrCreate(
                 ['nama_kelas' => $nama],
                 ['guru_id' => $guruId]
@@ -58,6 +81,15 @@ class DatabaseSeeder extends Seeder
         }
 
         // 4. Create Demo Wali Accounts (Orang Tua / Wali Siswa)
+        $waliShort = User::firstOrCreate(
+            ['email' => 'wali'],
+            [
+                'name' => 'Wali Demo',
+                'password' => Hash::make('wali'),
+                'role' => 'wali',
+            ]
+        );
+
         $waliDemo1 = User::firstOrCreate(
             ['email' => 'wali1@assajjad.com'],
             [
@@ -118,6 +150,37 @@ class DatabaseSeeder extends Seeder
                 'wali_user_id' => $waliDemo2->id,
             ]
         );
+
+        $anakWaliShort = Siswa::firstOrCreate(
+            ['nis' => '2026099'],
+            [
+                'nama_lengkap' => 'Zidan Ramadhan',
+                'kelas_id' => $kelasList['Kelas 3']->id,
+                'jenis_kelamin' => 'L',
+                'alamat' => 'Jl. Madrasah No. 8',
+                'blok' => 'Blok C-01',
+                'nama_wali_1' => 'Wali Demo',
+                'wa_wali_1' => '081234567899',
+                'wali_user_id' => $waliShort->id,
+            ]
+        );
+
+        foreach (['July', 'August'] as $idx => $bulan) {
+            Infak::firstOrCreate(
+                [
+                    'siswa_id' => $anakWaliShort->id,
+                    'tahun' => $academicYear,
+                    'bulan' => $bulan,
+                ],
+                [
+                    'kelas_id' => $anakWaliShort->kelas_id,
+                    'jumlah' => 25000,
+                    'tanggal_bayar' => now()->subMonths(3 - $idx)->startOfMonth()->addDays(4)->toDateString(),
+                    'keterangan' => 'Tunai via Wali Kelas',
+                    'metode_bayar' => 'offline_wali',
+                ]
+            );
+        }
 
         // Seed infak Juli - September untuk anak1 (biar Oktober-Juni belum lunas dan siap didemo bayar!)
         foreach (['July', 'August', 'September'] as $idx => $bulan) {
