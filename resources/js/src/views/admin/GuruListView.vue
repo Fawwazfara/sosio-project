@@ -1,27 +1,27 @@
 <template>
   <div class="ui-page flex flex-col gap-6">
     <div class="ui-stagger ui-stagger-1">
-      <h1 class="text-2xl sm:text-[26px] font-bold text-[#0F172A] tracking-tight">Akun guru</h1>
+      <h1 class="text-2xl sm:text-[26px] font-bold text-[#1C1917] tracking-tight">Akun guru</h1>
     </div>
 
     <div class="ui-stagger ui-stagger-2 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
       <!-- Create Teacher Form -->
       <section class="lg:col-span-5 ui-panel-padded space-y-5">
-        <h2 class="text-base font-bold text-[#0F172A] pb-3 border-b border-black/[0.07]">Tambah Akun Guru</h2>
+        <h2 class="text-base font-bold text-[#1C1917] pb-3 border-b border-black/[0.07]">Tambah Akun Guru</h2>
 
         <form @submit.prevent="saveGuru" class="space-y-4">
           <div class="flex flex-col gap-1.5">
-            <label class="text-xs font-semibold text-[#334155]" for="guruName">Nama Lengkap</label>
+            <label class="text-xs font-semibold text-[#44403C]" for="guruName">Nama Lengkap</label>
             <input id="guruName" v-model="form.fullName" type="text" required placeholder="Contoh: Ustadz Ahmad" class="ui-input">
           </div>
 
           <div class="flex flex-col gap-1.5">
-            <label class="text-xs font-semibold text-[#334155]" for="guruEmail">Email Login</label>
+            <label class="text-xs font-semibold text-[#44403C]" for="guruEmail">Email Login</label>
             <input id="guruEmail" v-model="form.email" type="email" required placeholder="nama@assajjad.com" class="ui-input">
           </div>
 
           <div class="flex flex-col gap-1.5">
-            <label class="text-xs font-semibold text-[#334155]" for="guruPass">Kata Sandi Awal</label>
+            <label class="text-xs font-semibold text-[#44403C]" for="guruPass">Kata Sandi Awal</label>
             <div class="relative">
               <input
                 id="guruPass"
@@ -36,7 +36,7 @@
                 type="button"
                 @click="showPasswordInput = !showPasswordInput"
                 aria-label="Tampilkan atau sembunyikan kata sandi"
-                class="absolute right-1.5 top-1/2 -translate-y-1/2 min-h-[36px] min-w-[36px] flex items-center justify-center rounded-[8px] text-[#64748B] hover:text-[#0F172A] hover:bg-[#EAEFF6] transition-[background-color,color,transform] duration-150 ease-out active:scale-[0.96]"
+                class="absolute right-1.5 top-1/2 -translate-y-1/2 min-h-[36px] min-w-[36px] flex items-center justify-center rounded-[8px] text-[#78716C] hover:text-[#1C1917] hover:bg-[#ECE8DF] transition-[background-color,color,transform] duration-150 ease-out active:scale-[0.96]"
               >
                 <span class="ui-icon-swap">
                   <span :class="showPasswordInput ? 'ui-icon-swap-shown' : 'ui-icon-swap-hidden'">
@@ -51,7 +51,7 @@
           </div>
 
           <div class="pt-1">
-            <label class="block text-xs font-semibold text-[#334155] mb-2">Tugaskan Kelas Binaan</label>
+            <label class="block text-xs font-semibold text-[#44403C] mb-2">Tugaskan Kelas Binaan</label>
             <div class="flex flex-wrap gap-2">
               <button
                 v-for="k in availableKelas"
@@ -61,8 +61,8 @@
                 :class="[
                   'min-h-[38px] px-3.5 rounded-[10px] border border-transparent text-xs font-semibold transition-[background-color,color,box-shadow,transform] duration-150 ease-out active:scale-[0.96]',
                   form.kelas.includes(k.id)
-                    ? 'bg-[#163A70] text-white shadow-[var(--shadow-btn-navy)]'
-                    : 'bg-[#F8FAFC] text-[#0F172A] shadow-[var(--shadow-border)] hover:bg-[#FFFFFF] hover:shadow-[var(--shadow-border-hover)]'
+                    ? 'bg-[#292524] text-white shadow-[var(--shadow-btn-navy)]'
+                    : 'bg-[#F7F4ED] text-[#1C1917] shadow-[var(--shadow-border)] hover:bg-[#FDFCF9] hover:shadow-[var(--shadow-border-hover)]'
                 ]"
               >
                 {{ k.nama_kelas }}
@@ -81,10 +81,10 @@
       <!-- Teachers List -->
       <section class="lg:col-span-7 flex flex-col gap-3.5">
         <div class="flex items-center justify-between">
-          <h2 class="text-base font-bold text-[#0F172A]">Daftar Guru Terdaftar (<span class="tabular-nums">{{ teachers.length }}</span>)</h2>
+          <h2 class="text-base font-bold text-[#1C1917]">Daftar Guru Terdaftar (<span class="tabular-nums">{{ teachers.length }}</span>)</h2>
         </div>
 
-        <div v-if="teachers.length === 0" class="ui-panel-padded text-center py-10 text-sm text-[#64748B]">
+        <div v-if="teachers.length === 0" class="ui-panel-padded text-center py-10 text-sm text-[#78716C]">
           Belum ada akun guru terdaftar.
         </div>
 
@@ -94,21 +94,21 @@
           class="ui-panel ui-panel-interactive p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
         >
           <div class="flex items-start gap-3.5 min-w-0">
-            <div class="w-11 h-11 rounded-[11px] bg-[#EFF6FF] shadow-[inset_0_0_0_1px_oklch(0.55_0.13_42_/_0.2)] text-[#1E3A8A] font-bold text-sm flex items-center justify-center shrink-0">
+            <div class="w-11 h-11 rounded-[11px] bg-[#F9EFE7] shadow-[inset_0_0_0_1px_oklch(0.55_0.13_42_/_0.2)] text-[#7C3A10] font-bold text-sm flex items-center justify-center shrink-0">
               {{ getInitials(teacher.name) }}
             </div>
             <div class="min-w-0">
-              <h3 class="text-sm font-bold text-[#0F172A] truncate">{{ teacher.name }}</h3>
-              <p class="text-xs font-mono text-[#64748B] truncate">{{ teacher.email }}</p>
+              <h3 class="text-sm font-bold text-[#1C1917] truncate">{{ teacher.name }}</h3>
+              <p class="text-xs font-mono text-[#78716C] truncate">{{ teacher.email }}</p>
               <div class="flex flex-wrap gap-1.5 mt-2">
                 <span
                   v-for="cls in teacher.kelas"
                   :key="cls.id || cls"
-                  class="text-xs font-semibold px-2.5 py-0.5 rounded-[7px] bg-[#EAEFF6] text-[#334155]"
+                  class="text-xs font-semibold px-2.5 py-0.5 rounded-[7px] bg-[#ECE8DF] text-[#44403C]"
                 >
                   {{ cls.nama_kelas || cls }}
                 </span>
-                <span v-if="!teacher.kelas || teacher.kelas.length === 0" class="text-xs text-[#64748B]">Belum ada kelas</span>
+                <span v-if="!teacher.kelas || teacher.kelas.length === 0" class="text-xs text-[#78716C]">Belum ada kelas</span>
               </div>
             </div>
           </div>
@@ -127,7 +127,7 @@
               v-else
               @click="confirmDeleteId = teacher.id"
               aria-label="Hapus akun guru"
-              class="min-h-[44px] min-w-[44px] rounded-[10px] border border-transparent bg-[#FFF1F2] hover:bg-[#FFE4E6] shadow-[var(--shadow-btn-danger)] text-[#9F1239] flex items-center justify-center transition-[background-color,transform] duration-150 ease-out active:scale-[0.96]"
+              class="min-h-[44px] min-w-[44px] rounded-[10px] border border-transparent bg-[#FDF2F4] hover:bg-[#FCE4E9] shadow-[var(--shadow-btn-danger)] text-[#9F1239] flex items-center justify-center transition-[background-color,transform] duration-150 ease-out active:scale-[0.96]"
             >
               <UiIcon name="delete" :size="17" :weight="600" />
             </button>
@@ -137,24 +137,24 @@
     </div>
 
     <!-- Reset Password Modal -->
-    <div v-if="modalTeacher" class="fixed inset-0 z-50 flex items-center justify-center bg-[#0F172A]/45 backdrop-blur-[2px] p-4 overscroll-contain" @click="closeModal">
+    <div v-if="modalTeacher" class="fixed inset-0 z-50 flex items-center justify-center bg-[#1C1917]/45 backdrop-blur-[2px] p-4 overscroll-contain" @click="closeModal">
       <div class="ui-panel-elevated w-full max-w-md p-6 space-y-5 overscroll-contain" @click.stop>
         <div class="flex items-center justify-between">
           <div>
-            <h3 class="text-base font-bold text-[#0F172A]">Reset Kata Sandi</h3>
-            <p class="text-xs text-[#64748B] mt-0.5">{{ modalTeacher.name }} ({{ modalTeacher.email }})</p>
+            <h3 class="text-base font-bold text-[#1C1917]">Reset Kata Sandi</h3>
+            <p class="text-xs text-[#78716C] mt-0.5">{{ modalTeacher.name }} ({{ modalTeacher.email }})</p>
           </div>
           <button
             @click="closeModal"
             aria-label="Tutup modal"
-            class="min-h-[38px] min-w-[38px] rounded-[9px] text-[#64748B] hover:text-[#0F172A] hover:bg-[#EAEFF6] flex items-center justify-center transition-[background-color,color,transform] duration-150 ease-out active:scale-[0.96]"
+            class="min-h-[38px] min-w-[38px] rounded-[9px] text-[#78716C] hover:text-[#1C1917] hover:bg-[#ECE8DF] flex items-center justify-center transition-[background-color,color,transform] duration-150 ease-out active:scale-[0.96]"
           >
             <UiIcon name="close" :size="18" :weight="600" />
           </button>
         </div>
 
         <div class="flex flex-col gap-1.5">
-          <label class="text-xs font-semibold text-[#334155]" for="newPassInput">Kata Sandi Baru (Minimal 6 karakter)</label>
+          <label class="text-xs font-semibold text-[#44403C]" for="newPassInput">Kata Sandi Baru (Minimal 6 karakter)</label>
           <div class="relative">
             <input
               id="newPassInput"
@@ -167,7 +167,7 @@
               type="button"
               @click="showNewPassword = !showNewPassword"
               aria-label="Tampilkan atau sembunyikan kata sandi baru"
-              class="absolute right-1.5 top-1/2 -translate-y-1/2 min-h-[36px] min-w-[36px] flex items-center justify-center rounded-[8px] text-[#64748B] hover:text-[#0F172A] hover:bg-[#EAEFF6] transition-[background-color,color,transform] duration-150 ease-out active:scale-[0.96]"
+              class="absolute right-1.5 top-1/2 -translate-y-1/2 min-h-[36px] min-w-[36px] flex items-center justify-center rounded-[8px] text-[#78716C] hover:text-[#1C1917] hover:bg-[#ECE8DF] transition-[background-color,color,transform] duration-150 ease-out active:scale-[0.96]"
             >
               <span class="ui-icon-swap">
                 <span :class="showNewPassword ? 'ui-icon-swap-shown' : 'ui-icon-swap-hidden'">

@@ -3,7 +3,7 @@
     <!-- Header -->
     <div class="ui-stagger ui-stagger-1 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
       <div>
-        <h1 class="text-2xl sm:text-[26px] font-bold text-[#0F172A] tracking-tight">Konfirmasi setoran</h1>
+        <h1 class="text-2xl sm:text-[26px] font-bold text-[#1C1917] tracking-tight">Konfirmasi setoran</h1>
       </div>
       <button
         @click="fetchItems"
@@ -18,23 +18,23 @@
     <section class="ui-stagger ui-stagger-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
       <div class="ui-panel p-5">
         <p class="text-xs font-semibold text-[#9A6B16]">Menunggu Tunai</p>
-        <p class="text-2xl font-extrabold font-mono tabular-nums text-[#0F172A] mt-2">{{ summary.waiting_offline }}</p>
-        <p class="text-xs text-[#64748B] mt-1">Perlu konfirmasi wali kelas</p>
+        <p class="text-2xl font-extrabold font-mono tabular-nums text-[#1C1917] mt-2">{{ summary.waiting_offline }}</p>
+        <p class="text-xs text-[#78716C] mt-1">Perlu konfirmasi wali kelas</p>
       </div>
       <div class="ui-panel p-5">
-        <p class="text-xs font-semibold text-[#475569]">QRIS Menunggu</p>
-        <p class="text-2xl font-extrabold font-mono tabular-nums text-[#0F172A] mt-2">{{ summary.pending_online }}</p>
-        <p class="text-xs text-[#64748B] mt-1">Barcode belum dibayar</p>
+        <p class="text-xs font-semibold text-[#57534E]">QRIS Menunggu</p>
+        <p class="text-2xl font-extrabold font-mono tabular-nums text-[#1C1917] mt-2">{{ summary.pending_online }}</p>
+        <p class="text-xs text-[#78716C] mt-1">Barcode belum dibayar</p>
       </div>
       <div class="ui-panel p-5">
-        <p class="text-xs font-semibold text-[#1D4ED8]">Lunas Online (QRIS)</p>
-        <p class="text-2xl font-extrabold font-mono tabular-nums text-[#1D4ED8] mt-2">{{ summary.paid_online }}</p>
-        <p class="text-xs text-[#64748B] mt-1">Terverifikasi otomatis</p>
+        <p class="text-xs font-semibold text-[#A8551E]">Lunas Online (QRIS)</p>
+        <p class="text-2xl font-extrabold font-mono tabular-nums text-[#A8551E] mt-2">{{ summary.paid_online }}</p>
+        <p class="text-xs text-[#78716C] mt-1">Terverifikasi otomatis</p>
       </div>
       <div class="ui-panel p-5">
-        <p class="text-xs font-semibold text-[#163A70]">Lunas Tunai Wali</p>
-        <p class="text-2xl font-extrabold font-mono tabular-nums text-[#163A70] mt-2">{{ summary.paid_offline }}</p>
-        <p class="text-xs text-[#64748B] mt-1">Dikonfirmasi wali kelas</p>
+        <p class="text-xs font-semibold text-[#292524]">Lunas Tunai Wali</p>
+        <p class="text-2xl font-extrabold font-mono tabular-nums text-[#292524] mt-2">{{ summary.paid_offline }}</p>
+        <p class="text-xs text-[#78716C] mt-1">Dikonfirmasi wali kelas</p>
       </div>
     </section>
 
@@ -46,7 +46,7 @@
         @click="activeStatus = tab.value"
         :class="[
           'ui-segmented-item text-xs',
-          activeStatus === tab.value ? 'ui-segmented-item-active' : 'ui-segmented-item-idle hover:text-[#0F172A]'
+          activeStatus === tab.value ? 'ui-segmented-item-active' : 'ui-segmented-item-idle hover:text-[#1C1917]'
         ]"
       >
         {{ tab.label }}
@@ -55,15 +55,15 @@
 
     <!-- List -->
     <div v-if="isLoading" class="ui-panel-padded space-y-3">
-      <div v-for="n in 4" :key="n" class="h-20 bg-[#F8FAFC] rounded-[12px] animate-pulse"></div>
+      <div v-for="n in 4" :key="n" class="h-20 bg-[#F7F4ED] rounded-[12px] animate-pulse"></div>
     </div>
 
     <div v-else-if="filteredItems.length === 0" class="ui-panel-padded text-center py-14">
-      <div class="w-12 h-12 mx-auto rounded-[12px] bg-[#EAEFF6] text-[#64748B] flex items-center justify-center mb-3">
+      <div class="w-12 h-12 mx-auto rounded-[12px] bg-[#ECE8DF] text-[#78716C] flex items-center justify-center mb-3">
         <UiIcon name="inbox" :size="24" :weight="500" />
       </div>
-      <p class="text-base font-bold text-[#0F172A]">Belum ada pengajuan pada kategori ini</p>
-      <p class="text-sm text-[#475569] mt-1">Semua transaksi yang cocok dengan filter akan tampil di sini.</p>
+      <p class="text-base font-bold text-[#1C1917]">Belum ada pengajuan pada kategori ini</p>
+      <p class="text-sm text-[#57534E] mt-1">Semua transaksi yang cocok dengan filter akan tampil di sini.</p>
     </div>
 
     <div v-else class="flex flex-col gap-3.5 ui-stagger ui-stagger-3">
@@ -75,15 +75,15 @@
         <div class="flex items-start gap-3.5 min-w-0">
           <div
             class="w-11 h-11 rounded-[10px] flex items-center justify-center shrink-0"
-            :class="item.metode === 'online' ? 'bg-[#EFF6FF] text-[#1D4ED8]' : 'bg-[#FAF4E4] text-[#9A6B16]'"
+            :class="item.metode === 'online' ? 'bg-[#F9EFE7] text-[#A8551E]' : 'bg-[#FAF4E4] text-[#9A6B16]'"
           >
             <UiIcon :name="item.metode === 'online' ? 'qr_code_2' : 'payments'" :size="20" :weight="600" />
           </div>
 
           <div class="min-w-0">
             <div class="flex flex-wrap items-center gap-2">
-              <span class="text-xs font-mono font-bold text-[#0F172A]">{{ item.kode_referensi }}</span>
-              <span class="text-xs font-semibold px-2.5 py-0.5 rounded-[7px] bg-[#EAEFF6] text-[#334155]">
+              <span class="text-xs font-mono font-bold text-[#1C1917]">{{ item.kode_referensi }}</span>
+              <span class="text-xs font-semibold px-2.5 py-0.5 rounded-[7px] bg-[#ECE8DF] text-[#44403C]">
                 {{ item.kelas_nama }}
               </span>
               <span class="text-xs font-semibold px-2.5 py-0.5 rounded-[7px]" :class="statusClass(item.status)">
@@ -91,12 +91,12 @@
               </span>
             </div>
 
-            <p class="text-sm font-bold text-[#0F172A] mt-1.5">
+            <p class="text-sm font-bold text-[#1C1917] mt-1.5">
               {{ item.siswa_nama }}
-              <span class="text-xs font-normal text-[#64748B]">(Wali: {{ item.wali_nama }})</span>
+              <span class="text-xs font-normal text-[#78716C]">(Wali: {{ item.wali_nama }})</span>
             </p>
-            <p class="text-xs text-[#475569] mt-1">
-              Bulan: <strong class="text-[#0F172A] font-semibold">{{ item.bulan_labels.join(', ') }}</strong>
+            <p class="text-xs text-[#57534E] mt-1">
+              Bulan: <strong class="text-[#1C1917] font-semibold">{{ item.bulan_labels.join(', ') }}</strong>
               <span v-if="item.catatan"> · Catatan: "{{ item.catatan }}"</span>
             </p>
           </div>
@@ -104,8 +104,8 @@
 
         <div class="flex flex-col sm:flex-row sm:items-center justify-between lg:justify-end gap-4 shrink-0 pt-3 lg:pt-0 border-t lg:border-t-0 border-black/[0.07]">
           <div class="text-left lg:text-right">
-            <span class="block text-xs text-[#64748B]">Total Nominal</span>
-            <span class="text-lg font-extrabold font-mono tabular-nums text-[#0F172A]">
+            <span class="block text-xs text-[#78716C]">Total Nominal</span>
+            <span class="text-lg font-extrabold font-mono tabular-nums text-[#1C1917]">
               Rp {{ formatRupiah(item.total_nominal) }}
             </span>
           </div>
@@ -165,7 +165,7 @@
             </template>
           </div>
 
-          <span v-else-if="item.status === 'paid' && item.confirmed_by_name" class="text-xs font-medium text-[#64748B]">
+          <span v-else-if="item.status === 'paid' && item.confirmed_by_name" class="text-xs font-medium text-[#78716C]">
             Diverifikasi: {{ item.confirmed_by_name }}
           </span>
         </div>
@@ -214,10 +214,10 @@ const statusLabel = (s) => {
 };
 
 const statusClass = (s) => {
-  if (s === 'paid') return 'bg-[#EFF6FF] text-[#1D4ED8]';
+  if (s === 'paid') return 'bg-[#F9EFE7] text-[#A8551E]';
   if (s === 'waiting_offline') return 'bg-[#FAF4E4] text-[#9A6B16]';
-  if (s === 'pending') return 'bg-[#EAEFF6] text-[#163A70]';
-  return 'bg-[#FFF1F2] text-[#9F1239]';
+  if (s === 'pending') return 'bg-[#ECE8DF] text-[#292524]';
+  return 'bg-[#FDF2F4] text-[#9F1239]';
 };
 
 const askConfirm = (id, action) => {

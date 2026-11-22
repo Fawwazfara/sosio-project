@@ -3,7 +3,7 @@
     <!-- Page Header & Actions -->
     <div class="ui-stagger ui-stagger-1 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
       <div>
-        <h1 class="text-2xl sm:text-[26px] font-bold text-[#0F172A] tracking-tight">Siswa &amp; wali</h1>
+        <h1 class="text-2xl sm:text-[26px] font-bold text-[#1C1917] tracking-tight">Siswa &amp; wali</h1>
       </div>
 
       <div class="flex flex-wrap items-center gap-2.5">
@@ -40,15 +40,15 @@
     <!-- Progress Blast WA -->
     <div
       v-if="isBlasting && blastProgress"
-      class="ui-panel-padded bg-[#EFF6FF] shadow-[0_0_0_1px_oklch(0.55_0.13_42_/_0.22)]"
+      class="ui-panel-padded bg-[#F9EFE7] shadow-[0_0_0_1px_oklch(0.55_0.13_42_/_0.22)]"
     >
-      <div class="flex items-center justify-between text-sm font-semibold text-[#1E3A8A] mb-2">
+      <div class="flex items-center justify-between text-sm font-semibold text-[#7C3A10] mb-2">
         <span>Mengirim antrean WhatsApp bertahap (jangan tutup tab)...</span>
         <span class="font-mono tabular-nums">{{ blastProgress.sent }} / {{ blastProgress.total }}</span>
       </div>
       <div class="w-full h-2.5 bg-[#EEDAC9] rounded-full overflow-hidden">
         <div
-          class="h-full bg-[#1D4ED8] rounded-full transition-[width] duration-300 ease-out-expo"
+          class="h-full bg-[#A8551E] rounded-full transition-[width] duration-300 ease-out-expo"
           :style="{ width: blastProgress.total ? Math.round((blastProgress.sent / blastProgress.total) * 100) + '%' : '0%' }"
         ></div>
       </div>
@@ -61,27 +61,27 @@
           @click="navigateClass(-1)"
           :disabled="!hasPrevClass"
           aria-label="Kelas sebelumnya"
-          class="min-h-[44px] min-w-[44px] rounded-[11px] border border-transparent bg-[#F8FAFC] shadow-[var(--shadow-border)] hover:bg-[#FFFFFF] hover:shadow-[var(--shadow-border-hover)] text-[#0F172A] flex items-center justify-center transition-[background-color,box-shadow,transform] duration-150 ease-out enabled:active:scale-[0.96] disabled:opacity-40 disabled:cursor-not-allowed"
+          class="min-h-[44px] min-w-[44px] rounded-[11px] border border-transparent bg-[#F7F4ED] shadow-[var(--shadow-border)] hover:bg-[#FDFCF9] hover:shadow-[var(--shadow-border-hover)] text-[#1C1917] flex items-center justify-center transition-[background-color,box-shadow,transform] duration-150 ease-out enabled:active:scale-[0.96] disabled:opacity-40 disabled:cursor-not-allowed"
         >
           <UiIcon name="chevron_left" :size="20" :weight="600" directional />
         </button>
 
         <div>
-          <span class="block text-xs text-[#64748B]">Kelas Aktif (gunakan panah ← →)</span>
-          <span class="text-lg font-bold text-[#0F172A]">{{ currentClassName }}</span>
+          <span class="block text-xs text-[#78716C]">Kelas Aktif (gunakan panah ← →)</span>
+          <span class="text-lg font-bold text-[#1C1917]">{{ currentClassName }}</span>
         </div>
 
         <button
           @click="navigateClass(1)"
           :disabled="!hasNextClass"
           aria-label="Kelas berikutnya"
-          class="min-h-[44px] min-w-[44px] rounded-[11px] border border-transparent bg-[#F8FAFC] shadow-[var(--shadow-border)] hover:bg-[#FFFFFF] hover:shadow-[var(--shadow-border-hover)] text-[#0F172A] flex items-center justify-center transition-[background-color,box-shadow,transform] duration-150 ease-out enabled:active:scale-[0.96] disabled:opacity-40 disabled:cursor-not-allowed"
+          class="min-h-[44px] min-w-[44px] rounded-[11px] border border-transparent bg-[#F7F4ED] shadow-[var(--shadow-border)] hover:bg-[#FDFCF9] hover:shadow-[var(--shadow-border-hover)] text-[#1C1917] flex items-center justify-center transition-[background-color,box-shadow,transform] duration-150 ease-out enabled:active:scale-[0.96] disabled:opacity-40 disabled:cursor-not-allowed"
         >
           <UiIcon name="chevron_right" :size="20" :weight="600" directional />
         </button>
       </div>
 
-      <div class="flex flex-wrap gap-1.5 p-1 rounded-[13px] bg-[#EAEFF6]">
+      <div class="flex flex-wrap gap-1.5 p-1 rounded-[13px] bg-[#ECE8DF]">
         <button
           v-for="(c, idx) in classes"
           :key="c.id"
@@ -89,8 +89,8 @@
           :class="[
             'min-h-[36px] px-3 rounded-[9px] border border-transparent text-xs font-semibold transition-[background-color,color,box-shadow,transform] duration-150 ease-out active:scale-[0.96]',
             currentClassIndex === idx
-              ? 'bg-[#163A70] text-[#FFFFFF] shadow-[var(--shadow-btn-navy)]'
-              : 'text-[#475569] hover:text-[#0F172A] hover:bg-[#FFFFFF]/80'
+              ? 'bg-[#292524] text-[#FDFCF9] shadow-[var(--shadow-btn-navy)]'
+              : 'text-[#57534E] hover:text-[#1C1917] hover:bg-[#FDFCF9]/80'
           ]"
         >
           {{ c.nama_kelas }}
@@ -101,43 +101,43 @@
     <!-- Data Table Container -->
     <div class="ui-stagger ui-stagger-3 ui-panel overflow-hidden">
       <div v-if="isLoading" class="p-8 space-y-3">
-        <div v-for="n in 5" :key="n" class="h-12 bg-[#F8FAFC] rounded-[10px] animate-pulse"></div>
+        <div v-for="n in 5" :key="n" class="h-12 bg-[#F7F4ED] rounded-[10px] animate-pulse"></div>
       </div>
 
       <div v-else-if="filteredStudents.length === 0" class="p-14 text-center">
-        <div class="w-12 h-12 mx-auto rounded-[12px] bg-[#EAEFF6] text-[#64748B] flex items-center justify-center mb-3">
+        <div class="w-12 h-12 mx-auto rounded-[12px] bg-[#ECE8DF] text-[#78716C] flex items-center justify-center mb-3">
           <UiIcon name="group_off" :size="24" :weight="500" />
         </div>
-        <p class="text-base font-bold text-[#0F172A]">Belum ada siswa di {{ currentClassName }}</p>
-        <p class="text-sm text-[#475569] mt-1">Tambahkan siswa baru atau pilih kelas lain di atas.</p>
+        <p class="text-base font-bold text-[#1C1917]">Belum ada siswa di {{ currentClassName }}</p>
+        <p class="text-sm text-[#57534E] mt-1">Tambahkan siswa baru atau pilih kelas lain di atas.</p>
       </div>
 
       <div v-else class="overflow-x-auto">
         <table class="w-full text-left border-collapse whitespace-nowrap min-w-max">
           <thead>
-            <tr class="bg-[#F8FAFC] border-b border-black/[0.06]">
-              <th class="px-3 py-3.5 text-xs font-bold text-[#64748B] border-r border-black/[0.06] text-center w-12">#</th>
-              <th class="sticky left-0 z-20 bg-[#F8FAFC] px-4 py-3.5 text-xs font-bold text-[#0F172A] min-w-[200px] border-r border-black/[0.06]">Nama Siswa &amp; Akun Wali</th>
-              <th class="px-3 py-3.5 text-xs font-bold text-[#64748B] text-center w-14" v-for="month in months" :key="month">{{ month }}</th>
+            <tr class="bg-[#F7F4ED] border-b border-black/[0.06]">
+              <th class="px-3 py-3.5 text-xs font-bold text-[#78716C] border-r border-black/[0.06] text-center w-12">#</th>
+              <th class="sticky left-0 z-20 bg-[#F7F4ED] px-4 py-3.5 text-xs font-bold text-[#1C1917] min-w-[200px] border-r border-black/[0.06]">Nama Siswa &amp; Akun Wali</th>
+              <th class="px-3 py-3.5 text-xs font-bold text-[#78716C] text-center w-14" v-for="month in months" :key="month">{{ month }}</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-black/[0.05]">
             <tr
               v-for="(student, index) in filteredStudents"
               :key="student.id"
-              class="hover:bg-[#F8FAFC] transition-colors duration-100 ease-out group"
+              class="hover:bg-[#F7F4ED] transition-colors duration-100 ease-out group"
             >
-              <td class="px-3 py-3.5 text-sm font-mono tabular-nums text-[#64748B] border-r border-black/[0.05] text-center">{{ index + 1 }}</td>
-              <td class="sticky left-0 z-10 bg-[#FFFFFF] group-hover:bg-[#F8FAFC] px-4 py-3.5 text-sm font-semibold text-[#0F172A] border-r border-black/[0.05] transition-colors duration-100 ease-out">
+              <td class="px-3 py-3.5 text-sm font-mono tabular-nums text-[#78716C] border-r border-black/[0.05] text-center">{{ index + 1 }}</td>
+              <td class="sticky left-0 z-10 bg-[#FDFCF9] group-hover:bg-[#F7F4ED] px-4 py-3.5 text-sm font-semibold text-[#1C1917] border-r border-black/[0.05] transition-colors duration-100 ease-out">
                 <div class="flex items-center justify-between gap-3">
                   <div class="min-w-0">
                     <p class="truncate max-w-[180px] sm:max-w-[240px]">{{ student.name }}</p>
-                    <p class="text-xs font-mono text-[#64748B] tabular-nums">
+                    <p class="text-xs font-mono text-[#78716C] tabular-nums">
                       NIS {{ student.nis || '-' }} · {{ student.wali_account ? 'Akun Wali Aktif' : 'Belum Ada Akun Wali' }}
                     </p>
                   </div>
                   <button
-                    class="min-h-[36px] min-w-[36px] rounded-[9px] border border-transparent bg-[#F8FAFC] shadow-[var(--shadow-border)] hover:bg-[#FFFFFF] hover:shadow-[var(--shadow-border-hover)] text-[#1D4ED8] inline-flex items-center justify-center shrink-0 transition-[background-color,box-shadow,transform] duration-150 ease-out active:scale-[0.96]"
+                    class="min-h-[36px] min-w-[36px] rounded-[9px] border border-transparent bg-[#F7F4ED] shadow-[var(--shadow-border)] hover:bg-[#FDFCF9] hover:shadow-[var(--shadow-border-hover)] text-[#A8551E] inline-flex items-center justify-center shrink-0 transition-[background-color,box-shadow,transform] duration-150 ease-out active:scale-[0.96]"
                     aria-label="Detail &amp; Akun Wali Siswa"
                     @click.stop="openModal(student)"
                   >
@@ -147,8 +147,8 @@
               </td>
               <td class="px-2.5 py-3.5 text-center" v-for="(status, mIndex) in student.payments" :key="mIndex">
                 <span class="inline-flex items-center justify-center">
-                  <UiIcon v-if="status" name="check_circle" :size="18" :weight="600" filled class="text-[#1D4ED8]" />
-                  <UiIcon v-else name="cancel" :size="18" :weight="400" class="text-[#94A3B8]" />
+                  <UiIcon v-if="status" name="check_circle" :size="18" :weight="600" filled class="text-[#A8551E]" />
+                  <UiIcon v-else name="cancel" :size="18" :weight="400" class="text-[#A8A29E]" />
                 </span>
               </td>
             </tr>
@@ -160,17 +160,17 @@
     <!-- Info & Provisioning Modal -->
     <div
       v-if="modalStudent"
-      class="fixed inset-0 z-[100] flex items-center justify-center bg-[#0F172A]/45 backdrop-blur-[2px] p-4 overscroll-contain"
+      class="fixed inset-0 z-[100] flex items-center justify-center bg-[#1C1917]/45 backdrop-blur-[2px] p-4 overscroll-contain"
       @click="closeModal"
     >
       <div class="ui-panel-elevated w-full max-w-md overflow-hidden overscroll-contain max-h-[90vh] overflow-y-auto" @click.stop>
         <div class="px-6 py-4 border-b border-black/[0.06] flex justify-between items-center">
           <div>
-            <h3 class="text-base font-bold text-[#0F172A]">{{ modalStudent.name }}</h3>
-            <p class="text-xs text-[#64748B] font-mono tabular-nums">NIS {{ modalStudent.nis || '-' }}</p>
+            <h3 class="text-base font-bold text-[#1C1917]">{{ modalStudent.name }}</h3>
+            <p class="text-xs text-[#78716C] font-mono tabular-nums">NIS {{ modalStudent.nis || '-' }}</p>
           </div>
           <button
-            class="min-h-[38px] min-w-[38px] text-[#64748B] hover:text-[#0F172A] hover:bg-[#EAEFF6] rounded-[9px] flex items-center justify-center transition-[background-color,color,transform] duration-150 ease-out active:scale-[0.96]"
+            class="min-h-[38px] min-w-[38px] text-[#78716C] hover:text-[#1C1917] hover:bg-[#ECE8DF] rounded-[9px] flex items-center justify-center transition-[background-color,color,transform] duration-150 ease-out active:scale-[0.96]"
             aria-label="Tutup modal"
             @click="closeModal"
           >
@@ -180,42 +180,42 @@
 
         <div class="p-6 space-y-4 text-sm">
           <div class="flex justify-between gap-3">
-            <span class="text-[#64748B]">Blok / Alamat</span>
-            <span class="font-semibold text-[#0F172A] text-right">{{ modalStudent.blok || '-' }}</span>
+            <span class="text-[#78716C]">Blok / Alamat</span>
+            <span class="font-semibold text-[#1C1917] text-right">{{ modalStudent.blok || '-' }}</span>
           </div>
           <div class="flex justify-between gap-3">
-            <span class="text-[#64748B]">Nama Wali</span>
-            <span class="font-semibold text-[#0F172A] text-right">{{ modalStudent.waliName || '-' }}</span>
+            <span class="text-[#78716C]">Nama Wali</span>
+            <span class="font-semibold text-[#1C1917] text-right">{{ modalStudent.waliName || '-' }}</span>
           </div>
           <div class="flex justify-between gap-3">
-            <span class="text-[#64748B]">No WhatsApp</span>
+            <span class="text-[#78716C]">No WhatsApp</span>
             <a
               v-if="modalStudent.phone"
-              class="text-[#1D4ED8] font-semibold inline-flex items-center gap-1.5 hover:underline"
+              class="text-[#A8551E] font-semibold inline-flex items-center gap-1.5 hover:underline"
               :href="'https://wa.me/' + modalStudent.phone.replace(/\D/g, '')"
               target="_blank"
             >
               <span class="font-mono tabular-nums">{{ modalStudent.phone }}</span>
               <UiIcon name="open_in_new" :size="14" :weight="600" />
             </a>
-            <span v-else class="text-[#64748B]">-</span>
+            <span v-else class="text-[#78716C]">-</span>
           </div>
 
           <!-- Akun Portal Wali -->
-          <div class="p-4 rounded-[14px] bg-[#F8FAFC] shadow-[inset_0_1px_2px_0_oklch(0.22_0.015_65_/_0.05),0_0_0_1px_oklch(0.22_0.015_65_/_0.07)] space-y-3">
+          <div class="p-4 rounded-[14px] bg-[#F7F4ED] shadow-[inset_0_1px_2px_0_oklch(0.22_0.015_65_/_0.05),0_0_0_1px_oklch(0.22_0.015_65_/_0.07)] space-y-3">
             <div class="flex items-center justify-between gap-2">
-              <span class="text-xs font-bold text-[#0F172A]">Akun Portal Orang Tua</span>
+              <span class="text-xs font-bold text-[#1C1917]">Akun Portal Orang Tua</span>
               <span
                 class="text-xs font-semibold px-2.5 py-0.5 rounded-[7px]"
-                :class="modalStudent.wali_account ? 'bg-[#EFF6FF] text-[#1D4ED8]' : 'bg-[#FAF4E4] text-[#9A6B16]'"
+                :class="modalStudent.wali_account ? 'bg-[#F9EFE7] text-[#A8551E]' : 'bg-[#FAF4E4] text-[#9A6B16]'"
               >
                 {{ modalStudent.wali_account ? 'Aktif' : 'Belum Dibuat' }}
               </span>
             </div>
-            <p v-if="modalStudent.wali_account" class="text-xs font-mono text-[#475569]">
+            <p v-if="modalStudent.wali_account" class="text-xs font-mono text-[#57534E]">
               Login: {{ modalStudent.wali_account.email }} (atau NIS {{ modalStudent.nis }})
             </p>
-            <p v-if="provisionedCredential" class="text-xs font-mono bg-[#FFFFFF] shadow-[var(--shadow-border)] text-[#1E3A8A] p-3 rounded-[10px] leading-relaxed">
+            <p v-if="provisionedCredential" class="text-xs font-mono bg-[#FDFCF9] shadow-[var(--shadow-border)] text-[#7C3A10] p-3 rounded-[10px] leading-relaxed">
               Siap digunakan!<br>
               Email: <strong>{{ provisionedCredential.email }}</strong> · NIS: <strong>{{ provisionedCredential.nis }}</strong> · Sandi: <strong>{{ provisionedCredential.password }}</strong>
             </p>
@@ -247,15 +247,15 @@
     <!-- Delete Confirmation Modal -->
     <div
       v-if="studentToDelete"
-      class="fixed inset-0 z-[110] flex items-center justify-center bg-[#0F172A]/50 backdrop-blur-[2px] p-4 overscroll-contain"
+      class="fixed inset-0 z-[110] flex items-center justify-center bg-[#1C1917]/50 backdrop-blur-[2px] p-4 overscroll-contain"
       @click="cancelDelete"
     >
       <div class="ui-panel-elevated w-full max-w-sm p-6 text-center overscroll-contain" @click.stop>
-        <div class="mx-auto w-14 h-14 bg-[#FFF1F2] shadow-[var(--shadow-btn-danger)] rounded-full flex items-center justify-center mb-4 text-[#9F1239]">
+        <div class="mx-auto w-14 h-14 bg-[#FDF2F4] shadow-[var(--shadow-btn-danger)] rounded-full flex items-center justify-center mb-4 text-[#9F1239]">
           <UiIcon name="warning" :size="24" :weight="600" />
         </div>
-        <h3 class="text-lg font-bold text-[#0F172A]">Hapus Siswa?</h3>
-        <p class="text-sm text-[#475569] mt-2 mb-6 leading-relaxed">
+        <h3 class="text-lg font-bold text-[#1C1917]">Hapus Siswa?</h3>
+        <p class="text-sm text-[#57534E] mt-2 mb-6 leading-relaxed">
           Data <strong>{{ studentToDelete.name }}</strong> beserta seluruh catatan infaknya akan dihapus permanen.
         </p>
         <div class="flex gap-3">

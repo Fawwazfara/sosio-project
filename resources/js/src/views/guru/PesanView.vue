@@ -1,20 +1,20 @@
 <template>
   <div class="flex-1 flex flex-col min-w-0 h-full overflow-hidden relative pb-20 md:pb-0">
     <main class="w-full max-w-4xl mx-auto md:px-6 lg:px-8 md:py-6 flex flex-1 h-full overflow-hidden">
-      <div class="flex w-full h-full bg-[#FFFFFF] md:rounded-[18px] border border-transparent shadow-[var(--shadow-border)] overflow-hidden relative flex-col">
+      <div class="flex w-full h-full bg-[#FDFCF9] md:rounded-[18px] border border-transparent shadow-[var(--shadow-border)] overflow-hidden relative flex-col">
 
         <!-- Chat Header -->
-        <div class="h-[68px] px-4 sm:px-5 bg-[#FFFFFF] border-b border-black/[0.07] flex items-center gap-3 shrink-0" v-if="adminProfile">
-          <div class="w-10 h-10 rounded-[10px] bg-[#163A70] text-white flex items-center justify-center shrink-0">
+        <div class="h-[68px] px-4 sm:px-5 bg-[#FDFCF9] border-b border-black/[0.07] flex items-center gap-3 shrink-0" v-if="adminProfile">
+          <div class="w-10 h-10 rounded-[10px] bg-[#292524] text-white flex items-center justify-center shrink-0">
             <UiIcon name="admin_panel_settings" :size="19" :weight="600" />
           </div>
 
           <div class="flex-1 min-w-0">
-            <h1 class="text-sm sm:text-base font-bold text-[#0F172A] truncate">{{ adminProfile.name }} (Tata Usaha)</h1>
+            <h1 class="text-sm sm:text-base font-bold text-[#1C1917] truncate">{{ adminProfile.name }} (Tata Usaha)</h1>
           </div>
 
           <button
-            class="min-h-[40px] min-w-[40px] text-[#64748B] hover:text-[#0F172A] rounded-[10px] hover:bg-[#EAEFF6] flex items-center justify-center transition-[background-color,color,transform] duration-150 ease-out active:scale-[0.96]"
+            class="min-h-[40px] min-w-[40px] text-[#78716C] hover:text-[#1C1917] rounded-[10px] hover:bg-[#ECE8DF] flex items-center justify-center transition-[background-color,color,transform] duration-150 ease-out active:scale-[0.96]"
             aria-label="Muat ulang percakapan"
             @click="fetchConversation(adminProfile.id, false)"
           >
@@ -22,12 +22,12 @@
           </button>
         </div>
 
-        <div v-else class="h-[68px] flex items-center px-5 bg-[#FFFFFF] border-b border-black/[0.07] text-sm text-[#64748B]">
+        <div v-else class="h-[68px] flex items-center px-5 bg-[#FDFCF9] border-b border-black/[0.07] text-sm text-[#78716C]">
           Memuat profil Admin...
         </div>
 
         <!-- Messages -->
-        <div class="flex-1 overflow-y-auto overscroll-contain p-4 sm:p-5 flex flex-col gap-3.5 bg-[#F2F4F8]">
+        <div class="flex-1 overflow-y-auto overscroll-contain p-4 sm:p-5 flex flex-col gap-3.5 bg-[#F5F3EE]">
           <div
             v-for="(msg, idx) in currentMessages"
             :key="msg.id || idx"
@@ -37,15 +37,15 @@
               :class="[
                 'max-w-[85%] md:max-w-[72%] rounded-[14px] px-4 py-3 text-sm',
                 msg.isSender
-                  ? 'bg-[#163A70] text-white shadow-[0_2px_6px_-1px_oklch(0.2_0.02_55_/_0.22)]'
-                  : 'bg-[#FFFFFF] border border-transparent shadow-[var(--shadow-border)] text-[#0F172A]'
+                  ? 'bg-[#292524] text-white shadow-[0_2px_6px_-1px_oklch(0.2_0.02_55_/_0.22)]'
+                  : 'bg-[#FDFCF9] border border-transparent shadow-[var(--shadow-border)] text-[#1C1917]'
               ]"
             >
               <p class="leading-relaxed">{{ msg.text }}</p>
               <p
                 :class="[
                   'text-xs font-mono text-right mt-1.5 flex items-center justify-end gap-1 tabular-nums',
-                  msg.isSender ? 'text-[#93C5FD]' : 'text-[#64748B]'
+                  msg.isSender ? 'text-[#E7C0A1]' : 'text-[#78716C]'
                 ]"
               >
                 <span>{{ msg.time }}</span>
@@ -54,7 +54,7 @@
             </div>
           </div>
 
-          <div v-if="currentMessages.length === 0 && adminProfile && !isFetchingChat" class="text-center py-10 text-sm text-[#64748B]">
+          <div v-if="currentMessages.length === 0 && adminProfile && !isFetchingChat" class="text-center py-10 text-sm text-[#78716C]">
             Belum ada percakapan dengan Admin. Kirim pesan di bawah jika butuh koordinasi kelas.
           </div>
 
@@ -62,7 +62,7 @@
         </div>
 
         <!-- Input Footer -->
-        <div class="p-3.5 bg-[#FFFFFF] border-t border-black/[0.07] shrink-0">
+        <div class="p-3.5 bg-[#FDFCF9] border-t border-black/[0.07] shrink-0">
           <form @submit.prevent="sendMessage" class="flex items-center gap-2.5">
             <input
               v-model="newMessage"

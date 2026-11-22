@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portal Infak — Madrasah As-Sajjad</title>
-    <meta name="theme-color" content="#163A70">
+    <meta name="theme-color" content="#292524">
     <meta name="description" content="Sistem Informasi Pencatatan & Pembayaran Infak Madrasah As-Sajjad">
     <link rel="manifest" href="/manifest.json">
     <link rel="icon" type="image/png" href="/icon-192.png">
@@ -14,7 +14,7 @@
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600;700&family=Onest:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-[#F2F4F8] text-[#0F172A] antialiased selection:bg-[#1D4ED8]/15 selection:text-[#1E3A8A]">
+<body class="bg-[#F5F3EE] text-[#1C1917] antialiased selection:bg-[#A8551E]/15 selection:text-[#7C3A10]">
     <div id="app"></div>
 
     <script>

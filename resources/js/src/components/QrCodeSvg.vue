@@ -1,5 +1,5 @@
 <template>
-  <div class="inline-flex items-center justify-center bg-[#FFFFFF] p-3 rounded-xl border border-[#E2E8F0]" v-html="svgMarkup"></div>
+  <div class="inline-flex items-center justify-center bg-[#FDFCF9] p-3 rounded-xl border border-[#E6E1D6]" v-html="svgMarkup"></div>
 </template>
 
 <script setup>
@@ -31,8 +31,8 @@ watchEffect(async () => {
       margin: 1,
       errorCorrectionLevel: 'M',
       color: {
-        dark: '#0F172A',
-        light: '#FFFFFF',
+        dark: '#1C1917',
+        light: '#FDFCF9',
       },
     });
   } catch (err) {

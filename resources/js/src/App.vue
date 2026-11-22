@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-[#F2F4F8] text-[#0F172A]">
+  <div class="min-h-screen bg-[#F5F3EE] text-[#1C1917]">
     <ToastRegion />
     <router-view></router-view>
   </div>

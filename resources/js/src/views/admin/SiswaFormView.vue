@@ -5,12 +5,12 @@
       <div>
         <router-link
           to="/admin/siswa"
-          class="text-sm font-semibold text-[#475569] hover:text-[#0F172A] inline-flex items-center gap-1.5 mb-2 transition-[color,transform] duration-150 ease-out active:scale-[0.97]"
+          class="text-sm font-semibold text-[#57534E] hover:text-[#1C1917] inline-flex items-center gap-1.5 mb-2 transition-[color,transform] duration-150 ease-out active:scale-[0.97]"
         >
           <UiIcon name="arrow_back" :size="16" :weight="600" directional />
           <span>Kembali ke Daftar Siswa</span>
         </router-link>
-        <h1 class="text-2xl sm:text-[26px] font-bold text-[#0F172A] tracking-tight">
+        <h1 class="text-2xl sm:text-[26px] font-bold text-[#1C1917] tracking-tight">
           {{ isEdit ? 'Ubah Data Siswa &amp; Status Infak' : 'Tambah Data Siswa Baru' }}
         </h1>
       </div>
@@ -19,9 +19,9 @@
     <div
       v-if="isSuccess"
       role="status"
-      class="rounded-[14px] border border-transparent bg-[#EFF6FF] shadow-[0_0_0_1px_oklch(0.55_0.13_42_/_0.22)] p-5 flex items-center gap-3 text-[#1E3A8A]"
+      class="rounded-[14px] border border-transparent bg-[#F9EFE7] shadow-[0_0_0_1px_oklch(0.55_0.13_42_/_0.22)] p-5 flex items-center gap-3 text-[#7C3A10]"
     >
-      <UiIcon name="check_circle" :size="22" :weight="600" filled class="text-[#1D4ED8]" />
+      <UiIcon name="check_circle" :size="22" :weight="600" filled class="text-[#A8551E]" />
       <p class="text-sm font-semibold">Data siswa berhasil disimpan. Mengalihkan kembali ke daftar...</p>
     </div>
 
@@ -29,57 +29,57 @@
       <!-- Left: Biodata & Kontak Wali -->
       <div class="lg:col-span-7 flex flex-col gap-6">
         <section class="ui-panel-padded space-y-5">
-          <h2 class="text-base font-bold text-[#0F172A] pb-3 border-b border-black/[0.06]">Biodata Siswa</h2>
+          <h2 class="text-base font-bold text-[#1C1917] pb-3 border-b border-black/[0.06]">Biodata Siswa</h2>
 
           <div class="flex flex-col gap-1.5">
-            <label class="text-xs font-semibold text-[#334155]" for="namaLengkap">Nama Lengkap Siswa</label>
+            <label class="text-xs font-semibold text-[#44403C]" for="namaLengkap">Nama Lengkap Siswa</label>
             <input id="namaLengkap" v-model="form.namaLengkap" type="text" required placeholder="Contoh: Ahmad Fauzan" class="ui-input">
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div class="flex flex-col gap-1.5">
-              <label class="text-xs font-semibold text-[#334155]" for="kelasId">Kelas</label>
+              <label class="text-xs font-semibold text-[#44403C]" for="kelasId">Kelas</label>
               <div class="relative">
                 <select id="kelasId" v-model="form.kelas_id" required class="ui-select">
                   <option value="" disabled>Pilih Kelas</option>
                   <option v-for="k in kelasi" :key="k.id" :value="k.id">{{ k.nama_kelas }}</option>
                 </select>
-                <UiIcon name="expand_more" :size="17" :weight="600" class="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-[#64748B]" />
+                <UiIcon name="expand_more" :size="17" :weight="600" class="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-[#78716C]" />
               </div>
             </div>
             <div class="flex flex-col gap-1.5">
-              <label class="text-xs font-semibold text-[#334155]" for="blok">Blok / RT-RW</label>
+              <label class="text-xs font-semibold text-[#44403C]" for="blok">Blok / RT-RW</label>
               <input id="blok" v-model="form.blok" type="text" placeholder="Contoh: Blok B2 / RT 04" class="ui-input">
             </div>
           </div>
 
           <div class="flex flex-col gap-1.5">
-            <label class="text-xs font-semibold text-[#334155]" for="alamat">Alamat Lengkap</label>
+            <label class="text-xs font-semibold text-[#44403C]" for="alamat">Alamat Lengkap</label>
             <textarea id="alamat" v-model="form.alamat" rows="3" placeholder="Alamat tempat tinggal siswa" class="ui-input min-h-[88px] py-3"></textarea>
           </div>
         </section>
 
         <section class="ui-panel-padded space-y-5">
-          <h2 class="text-base font-bold text-[#0F172A] pb-3 border-b border-black/[0.06]">Kontak Orang Tua / Wali</h2>
+          <h2 class="text-base font-bold text-[#1C1917] pb-3 border-b border-black/[0.06]">Kontak Orang Tua / Wali</h2>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div class="flex flex-col gap-1.5">
-              <label class="text-xs font-semibold text-[#334155]" for="namaWali1">Nama Wali 1 (Utama)</label>
+              <label class="text-xs font-semibold text-[#44403C]" for="namaWali1">Nama Wali 1 (Utama)</label>
               <input id="namaWali1" v-model="form.namaWali1" type="text" placeholder="Nama ayah / ibu" class="ui-input">
             </div>
             <div class="flex flex-col gap-1.5">
-              <label class="text-xs font-semibold text-[#334155]" for="waWali1">No WhatsApp Wali 1</label>
+              <label class="text-xs font-semibold text-[#44403C]" for="waWali1">No WhatsApp Wali 1</label>
               <input id="waWali1" v-model="form.waWali1" type="tel" placeholder="08xxxxxxxxxx" class="ui-input font-mono tabular-nums">
             </div>
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-black/[0.06]">
             <div class="flex flex-col gap-1.5">
-              <label class="text-xs font-semibold text-[#334155]" for="namaWali2">Nama Wali 2 (Cadangan)</label>
+              <label class="text-xs font-semibold text-[#44403C]" for="namaWali2">Nama Wali 2 (Cadangan)</label>
               <input id="namaWali2" v-model="form.namaWali2" type="text" placeholder="Opsional" class="ui-input">
             </div>
             <div class="flex flex-col gap-1.5">
-              <label class="text-xs font-semibold text-[#334155]" for="waWali2">No WhatsApp Wali 2</label>
+              <label class="text-xs font-semibold text-[#44403C]" for="waWali2">No WhatsApp Wali 2</label>
               <input id="waWali2" v-model="form.waWali2" type="tel" placeholder="Opsional" class="ui-input font-mono tabular-nums">
             </div>
           </div>
@@ -91,10 +91,10 @@
         <section v-if="isEdit" class="ui-panel-padded space-y-4">
           <div class="flex items-center justify-between gap-2 pb-3 border-b border-black/[0.06]">
             <div>
-              <h2 class="text-base font-bold text-[#0F172A]">Status Infak {{ academicYearLabel }}</h2>
-              <p class="text-xs text-[#64748B] mt-0.5">Ketuk bulan untuk menandai/ubah, atau ketuk ikon opsi untuk pindah bulan.</p>
+              <h2 class="text-base font-bold text-[#1C1917]">Status Infak {{ academicYearLabel }}</h2>
+              <p class="text-xs text-[#78716C] mt-0.5">Ketuk bulan untuk menandai/ubah, atau ketuk ikon opsi untuk pindah bulan.</p>
             </div>
-            <span class="text-xs font-mono font-bold px-2.5 py-1 rounded-[8px] bg-[#EFF6FF] text-[#1D4ED8] tabular-nums">
+            <span class="text-xs font-mono font-bold px-2.5 py-1 rounded-[8px] bg-[#F9EFE7] text-[#A8551E] tabular-nums">
               {{ paidMonthsCount }}/12
             </span>
           </div>
@@ -111,12 +111,12 @@
                 :class="[
                   'min-h-[54px] px-2.5 py-2 rounded-[10px] border border-transparent text-center flex flex-col items-center justify-center transition-[background-color,color,box-shadow,transform] duration-150 ease-out active:scale-[0.96]',
                   cell.draftPaid === true
-                    ? 'bg-[#1D4ED8] text-[#FFFFFF] shadow-[var(--shadow-btn-primary)]'
+                    ? 'bg-[#A8551E] text-[#FDFCF9] shadow-[var(--shadow-btn-primary)]'
                     : cell.draftPaid === false
-                      ? 'bg-[#FFF1F2] text-[#9F1239] shadow-[var(--shadow-btn-danger)]'
+                      ? 'bg-[#FDF2F4] text-[#9F1239] shadow-[var(--shadow-btn-danger)]'
                       : cell.paid
-                        ? 'bg-[#EFF6FF] text-[#1E3A8A] shadow-[inset_0_0_0_1px_oklch(0.55_0.13_42_/_0.22)]'
-                        : 'bg-[#F8FAFC] text-[#475569] shadow-[var(--shadow-border)] hover:bg-[#FFFFFF] hover:shadow-[var(--shadow-border-hover)]'
+                        ? 'bg-[#F9EFE7] text-[#7C3A10] shadow-[inset_0_0_0_1px_oklch(0.55_0.13_42_/_0.22)]'
+                        : 'bg-[#F7F4ED] text-[#57534E] shadow-[var(--shadow-border)] hover:bg-[#FDFCF9] hover:shadow-[var(--shadow-border-hover)]'
                 ]"
               >
                 <span class="text-xs font-bold">{{ cell.short }}</span>
@@ -128,7 +128,7 @@
                 v-if="cell.paid"
                 type="button"
                 @click="openMonthModal(cell)"
-                class="text-xs text-[#1D4ED8] hover:underline py-0.5 font-medium"
+                class="text-xs text-[#A8551E] hover:underline py-0.5 font-medium"
               >
                 Opsi
               </button>
@@ -153,15 +153,15 @@
     </form>
 
     <!-- Month Option Modal -->
-    <div v-if="showMonthModal && activeModalMonth" class="fixed inset-0 z-50 flex items-center justify-center bg-[#0F172A]/45 backdrop-blur-[2px] p-4 overscroll-contain" @click="closeMonthModal">
+    <div v-if="showMonthModal && activeModalMonth" class="fixed inset-0 z-50 flex items-center justify-center bg-[#1C1917]/45 backdrop-blur-[2px] p-4 overscroll-contain" @click="closeMonthModal">
       <div class="ui-panel-elevated w-full max-w-sm p-6 space-y-4 overscroll-contain" @click.stop>
         <div class="flex items-center justify-between">
-          <h3 class="text-base font-bold text-[#0F172A]">Opsi Bulan {{ monthFullName(activeModalMonth.short) }}</h3>
+          <h3 class="text-base font-bold text-[#1C1917]">Opsi Bulan {{ monthFullName(activeModalMonth.short) }}</h3>
           <button
             type="button"
             @click="closeMonthModal"
             aria-label="Tutup modal"
-            class="min-h-[38px] min-w-[38px] rounded-[9px] text-[#64748B] hover:text-[#0F172A] hover:bg-[#EAEFF6] flex items-center justify-center transition-[background-color,color,transform] duration-150 ease-out active:scale-[0.96]"
+            class="min-h-[38px] min-w-[38px] rounded-[9px] text-[#78716C] hover:text-[#1C1917] hover:bg-[#ECE8DF] flex items-center justify-center transition-[background-color,color,transform] duration-150 ease-out active:scale-[0.96]"
           >
             <UiIcon name="close" :size="18" :weight="600" />
           </button>
@@ -178,8 +178,8 @@
           </button>
         </div>
 
-        <div v-if="isMovingMonth" class="p-4 rounded-[12px] bg-[#F8FAFC] shadow-[inset_0_1px_2px_0_oklch(0.22_0.015_65_/_0.05),0_0_0_1px_oklch(0.22_0.015_65_/_0.07)] space-y-3">
-          <label class="block text-xs font-semibold text-[#0F172A]" for="moveMonthSelect">Pilih bulan tujuan:</label>
+        <div v-if="isMovingMonth" class="p-4 rounded-[12px] bg-[#F7F4ED] shadow-[inset_0_1px_2px_0_oklch(0.22_0.015_65_/_0.05),0_0_0_1px_oklch(0.22_0.015_65_/_0.07)] space-y-3">
+          <label class="block text-xs font-semibold text-[#1C1917]" for="moveMonthSelect">Pilih bulan tujuan:</label>
           <div class="relative">
             <select id="moveMonthSelect" v-model="targetMoveMonth" class="ui-select">
               <option value="" disabled>Pilih bulan tujuan</option>
@@ -187,7 +187,7 @@
                 {{ m }}
               </option>
             </select>
-            <UiIcon name="expand_more" :size="17" :weight="600" class="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-[#64748B]" />
+            <UiIcon name="expand_more" :size="17" :weight="600" class="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-[#78716C]" />
           </div>
           <div class="flex justify-end gap-2">
             <button type="button" @click="isMovingMonth = false" class="ui-btn-secondary">Batal</button>
