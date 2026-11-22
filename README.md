@@ -1,3 +1,31 @@
+## Setup Lokal Setelah `git clone`
+
+1. Install dependensi PHP & JS:
+   ```bash
+   composer install
+   npm install
+   ```
+2. Salin `.env.example` menjadi `.env` lalu atur koneksi database (`mysql` atau `sqlite` jika ekstensi `pdo_sqlite` aktif):
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
+3. Jalankan migrasi **dan seeder** agar akun login demo terbuat:
+   ```bash
+   php artisan migrate --seed
+   ```
+4. Build asset frontend & jalankan server:
+   ```bash
+   npm run build
+   php artisan serve
+   ```
+5. Akun login cepat:
+   - **Admin**: `admin` / `admin`
+   - **Guru**: `guru` / `guru`
+   - **Wali**: `wali` / `wali` (atau NIS `2026099` / `wali`)
+
+---
+
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
 <p align="center">
