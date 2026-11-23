@@ -42,11 +42,18 @@ return [
     ],
 
     'payment' => [
-        'driver' => env('PAYMENT_DRIVER', 'sandbox'),
-        'sandbox' => (bool) env('PAYMENT_SANDBOX', true),
+        'driver' => env('PAYMENT_DRIVER', env('MIDTRANS_SERVER_KEY') ? 'midtrans' : 'sandbox'),
+        'sandbox' => (bool) env('PAYMENT_SANDBOX', !env('MIDTRANS_IS_PRODUCTION', false)),
         'merchant_name' => env('PAYMENT_MERCHANT_NAME', 'MADRASAH AS-SAJJAAD'),
         'merchant_city' => env('PAYMENT_MERCHANT_CITY', 'INDONESIA'),
         'nmid' => env('PAYMENT_NMID', 'ID1026000881920'),
+    ],
+
+    'midtrans' => [
+        'server_key' => env('MIDTRANS_SERVER_KEY', ''),
+        'client_key' => env('MIDTRANS_CLIENT_KEY', ''),
+        'is_production' => (bool) env('MIDTRANS_IS_PRODUCTION', false),
+        'qris_acquirer' => env('MIDTRANS_QRIS_ACQUIRER', 'gopay'),
     ],
 
 ];

@@ -23,6 +23,10 @@ class Pembayaran extends Model
         'nominal_per_bulan',
         'total_nominal',
         'qr_payload',
+        'gateway_transaction_id',
+        'qr_image_url',
+        'gateway_status',
+        'gateway_response',
         'catatan',
         'expired_at',
         'paid_at',
@@ -32,6 +36,7 @@ class Pembayaran extends Model
     {
         return [
             'bulan_list' => 'array',
+            'gateway_response' => 'array',
             'expired_at' => 'datetime',
             'paid_at' => 'datetime',
         ];

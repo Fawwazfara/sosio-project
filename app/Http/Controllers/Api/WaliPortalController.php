@@ -128,7 +128,10 @@ class WaliPortalController extends Controller
                 'role' => $user->role,
             ],
             'academic_year' => $tahun . '/' . ($tahun + 1),
-            'sandbox_enabled' => (bool) config('services.payment.sandbox', true),
+            'payment_driver' => app(PaymentGatewayService::class)->resolveDriver(),
+            'sandbox_enabled' => app(PaymentGatewayService::class)->resolveDriver() === 'midtrans'
+                ? !config('services.midtrans.is_production', false)
+                : (bool) config('services.payment.sandbox', true),
             'students' => $studentsData,
         ]);
     }
@@ -217,11 +220,23 @@ class WaliPortalController extends Controller
         ]);
 
         if ($request->metode === 'online') {
-            $charge = $gateway->createQrisCharge($pembayaran);
-            $pembayaran->update([
-                'qr_payload' => $charge['qr_payload'],
-                'expired_at' => $charge['expired_at'],
-            ]);
+            try {
+                $charge = $gateway->createQrisCharge($pembayaran);
+                $pembayaran->update([
+                    'channel' => $charge['channel'] ?? 'qris_sandbox',
+                    'qr_payload' => $charge['qr_payload'] ?? null,
+                    'qr_image_url' => $charge['qr_image_url'] ?? null,
+                    'gateway_transaction_id' => $charge['gateway_transaction_id'] ?? null,
+                    'gateway_status' => $charge['gateway_status'] ?? 'pending',
+                    'gateway_response' => $charge['gateway_response'] ?? null,
+                    'expired_at' => $charge['expired_at'] ?? now()->addMinutes(15),
+                ]);
+            } catch (\Throwable $e) {
+                $pembayaran->delete();
+                return response()->json([
+                    'message' => 'Gagal membuat tagihan QRIS: ' . $e->getMessage(),
+                ], 422);
+            }
         }
 
         $pembayaran->load(['siswa', 'kelas.wali_kelas']);
@@ -232,6 +247,27 @@ class WaliPortalController extends Controller
                 : 'Pengajuan bayar offline ke Wali Kelas berhasil dicatat. Silakan serahkan uang tunai saat bertemu Wali Kelas.',
             'pembayaran' => $this->formatPayment($pembayaran),
         ], 201);
+    }
+
+    public function checkStatus(Request $request, $id, PaymentGatewayService $gateway)
+    {
+        $user = $request->user();
+        $pembayaran = Pembayaran::with(['siswa', 'kelas.wali_kelas', 'confirmedBy'])
+            ->where('id', $id)
+            ->when($user->role !== 'admin', fn ($q) => $q->where('wali_user_id', $user->id))
+            ->firstOrFail();
+
+        if ($pembayaran->status !== 'paid' && str_starts_with((string) $pembayaran->channel, 'midtrans')) {
+            try {
+                $pembayaran = $gateway->syncMidtransStatus($pembayaran);
+            } catch (\Throwable) {
+                // Kembalikan status terakhir dari DB jika koneksi gateway sedang lambat
+            }
+        }
+
+        return response()->json([
+            'pembayaran' => $this->formatPayment($pembayaran),
+        ]);
     }
 
     public function simulateSandboxPay(Request $request, $id, PaymentGatewayService $gateway)
@@ -262,7 +298,7 @@ class WaliPortalController extends Controller
         ]);
     }
 
-    public function cancelPayment(Request $request, $id)
+    public function cancelPayment(Request $request, $id, PaymentGatewayService $gateway)
     {
         $user = $request->user();
         $pembayaran = Pembayaran::where('id', $id)
@@ -273,6 +309,7 @@ class WaliPortalController extends Controller
             return response()->json(['message' => 'Pembayaran yang sudah lunas tidak dapat dibatalkan.'], 422);
         }
 
+        $gateway->cancelMidtransOrder($pembayaran);
         $pembayaran->update(['status' => 'cancelled']);
 
         return response()->json(['message' => 'Pengajuan pembayaran dibatalkan.']);
@@ -320,6 +357,8 @@ class WaliPortalController extends Controller
             'nominal_per_bulan' => (int) $p->nominal_per_bulan,
             'total_nominal' => (int) $p->total_nominal,
             'qr_payload' => $p->qr_payload,
+            'qr_image_url' => $p->qr_image_url,
+            'gateway_status' => $p->gateway_status,
             'catatan' => $p->catatan,
             'expired_at' => $p->expired_at?->toIso8601String(),
             'paid_at' => $p->paid_at?->toIso8601String(),

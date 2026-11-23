@@ -92,10 +92,18 @@
               </div>
 
               <div class="bg-[#FDFCF9] p-3 rounded-[14px] shadow-[var(--shadow-border)]">
-                <QrCodeSvg :value="activeTransaction.qr_payload || activeTransaction.kode_referensi" :size="208" />
+                <QrCodeSvg v-if="activeTransaction.qr_payload" :value="activeTransaction.qr_payload" :size="208" />
+                <img
+                  v-else-if="activeTransaction.qr_image_url"
+                  :src="activeTransaction.qr_image_url"
+                  alt="Barcode QRIS Midtrans"
+                  class="w-[208px] h-[208px] object-contain"
+                />
               </div>
 
-              <p class="text-xs font-mono text-[#78716C] mt-4 tabular-nums">NMID: ID1026000881920</p>
+              <p class="text-xs font-mono text-[#78716C] mt-4 tabular-nums">
+                {{ isMidtransTx ? 'Powered by Midtrans QRIS' : 'NMID: ID1026000881920' }}
+              </p>
               <p class="text-2xl font-extrabold font-mono tabular-nums text-[#1C1917] mt-1">
                 Rp {{ formatRupiah(activeTransaction.total_nominal) }}
               </p>
@@ -104,9 +112,89 @@
               </p>
             </div>
 
-            <!-- Sandbox Simulation Panel -->
+            <!-- Midtrans Live / Sandbox Panel -->
             <div
-              v-if="sandboxEnabled"
+              v-if="isMidtransTx"
+              class="mt-6 w-full bg-[#F9EFE7] rounded-[14px] p-5 text-left border border-transparent shadow-[0_0_0_1px_oklch(0.55_0.13_42_/_0.22)]"
+            >
+              <div class="flex items-start gap-3">
+                <div class="w-9 h-9 rounded-[9px] bg-[#F2DFCF] text-[#A8551E] flex items-center justify-center shrink-0">
+                  <UiIcon :name="sandboxEnabled ? 'science' : 'qr_code_scanner'" :size="18" :weight="600" />
+                </div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex flex-wrap items-center gap-2">
+                    <p class="text-sm font-bold text-[#1C1917]">
+                      {{ sandboxEnabled ? 'Midtrans QRIS Sandbox Aktif' : 'Menunggu Pembayaran QRIS' }}
+                    </p>
+                    <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-[#FDFCF9] text-[#7C3A10]">
+                      Cek otomatis aktif
+                    </span>
+                  </div>
+                  <p class="text-xs text-[#57534E] mt-1 leading-relaxed">
+                    <template v-if="sandboxEnabled">
+                      Untuk uji coba tanpa uang asli, salin URL QR di bawah lalu bayar di
+                      <a href="https://simulator.sandbox.midtrans.com/v2/qris/index" target="_blank" rel="noopener" class="font-semibold text-[#A8551E] underline">Simulator Midtrans</a>,
+                      kemudian klik Cek Status (atau tunggu pembaruan otomatis).
+                    </template>
+                    <template v-else>
+                      Status akan otomatis berubah menjadi Lunas setelah Anda menyelesaikan pembayaran di aplikasi e-wallet atau m-banking.
+                    </template>
+                  </p>
+
+                  <div v-if="sandboxEnabled && activeTransaction.qr_image_url" class="mt-3 p-2.5 rounded-[10px] bg-[#FDFCF9] border border-[#E6E1D6] flex items-center justify-between gap-2">
+                    <span class="text-[11px] font-mono text-[#57534E] truncate">{{ activeTransaction.qr_image_url }}</span>
+                    <button
+                      type="button"
+                      @click="copyQrUrl"
+                      class="px-2.5 py-1.5 rounded-[8px] bg-[#ECE8DF] hover:bg-[#E2DDD2] text-[#1C1917] text-xs font-semibold shrink-0"
+                    >
+                      Salin URL QR
+                    </button>
+                  </div>
+
+                  <div class="flex flex-wrap items-center gap-3 mt-4">
+                    <button
+                      @click="checkPaymentStatus(false)"
+                      :disabled="isActionLoading"
+                      class="ui-btn-primary ui-btn-icon-l"
+                    >
+                      <UiIcon v-if="isActionLoading" name="progress_activity" :size="17" :weight="600" class="animate-spin" />
+                      <UiIcon v-else name="sync" :size="17" :weight="600" />
+                      <span>{{ isActionLoading ? 'Mengecek...' : 'Cek Status Pembayaran' }}</span>
+                    </button>
+
+                    <template v-if="!confirmingCancel">
+                      <button
+                        @click="confirmingCancel = true"
+                        :disabled="isActionLoading"
+                        class="ui-btn-secondary"
+                      >
+                        Batalkan Tagihan
+                      </button>
+                    </template>
+                    <template v-else>
+                      <button
+                        @click="cancelTransaction"
+                        :disabled="isActionLoading"
+                        class="ui-btn-danger"
+                      >
+                        Ya, Batalkan Sekarang
+                      </button>
+                      <button
+                        @click="confirmingCancel = false"
+                        class="ui-btn-secondary"
+                      >
+                        Batal
+                      </button>
+                    </template>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Local Sandbox Simulation Panel (when MIDTRANS_SERVER_KEY is not set) -->
+            <div
+              v-else-if="sandboxEnabled"
               class="mt-6 w-full bg-[#F9EFE7] rounded-[14px] p-5 text-left border border-transparent shadow-[0_0_0_1px_oklch(0.55_0.13_42_/_0.22)]"
             >
               <div class="flex items-start gap-3">
@@ -517,7 +605,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, onMounted } from 'vue';
+import { ref, reactive, computed, watch, onMounted, onUnmounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import axios from 'axios';
 import QrCodeSvg from '@/components/QrCodeSvg.vue';
@@ -549,6 +637,8 @@ const selectableMonths = computed(() => {
   return currentStudent.value.months.filter(m => !m.paid && !m.pending).map(m => m.english);
 });
 const totalBayar = computed(() => form.months.length * (Number(form.nominal_per_bulan) || 0));
+const isMidtransTx = computed(() => String(activeTransaction.value?.channel || '').startsWith('midtrans'));
+let pollTimer = null;
 
 const formatRupiah = (n) => Number(n || 0).toLocaleString('id-ID');
 
@@ -631,6 +721,69 @@ const submitPayment = async () => {
   }
 };
 
+const copyQrUrl = async () => {
+  const url = activeTransaction.value?.qr_image_url;
+  if (!url) return;
+  try {
+    await navigator.clipboard.writeText(url);
+    notify('URL QR Midtrans disalin. Tempel di Simulator Midtrans.', 'success');
+  } catch {
+    notify('Salin URL QR secara manual dari kotak di atas.', 'info');
+  }
+};
+
+const checkPaymentStatus = async (silent = false) => {
+  if (!activeTransaction.value) return;
+  if (!silent) isActionLoading.value = true;
+  try {
+    const res = await axios.post(`/wali/pembayaran/${activeTransaction.value.id}/check-status`);
+    const updated = res.data.pembayaran;
+    activeTransaction.value = updated;
+    if (updated?.status === 'paid') {
+      stopPolling();
+      notify('Pembayaran QRIS terverifikasi LUNAS!', 'success');
+    } else if (!silent) {
+      notify('Pembayaran belum masuk. Pastikan sudah dibayar di Simulator/e-wallet.', 'info');
+    }
+  } catch (err) {
+    if (!silent) {
+      notify(err.response?.data?.message || 'Gagal memeriksa status pembayaran.', 'error');
+    }
+  } finally {
+    if (!silent) isActionLoading.value = false;
+  }
+};
+
+const startPolling = () => {
+  stopPolling();
+  pollTimer = setInterval(() => {
+    if (activeTransaction.value?.status === 'pending' && isMidtransTx.value) {
+      checkPaymentStatus(true);
+    } else {
+      stopPolling();
+    }
+  }, 5000);
+};
+
+const stopPolling = () => {
+  if (pollTimer) {
+    clearInterval(pollTimer);
+    pollTimer = null;
+  }
+};
+
+watch(
+  () => [activeTransaction.value?.id, activeTransaction.value?.status, activeTransaction.value?.channel],
+  ([id, status, channel]) => {
+    if (id && status === 'pending' && String(channel || '').startsWith('midtrans')) {
+      startPolling();
+    } else {
+      stopPolling();
+    }
+  },
+  { immediate: true }
+);
+
 const simulateSandboxPaid = async () => {
   if (!activeTransaction.value) return;
   isActionLoading.value = true;
@@ -672,4 +825,5 @@ const resetToForm = async () => {
 };
 
 onMounted(loadDashboard);
+onUnmounted(stopPolling);
 </script>

@@ -12,7 +12,10 @@ use App\Http\Controllers\Api\LaporanController;
 use App\Http\Controllers\Api\PushController;
 use App\Http\Controllers\Api\WaliPortalController;
 use App\Http\Controllers\Api\PembayaranManageController;
+use App\Http\Controllers\Api\MidtransWebhookController;
 use App\Models\Kelas;
+
+Route::post('/midtrans/webhook', [MidtransWebhookController::class, 'handle']);
 
 Route::get('/setup-kelas', function () {
     $kelasNames = [
@@ -100,6 +103,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('wali')->group(function () {
         Route::get('/dashboard', [WaliPortalController::class, 'dashboard']);
         Route::post('/pembayaran', [WaliPortalController::class, 'createPayment']);
+        Route::post('/pembayaran/{id}/check-status', [WaliPortalController::class, 'checkStatus']);
         Route::post('/pembayaran/{id}/simulate-paid', [WaliPortalController::class, 'simulateSandboxPay']);
         Route::post('/pembayaran/{id}/cancel', [WaliPortalController::class, 'cancelPayment']);
         Route::get('/riwayat', [WaliPortalController::class, 'riwayat']);
