@@ -7,7 +7,11 @@
       </div>
 
       <div class="flex flex-wrap items-center gap-2.5">
-        <router-link to="/admin/siswa/create" class="ui-btn-primary ui-btn-icon-l">
+        <router-link to="/admin/infak/create" class="ui-btn-primary ui-btn-icon-l">
+          <UiIcon name="add_circle" :size="17" :weight="600" />
+          <span>Catat Infak</span>
+        </router-link>
+        <router-link to="/admin/siswa/create" class="ui-btn-secondary ui-btn-icon-l">
           <UiIcon name="person_add" :size="17" :weight="600" />
           <span>Tambah Siswa</span>
         </router-link>

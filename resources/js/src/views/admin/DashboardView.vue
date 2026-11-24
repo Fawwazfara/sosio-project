@@ -6,10 +6,6 @@
         <h1 class="text-2xl sm:text-[26px] font-bold text-[#1C1917] tracking-tight">Ringkasan kas</h1>
       </div>
       <div class="flex flex-wrap gap-2.5">
-        <router-link to="/admin/infak/create" class="ui-btn-primary ui-btn-icon-l">
-          <UiIcon name="add_circle" :size="17" :weight="600" />
-          <span>Catat infak</span>
-        </router-link>
         <router-link to="/admin/laporan" class="ui-btn-secondary ui-btn-icon-l">
           <UiIcon name="account_balance" :size="17" :weight="600" />
           <span>Laporan Kas</span>

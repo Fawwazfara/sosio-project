@@ -156,7 +156,7 @@
           </button>
         </div>
 
-        <form class="p-6 space-y-4" @submit.prevent="submitChangePassword">
+        <form class="p-6 space-y-4" autocomplete="off" @submit.prevent="submitChangePassword">
           <div
             v-if="passwordError"
             role="alert"
@@ -170,11 +170,15 @@
             <div class="relative">
               <input
                 id="wali-current-pw"
+                name="pw_verify_old"
                 v-model="pwForm.current_password"
                 :type="showCurrentPw ? 'text' : 'password'"
+                :readonly="!pwUnlocked"
                 required
-                autocomplete="current-password"
-                placeholder="Masukkan sandi lama (misal: wali123)"
+                autocomplete="new-password"
+                data-lpignore="true"
+                data-1p-ignore
+                placeholder="Masukkan kata sandi saat ini"
                 class="ui-input pr-11"
               />
               <button
@@ -193,11 +197,15 @@
             <div class="relative">
               <input
                 id="wali-new-pw"
+                name="pw_create_new"
                 v-model="pwForm.password"
                 :type="showNewPw ? 'text' : 'password'"
+                :readonly="!pwUnlocked"
                 required
                 minlength="6"
                 autocomplete="new-password"
+                data-lpignore="true"
+                data-1p-ignore
                 placeholder="Minimal 6 karakter"
                 class="ui-input pr-11"
               />
@@ -216,11 +224,15 @@
             <label class="text-xs font-semibold text-[#44403C]" for="wali-confirm-pw">Konfirmasi Kata Sandi Baru</label>
             <input
               id="wali-confirm-pw"
+              name="pw_confirm_new"
               v-model="pwForm.password_confirmation"
               :type="showNewPw ? 'text' : 'password'"
+              :readonly="!pwUnlocked"
               required
               minlength="6"
               autocomplete="new-password"
+              data-lpignore="true"
+              data-1p-ignore
               placeholder="Ulangi kata sandi baru"
               class="ui-input"
             />
@@ -251,6 +263,7 @@ const user = ref(getStoredUser());
 const showPasswordModal = ref(false);
 const showCurrentPw = ref(false);
 const showNewPw = ref(false);
+const pwUnlocked = ref(false);
 const isSavingPassword = ref(false);
 const passwordError = ref('');
 const pwForm = reactive({
@@ -266,7 +279,11 @@ const openPasswordModal = () => {
   pwForm.password_confirmation = '';
   showCurrentPw.value = false;
   showNewPw.value = false;
+  pwUnlocked.value = false;
   showPasswordModal.value = true;
+  setTimeout(() => {
+    pwUnlocked.value = true;
+  }, 150);
 };
 
 const closePasswordModal = () => {
