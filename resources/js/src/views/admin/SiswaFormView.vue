@@ -92,11 +92,40 @@
           <div class="flex items-center justify-between gap-2 pb-3 border-b border-black/[0.06]">
             <div>
               <h2 class="text-base font-bold text-[#1C1917]">Status Infak {{ academicYearLabel }}</h2>
-              <p class="text-xs text-[#78716C] mt-0.5">Ketuk bulan untuk menandai/ubah, atau ketuk ikon opsi untuk pindah bulan.</p>
+              <p class="text-xs text-[#78716C] mt-0.5">
+                {{ isKeluar ? 'Mode baca saja: riwayat pembayaran tetap tersimpan.' : 'Ketuk bulan untuk menandai/ubah, atau ketuk ikon opsi untuk pindah bulan.' }}
+              </p>
             </div>
             <span class="text-xs font-mono font-bold px-2.5 py-1 rounded-[8px] bg-[#F9EFE7] text-[#A8551E] tabular-nums">
               {{ paidMonthsCount }}/12
             </span>
+          </div>
+
+          <div
+            v-if="isKeluar"
+            class="p-3.5 rounded-[11px] bg-[#FDF2F4] shadow-[inset_0_0_0_1px_oklch(0.52_0.18_15_/_0.22)] text-xs text-[#9F1239] space-y-2"
+          >
+            <div class="flex items-start gap-2">
+              <UiIcon name="person_off" :size="16" :weight="600" class="shrink-0 mt-0.5" />
+              <div>
+                <p class="font-bold">Siswa Berstatus Keluar ({{ keluarDateFormatted }})</p>
+                <p class="mt-0.5 leading-relaxed">
+                  Riwayat pembayaran, laporan bulanan, dan grafik tetap terjaga, namun input infak baru dinonaktifkan.
+                </p>
+                <p v-if="lastInfakSummary" class="mt-1 font-semibold">
+                  Infak Terakhir: {{ lastInfakSummary }}
+                </p>
+              </div>
+            </div>
+            <button
+              type="button"
+              :disabled="isReactivating"
+              @click="reactivateSiswa"
+              class="ui-btn-secondary !min-h-[34px] !py-1 text-xs w-full"
+            >
+              <UiIcon name="refresh" :size="14" :weight="600" />
+              <span>{{ isReactivating ? 'Mengaktifkan...' : 'Aktifkan Kembali Siswa' }}</span>
+            </button>
           </div>
 
           <div class="grid grid-cols-3 sm:grid-cols-4 gap-2.5">
@@ -107,9 +136,11 @@
             >
               <button
                 type="button"
+                :disabled="isKeluar"
                 @click="toggleMonthDraft(cell)"
                 :class="[
-                  'min-h-[54px] px-2.5 py-2 rounded-[10px] border border-transparent text-center flex flex-col items-center justify-center transition-[background-color,color,box-shadow,transform] duration-150 ease-out active:scale-[0.96]',
+                  'min-h-[54px] px-2.5 py-2 rounded-[10px] border border-transparent text-center flex flex-col items-center justify-center transition-[background-color,color,box-shadow,transform] duration-150 ease-out',
+                  isKeluar ? 'cursor-not-allowed opacity-85' : 'active:scale-[0.96]',
                   cell.draftPaid === true
                     ? 'bg-[#A8551E] text-[#FDFCF9] shadow-[var(--shadow-btn-primary)]'
                     : cell.draftPaid === false
@@ -121,11 +152,11 @@
               >
                 <span class="text-xs font-bold">{{ cell.short }}</span>
                 <span class="text-xs mt-0.5">
-                  {{ cell.draftPaid === true ? '+Lunas' : cell.draftPaid === false ? '-Hapus' : cell.paid ? 'Lunas' : 'Belum' }}
+                  {{ cell.draftPaid === true ? '+Lunas' : cell.draftPaid === false ? '-Hapus' : cell.paid ? 'Lunas' : (isKeluar ? '-' : 'Belum') }}
                 </span>
               </button>
               <button
-                v-if="cell.paid"
+                v-if="cell.paid && !isKeluar"
                 type="button"
                 @click="openMonthModal(cell)"
                 class="text-xs text-[#A8551E] hover:underline py-0.5 font-medium"
@@ -135,7 +166,7 @@
             </div>
           </div>
 
-          <div v-if="hasDraftChanges" class="p-3.5 rounded-[11px] bg-[#FAF4E4] shadow-[inset_0_0_0_1px_oklch(0.62_0.12_75_/_0.28)] text-xs text-[#6E4A0B]">
+          <div v-if="hasDraftChanges && !isKeluar" class="p-3.5 rounded-[11px] bg-[#FAF4E4] shadow-[inset_0_0_0_1px_oklch(0.62_0.12_75_/_0.28)] text-xs text-[#6E4A0B]">
             <p class="font-bold">Perubahan tertunda (akan diterapkan saat simpan):</p>
             <p class="font-mono mt-1">{{ draftChangesSummary.join(', ') }}</p>
           </div>
@@ -204,6 +235,7 @@ import { ref, reactive, onMounted, computed } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import axios from 'axios';
 import { notify } from '@/utils/toast';
+import { formatTanggalIndo, formatLastInfak } from '@/utils/studentStatus';
 
 const router = useRouter();
 const route = useRoute();
@@ -211,6 +243,14 @@ const route = useRoute();
 const isSubmitting = ref(false);
 const isSuccess = ref(false);
 const kelasi = ref([]);
+const studentStatus = ref('aktif');
+const tanggalKeluar = ref(null);
+const lastInfak = ref(null);
+const isReactivating = ref(false);
+
+const isKeluar = computed(() => studentStatus.value === 'keluar');
+const keluarDateFormatted = computed(() => formatTanggalIndo(tanggalKeluar.value));
+const lastInfakSummary = computed(() => (lastInfak.value ? formatLastInfak(lastInfak.value) : ''));
 
 const studentId = computed(() => route.params.id);
 const isEdit = computed(() => !!studentId.value);
@@ -231,6 +271,9 @@ onMounted(async () => {
       form.waWali1 = s.wa_wali_1 || '';
       form.namaWali2 = s.nama_wali_2 || '';
       form.waWali2 = s.wa_wali_2 || '';
+      studentStatus.value = s.status || 'aktif';
+      tanggalKeluar.value = s.tanggal_keluar || null;
+      lastInfak.value = s.last_infak || null;
       await refreshInfak();
     }
   } catch (err) {
@@ -307,12 +350,29 @@ const refreshInfak = async () => {
 };
 
 const toggleMonthDraft = (cell) => {
+  if (isKeluar.value) return;
   if (cell.draftPaid !== null) {
     draftMonths.value[cell.short] = null;
   } else if (cell.paid) {
     draftMonths.value[cell.short] = false;
   } else {
     draftMonths.value[cell.short] = true;
+  }
+};
+
+const reactivateSiswa = async () => {
+  if (!isEdit.value || isReactivating.value) return;
+  isReactivating.value = true;
+  try {
+    await axios.post(`/siswa/${studentId.value}/aktifkan`);
+    studentStatus.value = 'aktif';
+    tanggalKeluar.value = null;
+    notify('Siswa berhasil diaktifkan kembali.', 'success');
+  } catch (error) {
+    console.error('Gagal mengaktifkan siswa', error);
+    notify(error.response?.data?.message || 'Gagal mengaktifkan kembali siswa.', 'error');
+  } finally {
+    isReactivating.value = false;
   }
 };
 

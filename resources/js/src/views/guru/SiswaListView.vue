@@ -38,12 +38,38 @@
             <tr
               v-for="(student, index) in filteredStudents"
               :key="student.id"
-              class="hover:bg-[#F7F4ED] transition-colors duration-100 ease-out group"
+              :class="[
+                'hover:bg-[#F7F4ED] transition-colors duration-100 ease-out group',
+                student.status === 'keluar' ? 'bg-[#F7F4ED]/65' : ''
+              ]"
             >
               <td class="px-3 py-3.5 text-sm font-mono tabular-nums text-[#78716C] border-r border-black/[0.05] text-center">{{ index + 1 }}</td>
-              <td class="sticky left-0 z-10 bg-[#FDFCF9] group-hover:bg-[#F7F4ED] px-4 py-3.5 text-sm font-semibold text-[#1C1917] border-r border-black/[0.05] transition-colors duration-100 ease-out">
+              <td
+                :class="[
+                  'sticky left-0 z-10 group-hover:bg-[#F7F4ED] px-4 py-3.5 text-sm font-semibold border-r border-black/[0.05] transition-colors duration-100 ease-out',
+                  student.status === 'keluar' ? 'bg-[#F7F4ED] text-[#78716C]' : 'bg-[#FDFCF9] text-[#1C1917]'
+                ]"
+              >
                 <div class="flex items-center justify-between gap-2.5">
-                  <span class="truncate max-w-[160px] sm:max-w-[220px]">{{ student.name }}</span>
+                  <div class="min-w-0">
+                    <p
+                      :class="[
+                        'truncate max-w-[160px] sm:max-w-[220px]',
+                        student.status === 'keluar' ? 'line-through text-[#78716C]' : ''
+                      ]"
+                    >
+                      {{ student.name }}
+                    </p>
+                    <div class="flex items-center gap-1.5 flex-wrap mt-0.5">
+                      <span class="text-[11px] font-medium text-[#78716C]">{{ student.kelas }}</span>
+                      <span
+                        v-if="student.status === 'keluar'"
+                        class="inline-flex items-center text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#ECE8DF] text-[#57534E]"
+                      >
+                        Keluar{{ student.keluar_label ? ' · ' + student.keluar_label : '' }}
+                      </span>
+                    </div>
+                  </div>
                   <button
                     class="min-h-[34px] min-w-[34px] text-[#A8551E] hover:bg-[#F9EFE7] rounded-[8px] inline-flex items-center justify-center shrink-0 transition-[background-color,transform] duration-150 ease-out enabled:active:scale-[0.96]"
                     aria-label="Info kontak wali siswa"
@@ -56,6 +82,7 @@
               <td class="px-2.5 py-3.5 text-center" v-for="(status, mIndex) in student.payments" :key="mIndex">
                 <span class="inline-flex items-center justify-center">
                   <UiIcon v-if="status" name="check_circle" :size="18" :weight="600" filled class="text-[#A8551E]" />
+                  <span v-else-if="isMonthAfterExit(student, mIndex, currentAcadStart)" class="text-xs font-mono text-[#A8A29E]" title="Siswa sudah keluar">—</span>
                   <UiIcon v-else name="cancel" :size="18" :weight="400" class="text-[#A8A29E]" />
                 </span>
               </td>
@@ -73,7 +100,22 @@
     >
       <div class="ui-panel-elevated w-full max-w-md overflow-hidden overscroll-contain" @click.stop>
         <div class="px-6 py-4 border-b border-black/[0.07] flex justify-between items-center">
-          <h3 class="text-base font-bold text-[#1C1917]">Info Siswa: {{ modalStudent.name }}</h3>
+          <div class="min-w-0">
+            <div class="flex items-center gap-2 flex-wrap">
+              <h3 :class="['text-base font-bold', modalStudent.status === 'keluar' ? 'line-through text-[#78716C]' : 'text-[#1C1917]']">
+                {{ modalStudent.name }}
+              </h3>
+              <span
+                :class="[
+                  'text-[10px] font-bold px-2 py-0.5 rounded-full',
+                  modalStudent.status === 'keluar' ? 'bg-[#FDF2F4] text-[#9F1239]' : 'bg-[#F9EFE7] text-[#A8551E]'
+                ]"
+              >
+                {{ modalStudent.status === 'keluar' ? 'Keluar' : 'Aktif' }}
+              </span>
+            </div>
+            <p class="text-xs text-[#78716C]">{{ modalStudent.kelas }}</p>
+          </div>
           <button
             class="min-h-[38px] min-w-[38px] text-[#78716C] hover:text-[#1C1917] hover:bg-[#ECE8DF] rounded-[9px] flex items-center justify-center transition-[background-color,color,transform] duration-150 ease-out active:scale-[0.96]"
             aria-label="Tutup modal"
@@ -83,6 +125,16 @@
           </button>
         </div>
         <div class="p-6 space-y-4 text-sm">
+          <div v-if="modalStudent.status === 'keluar'" class="flex justify-between gap-3">
+            <span class="text-[#78716C]">Keluar Pada</span>
+            <span class="font-semibold text-[#9F1239] text-right">
+              {{ modalStudent.tanggal_keluar ? formatTanggalIndo(modalStudent.tanggal_keluar) : (modalStudent.keluar_label || '-') }}
+            </span>
+          </div>
+          <div class="flex justify-between gap-3">
+            <span class="text-[#78716C]">Infak Terakhir</span>
+            <span class="font-semibold text-[#1C1917] text-right">{{ formatLastInfak(modalStudent.last_infak) }}</span>
+          </div>
           <div class="flex justify-between gap-3">
             <span class="text-[#78716C]">Blok / Alamat</span>
             <span class="font-semibold text-[#1C1917] text-right">{{ modalStudent.blok || '-' }}</span>
@@ -113,6 +165,12 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
+import { formatTanggalIndo, formatLastInfak, isMonthAfterExit } from '@/utils/studentStatus';
+
+const currentAcadStart = (() => {
+  const now = new Date();
+  return now.getMonth() >= 6 ? now.getFullYear() : now.getFullYear() - 1;
+})();
 
 const months = ['Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des', 'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun'];
 

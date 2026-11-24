@@ -146,7 +146,15 @@
                     class="py-2.5 flex items-center justify-between gap-3"
                   >
                     <div class="min-w-0">
-                      <p class="text-sm font-semibold text-[#1C1917] truncate">{{ row.siswa }}</p>
+                      <div class="flex items-center gap-1.5 flex-wrap">
+                        <p class="text-sm font-semibold text-[#1C1917] truncate">{{ row.siswa }}</p>
+                        <span
+                          v-if="row.is_keluar"
+                          class="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-[#ECE8DF] text-[#57534E]"
+                        >
+                          Keluar
+                        </span>
+                      </div>
                       <p class="text-xs text-[#78716C]">
                         {{ formatTanggal(row.tanggal_bayar) }} · {{ row.bulan }}
                       </p>

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Siswa;
 use App\Models\Kelas;
 use App\Models\Infak;
+use App\Models\LogAktivitas;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
@@ -37,7 +38,8 @@ class SiswaController extends Controller
             $query->where('nama_lengkap', 'like', "%{$search}%");
         }
 
-        $query->orderBy('nama_lengkap', 'asc');
+        $query->orderByRaw("CASE WHEN status = 'keluar' THEN 1 ELSE 0 END ASC")
+              ->orderBy('nama_lengkap', 'asc');
 
         $transformCollection = function ($siswas) {
             $months = ['Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des', 'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun'];
@@ -50,12 +52,24 @@ class SiswaController extends Controller
                 $paidSets[$s->id] = $set;
             }
 
-            return $siswas->map(function($siswa) use ($months, $paidSets) {
+            $lastInfaks = Infak::whereIn('siswa_id', $siswas->pluck('id'))
+                ->orderBy('tanggal_bayar', 'desc')
+                ->orderBy('id', 'desc')
+                ->get(['siswa_id', 'bulan', 'tahun', 'tanggal_bayar', 'jumlah'])
+                ->unique('siswa_id')
+                ->keyBy('siswa_id');
+
+            return $siswas->map(function($siswa) use ($months, $paidSets, $lastInfaks) {
                 $payments = [];
                 foreach ($months as $m) {
                     $hasPaid = isset($paidSets[$siswa->id][$this->mapBulanIndonesia($m)]);
                     $payments[] = $hasPaid;
                 }
+                $lastInfak = $lastInfaks->get($siswa->id);
+                $tanggalKeluar = $siswa->tanggal_keluar
+                    ? Carbon::parse($siswa->tanggal_keluar)->format('Y-m-d')
+                    : null;
+
                 return [
                     'id' => $siswa->id,
                     'name' => $siswa->nama_lengkap,
@@ -65,6 +79,11 @@ class SiswaController extends Controller
                     'waliName' => $siswa->nama_wali_1 ?: 'Wali Siswa',
                     'phone' => $siswa->wa_wali_1 ? '+62 ' . ltrim($siswa->wa_wali_1, '0') : '+62 812-0000-0000',
                     'kelas' => $siswa->kelas ? $siswa->kelas->nama_kelas : '',
+                    'status' => $siswa->status ?: 'aktif',
+                    'tanggal_keluar' => $tanggalKeluar,
+                    'keluar_label' => $this->formatBulanTahunIndo($tanggalKeluar),
+                    'has_infak' => $lastInfak !== null,
+                    'last_infak' => $this->formatLastInfak($lastInfak),
                     'wali_account' => $siswa->waliUser ? [
                         'id' => $siswa->waliUser->id,
                         'name' => $siswa->waliUser->name,
@@ -95,6 +114,7 @@ class SiswaController extends Controller
         $siswa = Siswa::create([
             'nama_lengkap' => $request->nama_lengkap,
             'kelas_id' => $request->kelas_id,
+            'status' => 'aktif',
             'nis' => $request->nis ?: (string) rand(1000000, 9999999),
             'jenis_kelamin' => $request->jenis_kelamin ?: 'L',
             'alamat' => $request->alamat,
@@ -124,8 +144,22 @@ class SiswaController extends Controller
 
     public function show($id)
     {
-        $siswa = Siswa::with('waliUser')->findOrFail($id);
-        return response()->json($siswa);
+        $siswa = Siswa::with(['kelas', 'waliUser'])->findOrFail($id);
+        $lastInfak = Infak::where('siswa_id', $siswa->id)
+            ->orderBy('tanggal_bayar', 'desc')
+            ->orderBy('id', 'desc')
+            ->first(['siswa_id', 'bulan', 'tahun', 'tanggal_bayar', 'jumlah']);
+
+        $data = $siswa->toArray();
+        $data['status'] = $siswa->status ?: 'aktif';
+        $data['tanggal_keluar'] = $siswa->tanggal_keluar
+            ? Carbon::parse($siswa->tanggal_keluar)->format('Y-m-d')
+            : null;
+        $data['keluar_label'] = $this->formatBulanTahunIndo($data['tanggal_keluar']);
+        $data['has_infak'] = $lastInfak !== null;
+        $data['last_infak'] = $this->formatLastInfak($lastInfak);
+
+        return response()->json($data);
     }
 
     public function provisionWaliAccount(Request $request, $id)
@@ -205,12 +239,138 @@ class SiswaController extends Controller
         return response()->json(['message' => 'Siswa updated successfully', 'data' => $siswa], 200);
     }
 
-    public function destroy($id)
+    public function markKeluar(Request $request, $id)
     {
-        $siswa = Siswa::findOrFail($id);
+        if ($request->user()?->role !== 'admin') {
+            return response()->json(['message' => 'Hanya admin yang dapat menandai siswa keluar.'], 403);
+        }
+
+        $request->validate([
+            'tanggal_keluar' => 'nullable|date',
+        ]);
+
+        $siswa = Siswa::with('kelas')->findOrFail($id);
+        $tanggalKeluar = $request->input('tanggal_keluar')
+            ? Carbon::parse($request->input('tanggal_keluar'))->toDateString()
+            : now()->toDateString();
+
+        $siswa->update([
+            'status' => 'keluar',
+            'tanggal_keluar' => $tanggalKeluar,
+        ]);
+
+        $kelasName = $siswa->kelas ? $siswa->kelas->nama_kelas : '-';
+        $keluarLabel = $this->formatBulanTahunIndo($tanggalKeluar) ?? $tanggalKeluar;
+
+        LogAktivitas::create([
+            'type' => 'system',
+            'title' => 'Siswa Ditandai Keluar',
+            'description' => "{$siswa->nama_lengkap} ({$kelasName}) ditandai keluar pada {$keluarLabel} ({$tanggalKeluar}). Riwayat infak tetap dipertahankan.",
+            'amount' => null,
+        ]);
+
+        return response()->json([
+            'message' => 'Siswa ditandai keluar. Riwayat infak, laporan, dan grafik tetap terjaga.',
+            'data' => [
+                'id' => $siswa->id,
+                'status' => 'keluar',
+                'tanggal_keluar' => $tanggalKeluar,
+                'keluar_label' => $keluarLabel,
+            ],
+        ]);
+    }
+
+    public function aktifkan(Request $request, $id)
+    {
+        if ($request->user()?->role !== 'admin') {
+            return response()->json(['message' => 'Hanya admin yang dapat mengaktifkan kembali siswa.'], 403);
+        }
+
+        $siswa = Siswa::with('kelas')->findOrFail($id);
+        $siswa->update([
+            'status' => 'aktif',
+            'tanggal_keluar' => null,
+        ]);
+
+        $kelasName = $siswa->kelas ? $siswa->kelas->nama_kelas : '-';
+
+        LogAktivitas::create([
+            'type' => 'system',
+            'title' => 'Siswa Diaktifkan Kembali',
+            'description' => "{$siswa->nama_lengkap} ({$kelasName}) diaktifkan kembali.",
+            'amount' => null,
+        ]);
+
+        return response()->json([
+            'message' => 'Siswa berhasil diaktifkan kembali.',
+            'data' => [
+                'id' => $siswa->id,
+                'status' => 'aktif',
+                'tanggal_keluar' => null,
+                'keluar_label' => null,
+            ],
+        ]);
+    }
+
+    public function destroy(Request $request, $id)
+    {
+        if ($request->user()?->role !== 'admin') {
+            return response()->json(['message' => 'Hanya admin yang dapat menghapus data siswa.'], 403);
+        }
+
+        $siswa = Siswa::with('kelas')->findOrFail($id);
+        $hasInfak = $siswa->infaks()->exists() || $siswa->pembayarans()->where('status', 'paid')->exists();
+
+        // Jangan hapus permanen siswa yang sudah punya riwayat infak,
+        // agar laporan bulan-bulan sebelumnya dan grafik arus kas tidak berubah.
+        if ($hasInfak) {
+            if ($request->boolean('permanent')) {
+                return response()->json([
+                    'message' => 'Siswa yang sudah memiliki riwayat infak tidak dapat dihapus permanen agar laporan dan grafik tetap akurat. Tandai siswa sebagai keluar.',
+                ], 422);
+            }
+
+            $tanggalKeluar = $siswa->tanggal_keluar
+                ? Carbon::parse($siswa->tanggal_keluar)->toDateString()
+                : now()->toDateString();
+
+            $siswa->update([
+                'status' => 'keluar',
+                'tanggal_keluar' => $tanggalKeluar,
+            ]);
+
+            $kelasName = $siswa->kelas ? $siswa->kelas->nama_kelas : '-';
+            LogAktivitas::create([
+                'type' => 'system',
+                'title' => 'Siswa Ditandai Keluar',
+                'description' => "{$siswa->nama_lengkap} ({$kelasName}) ditandai keluar pada {$tanggalKeluar}. Riwayat infak tetap dipertahankan.",
+                'amount' => null,
+            ]);
+
+            return response()->json([
+                'message' => 'Siswa ditandai keluar agar riwayat infak, laporan, dan grafik tetap terjaga.',
+                'action' => 'keluar',
+                'data' => [
+                    'id' => $siswa->id,
+                    'status' => 'keluar',
+                    'tanggal_keluar' => $tanggalKeluar,
+                    'keluar_label' => $this->formatBulanTahunIndo($tanggalKeluar),
+                ],
+            ]);
+        }
+
+        $nama = $siswa->nama_lengkap;
+        $kelasName = $siswa->kelas ? $siswa->kelas->nama_kelas : '-';
         $siswa->delete();
-        
-        return response()->json(['message' => 'Siswa deleted successfully']);
+
+        LogAktivitas::create([
+            'type' => 'system',
+            'title' => 'Hapus Data Siswa',
+            'description' => "Data siswa {$nama} ({$kelasName}) dihapus permanen (belum ada riwayat infak).",
+            'amount' => null,
+        ]);
+
+        return response()->json(['message' => 'Siswa deleted successfully', 'action' => 'deleted']);
     }
 
     public function exportExcel(Request $request)
@@ -226,7 +386,9 @@ class SiswaController extends Controller
             $query->whereIn('kelas_id', $kelasIds);
         }
 
-        $siswas = $query->get();
+        $siswas = $query->orderByRaw("CASE WHEN status = 'keluar' THEN 1 ELSE 0 END ASC")
+            ->orderBy('nama_lengkap', 'asc')
+            ->get();
         $months = ['Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des', 'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun'];
         $englishMonths = array_map([$this, 'mapBulanIndonesia'], $months);
 
@@ -239,6 +401,13 @@ class SiswaController extends Controller
             $paidSets[$s->id] = $set;
         }
 
+        $lastInfaks = Infak::whereIn('siswa_id', $siswas->pluck('id'))
+            ->orderBy('tanggal_bayar', 'desc')
+            ->orderBy('id', 'desc')
+            ->get(['siswa_id', 'bulan', 'tahun', 'tanggal_bayar', 'jumlah'])
+            ->unique('siswa_id')
+            ->keyBy('siswa_id');
+
         $fileName = 'backup_siswa_' . date('Y_m_d_His') . '.csv';
         $headers = array(
             "Content-type"        => "text/csv",
@@ -248,29 +417,35 @@ class SiswaController extends Controller
             "Expires"             => "0"
         );
 
-        $columns = array('No', 'Nama Lengkap', 'NIS', 'Kelas', 'Wali', 'Telepon');
+        $columns = array('No', 'Nama Lengkap', 'NIS', 'Kelas', 'Status', 'Tanggal Keluar', 'Infak Terakhir', 'Wali', 'Telepon');
         foreach ($months as $m) {
             $columns[] = $m;
         }
 
-        $callback = function() use($siswas, $columns, $months, $paidSets, $englishMonths) {
+        $callback = function() use($siswas, $columns, $months, $paidSets, $englishMonths, $lastInfaks) {
             $file = fopen('php://output', 'w');
             fputcsv($file, $columns);
 
             $i = 1;
             foreach ($siswas as $siswa) {
+                $last = $this->formatLastInfak($lastInfaks->get($siswa->id));
+                $lastText = $last ? ($last['bulan_indo'] . ' ' . $last['kalender_tahun'] . ' (' . $last['tanggal_bayar'] . ')') : '-';
+
                 $row = [
                     $i++,
                     $siswa->nama_lengkap,
                     $siswa->nis,
                     $siswa->kelas ? $siswa->kelas->nama_kelas : '',
+                    $siswa->status === 'keluar' ? 'Keluar' : 'Aktif',
+                    $siswa->tanggal_keluar ? Carbon::parse($siswa->tanggal_keluar)->format('Y-m-d') : '-',
+                    $lastText,
                     $siswa->nama_wali_1 ?: '-',
                     $siswa->wa_wali_1 ?: '-'
                 ];
                 
                 foreach ($months as $idx => $m) {
                     $hasPaid = isset($paidSets[$siswa->id][$englishMonths[$idx]]);
-                    $row[] = $hasPaid ? 'Lunas' : 'Belum';
+                    $row[] = $hasPaid ? 'Lunas' : ($siswa->status === 'keluar' ? '-' : 'Belum');
                 }
                 
                 fputcsv($file, $row);
@@ -292,7 +467,7 @@ class SiswaController extends Controller
 
         $bulanFull = $this->mapBulanIndonesia($bulan);
 
-        $siswas = Siswa::where('kelas_id', $kelas_id)->orderBy('nama_lengkap', 'asc')->get();
+        $siswas = Siswa::where('kelas_id', $kelas_id)->aktif()->orderBy('nama_lengkap', 'asc')->get();
 
         $paidStudentIds = Infak::where('kelas_id', $kelas_id)
             ->where('bulan', $bulanFull)
@@ -333,5 +508,52 @@ class SiswaController extends Controller
         ];
 
         return $map[$shortMonth] ?? $shortMonth;
+    }
+
+    private function mapEnglishToIndo(?string $englishMonth): string
+    {
+        $map = [
+            'July' => 'Juli', 'August' => 'Agustus', 'September' => 'September',
+            'October' => 'Oktober', 'November' => 'November', 'December' => 'Desember',
+            'January' => 'Januari', 'February' => 'Februari', 'March' => 'Maret',
+            'April' => 'April', 'May' => 'Mei', 'June' => 'Juni',
+        ];
+
+        return $map[$englishMonth ?? ''] ?? (string) $englishMonth;
+    }
+
+    private function formatBulanTahunIndo(?string $dateStr): ?string
+    {
+        if (!$dateStr) {
+            return null;
+        }
+        $date = Carbon::parse($dateStr);
+        $shortMonths = [
+            1 => 'Jan', 2 => 'Feb', 3 => 'Mar', 4 => 'Apr', 5 => 'Mei', 6 => 'Jun',
+            7 => 'Jul', 8 => 'Agu', 9 => 'Sep', 10 => 'Okt', 11 => 'Nov', 12 => 'Des',
+        ];
+
+        return ($shortMonths[$date->month] ?? $date->format('M')) . ' ' . $date->year;
+    }
+
+    private function formatLastInfak(?Infak $infak): ?array
+    {
+        if (!$infak) {
+            return null;
+        }
+
+        $janToJun = ['January', 'February', 'March', 'April', 'May', 'June'];
+        $kalenderTahun = in_array($infak->bulan, $janToJun, true)
+            ? ((int) $infak->tahun + 1)
+            : (int) $infak->tahun;
+
+        return [
+            'bulan' => $infak->bulan,
+            'bulan_indo' => $this->mapEnglishToIndo($infak->bulan),
+            'tahun' => (int) $infak->tahun,
+            'kalender_tahun' => $kalenderTahun,
+            'tanggal_bayar' => substr((string) $infak->tanggal_bayar, 0, 10),
+            'jumlah' => (int) $infak->jumlah,
+        ];
     }
 }

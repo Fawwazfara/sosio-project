@@ -67,7 +67,7 @@ class PushController extends Controller
 
             // Batch: 1 query siswa + 1 query bulan terbayar untuk semua siswa,
             // pengganti 1 query infak per siswa (N+1).
-            $allSiswas = \App\Models\Siswa::select('id', 'kelas_id')->get();
+            $allSiswas = \App\Models\Siswa::aktif()->select('id', 'kelas_id')->get();
             $paidMonthsBySiswa = \App\Models\Infak::whereIn('siswa_id', $allSiswas->pluck('id'))
                 ->whereIn('bulan', $previousMonths)
                 ->get(['siswa_id', 'bulan'])

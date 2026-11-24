@@ -154,6 +154,9 @@
                 <span class="text-sm font-semibold text-[#1C1917] truncate">{{ s.fullName }}</span>
               </label>
             </div>
+            <p class="text-[11px] text-[#78716C] mt-2">
+              Hanya siswa aktif yang ditampilkan. Siswa berstatus keluar tidak dapat diinput infak baru.
+            </p>
           </div>
 
           <!-- Nominal -->
@@ -310,10 +313,10 @@ watch(() => form.kelas_id, async (newKelasId) => {
   if (newKelasId) {
     isFetchingStudents.value = true;
     try {
-      const res = await axios.get('/siswa');
+      const res = await axios.get('/siswa', { params: { kelas_id: newKelasId } });
       const cls = kelasi.value.find(k => k.id === newKelasId);
-      students.value = res.data
-        .filter(s => cls && s.kelas === cls.nama_kelas)
+      students.value = (res.data || [])
+        .filter(s => (!cls || s.kelas === cls.nama_kelas) && s.status !== 'keluar')
         .sort((a, b) => String(a.fullName).localeCompare(String(b.fullName), 'id'));
     } catch (e) {
       console.error(e);

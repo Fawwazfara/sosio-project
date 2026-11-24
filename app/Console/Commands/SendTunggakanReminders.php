@@ -48,7 +48,7 @@ class SendTunggakanReminders extends Command
         $previousMonths = array_slice($months, 0, $currentIndex);
 
         // Batch: 1 query siswa + 1 query bulan terbayar (pengganti N+1 per siswa)
-        $allSiswas = Siswa::select('id', 'kelas_id')->get();
+        $allSiswas = Siswa::aktif()->select('id', 'kelas_id')->get();
         $paidMonthsBySiswa = Infak::whereIn('siswa_id', $allSiswas->pluck('id'))
             ->whereIn('bulan', $previousMonths)
             ->get(['siswa_id', 'bulan'])

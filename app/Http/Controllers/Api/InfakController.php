@@ -65,6 +65,15 @@ class InfakController extends Controller
         // Batch: ambil semua siswa terpilih dalam 1 query (bukan find per siswa)
         $siswaMap = Siswa::whereIn('id', $siswaIds)->get()->keyBy('id');
 
+        foreach ($siswaIds as $sId) {
+            $siswa = $siswaMap->get($sId);
+            if ($siswa && $siswa->isKeluar()) {
+                return response()->json([
+                    'message' => "Siswa {$siswa->nama_lengkap} berstatus keluar, tidak dapat mencatat infak baru.",
+                ], 422);
+            }
+        }
+
         $studentNames = [];
         $totalAmount = 0;
         $rows = [];
@@ -222,9 +231,15 @@ class InfakController extends Controller
             ], 422);
         }
 
-        $siswa = Siswa::find($siswaId);
-        $siswaName = $siswa ? $siswa->nama_lengkap : 'Siswa';
-        $waWali = $siswa ? $siswa->wa_wali_1 : null;
+        $siswa = Siswa::findOrFail($siswaId);
+        if ($siswa->isKeluar()) {
+            return response()->json([
+                'message' => "Siswa {$siswa->nama_lengkap} berstatus keluar, tidak dapat menambah atau mengubah pembayaran infak.",
+            ], 422);
+        }
+
+        $siswaName = $siswa->nama_lengkap;
+        $waWali = $siswa->wa_wali_1;
 
         // Semua perubahan (hapus/tambah/update + log) dibungkus transaksi
         // supaya tidak pernah menyisakan data setengah jadi bila gagal di tengah jalan.
@@ -338,14 +353,14 @@ class InfakController extends Controller
         $previousMonths = array_slice($months, 0, $currentIndex);
         $tahun = date('Y');
 
-        // Batasi query jika rolenya guru (hanya untuk kelasnya sendiri)
+        // Batasi query jika rolenya guru (hanya untuk kelasnya sendiri), hanya siswa aktif
         $user = $request->user();
+        $siswaQuery = Siswa::aktif()->whereNotNull('wa_wali_1')->where('wa_wali_1', '!=', '');
         if ($user && $user->role === 'guru') {
             $kelasIds = \App\Models\Kelas::where('guru_id', $user->id)->pluck('id');
-            $siswas = Siswa::whereIn('kelas_id', $kelasIds)->whereNotNull('wa_wali_1')->where('wa_wali_1', '!=', '')->get();
-        } else {
-            $siswas = Siswa::whereNotNull('wa_wali_1')->where('wa_wali_1', '!=', '')->get();
+            $siswaQuery->whereIn('kelas_id', $kelasIds);
         }
+        $siswas = $siswaQuery->get();
 
         $queuedCount = 0;
 

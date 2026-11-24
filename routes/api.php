@@ -50,6 +50,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/siswa/{id}', [SiswaController::class, 'show']);
     Route::post('/siswa', [SiswaController::class, 'store']);
     Route::put('/siswa/{id}', [SiswaController::class, 'update']);
+    Route::post('/siswa/{id}/keluar', [SiswaController::class, 'markKeluar']);
+    Route::post('/siswa/{id}/aktifkan', [SiswaController::class, 'aktifkan']);
     Route::delete('/siswa/{id}', [SiswaController::class, 'destroy']);
     Route::post('/siswa/{id}/wali-account', [SiswaController::class, 'provisionWaliAccount']);
     

@@ -148,10 +148,11 @@ class DashboardController extends Controller
         $currentMonth = date('F');
         $currentYear = date('Y');
 
+        $withAktifSiswas = ['siswas' => fn ($q) => $q->aktif()];
         if ($user->role === 'guru') {
-            $kelasList = Kelas::where('guru_id', $user->id)->with('siswas')->get();
+            $kelasList = Kelas::where('guru_id', $user->id)->with($withAktifSiswas)->get();
         } else {
-            $kelasList = Kelas::with('siswas')->get();
+            $kelasList = Kelas::with($withAktifSiswas)->get();
         }
 
         $kelasOrder = [

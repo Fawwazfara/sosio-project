@@ -112,6 +112,8 @@ class WaliPortalController extends Controller
                 'wa_wali_1' => $siswa->wa_wali_1,
                 'kelas_id' => $siswa->kelas_id,
                 'kelas' => $siswa->kelas?->nama_kelas ?? '-',
+                'status' => $siswa->status ?: 'aktif',
+                'tanggal_keluar' => $siswa->tanggal_keluar?->format('Y-m-d'),
                 'wali_kelas' => $siswa->kelas?->wali_kelas?->name ?? 'Tata Usaha / Admin',
                 'paid_count' => $paidCount,
                 'unpaid_count' => 12 - $paidCount,
@@ -152,6 +154,12 @@ class WaliPortalController extends Controller
             ->where('id', $request->siswa_id)
             ->when($user->role !== 'admin', fn ($q) => $q->where('wali_user_id', $user->id))
             ->firstOrFail();
+
+        if ($siswa->isKeluar()) {
+            return response()->json([
+                'message' => 'Siswa berstatus keluar, tidak dapat membuat pengajuan pembayaran baru.',
+            ], 422);
+        }
 
         $tahun = AcademicYear::current();
         $requestedEnglish = collect($request->months)

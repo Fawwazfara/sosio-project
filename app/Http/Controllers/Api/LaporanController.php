@@ -15,7 +15,7 @@ class LaporanController extends Controller
     public function cetakFormSetoran($kelas_id)
     {
         $kelas = Kelas::findOrFail($kelas_id);
-        $siswas = Siswa::where('kelas_id', $kelas->id)->orderBy('nama_lengkap', 'asc')->get();
+        $siswas = Siswa::where('kelas_id', $kelas->id)->aktif()->orderBy('nama_lengkap', 'asc')->get();
 
         $data = [
             'kelas' => $kelas,
@@ -79,6 +79,7 @@ class LaporanController extends Controller
             if (!isset($grouped[$siswaId])) {
                 $grouped[$siswaId] = [
                     'siswa' => $namaSiswa,
+                    'is_keluar' => $i->siswa ? $i->siswa->isKeluar() : false,
                     'tanggal_bayar' => substr((string) $i->tanggal_bayar, 0, 10),
                     'jumlah' => 0,
                     'bulan_list' => [],
@@ -95,6 +96,7 @@ class LaporanController extends Controller
         $rows = collect(array_values($grouped))->sortBy('siswa')->values()->map(function ($item) {
             return [
                 'siswa' => $item['siswa'],
+                'is_keluar' => $item['is_keluar'],
                 'tanggal_bayar' => $item['tanggal_bayar'],
                 'jumlah' => $item['jumlah'],
                 'bulan' => implode(', ', $item['bulan_list']), // Contoh: "July, August, September"

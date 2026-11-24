@@ -66,9 +66,12 @@
           <UiIcon name="chevron_left" :size="20" :weight="600" directional />
         </button>
 
-        <div>
+        <div class="text-center min-w-0">
           <span class="block text-xs text-[#78716C]">Kelas Aktif (gunakan panah ← →)</span>
           <span class="text-lg font-bold text-[#1C1917]">{{ currentClassName }}</span>
+          <span v-if="filteredStudents.length > 0" class="block text-[11px] text-[#78716C] font-medium">
+            {{ activeCount }} aktif<template v-if="keluarCount > 0"> · {{ keluarCount }} keluar</template>
+          </span>
         </div>
 
         <button
@@ -125,13 +128,36 @@
             <tr
               v-for="(student, index) in filteredStudents"
               :key="student.id"
-              class="hover:bg-[#F7F4ED] transition-colors duration-100 ease-out group"
+              :class="[
+                'hover:bg-[#F7F4ED] transition-colors duration-100 ease-out group',
+                student.status === 'keluar' ? 'bg-[#F7F4ED]/65' : ''
+              ]"
             >
               <td class="px-3 py-3.5 text-sm font-mono tabular-nums text-[#78716C] border-r border-black/[0.05] text-center">{{ index + 1 }}</td>
-              <td class="sticky left-0 z-10 bg-[#FDFCF9] group-hover:bg-[#F7F4ED] px-4 py-3.5 text-sm font-semibold text-[#1C1917] border-r border-black/[0.05] transition-colors duration-100 ease-out">
+              <td
+                :class="[
+                  'sticky left-0 z-10 group-hover:bg-[#F7F4ED] px-4 py-3.5 text-sm font-semibold border-r border-black/[0.05] transition-colors duration-100 ease-out',
+                  student.status === 'keluar' ? 'bg-[#F7F4ED] text-[#78716C]' : 'bg-[#FDFCF9] text-[#1C1917]'
+                ]"
+              >
                 <div class="flex items-center justify-between gap-3">
                   <div class="min-w-0">
-                    <p class="truncate max-w-[180px] sm:max-w-[240px]">{{ student.name }}</p>
+                    <div class="flex items-center gap-1.5 flex-wrap">
+                      <p
+                        :class="[
+                          'truncate max-w-[180px] sm:max-w-[240px]',
+                          student.status === 'keluar' ? 'line-through text-[#78716C]' : ''
+                        ]"
+                      >
+                        {{ student.name }}
+                      </p>
+                      <span
+                        v-if="student.status === 'keluar'"
+                        class="inline-flex items-center text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#ECE8DF] text-[#57534E]"
+                      >
+                        Keluar{{ student.keluar_label ? ' · ' + student.keluar_label : '' }}
+                      </span>
+                    </div>
                     <p class="text-xs font-mono text-[#78716C] tabular-nums">
                       NIS {{ student.nis || '-' }} · {{ student.wali_account ? 'Akun Wali Aktif' : 'Belum Ada Akun Wali' }}
                     </p>
@@ -148,6 +174,7 @@
               <td class="px-2.5 py-3.5 text-center" v-for="(status, mIndex) in student.payments" :key="mIndex">
                 <span class="inline-flex items-center justify-center">
                   <UiIcon v-if="status" name="check_circle" :size="18" :weight="600" filled class="text-[#A8551E]" />
+                  <span v-else-if="isMonthAfterExit(student, mIndex, currentAcadStart)" class="text-xs font-mono text-[#A8A29E]" title="Siswa sudah keluar">—</span>
                   <UiIcon v-else name="cancel" :size="18" :weight="400" class="text-[#A8A29E]" />
                 </span>
               </td>
@@ -165,8 +192,20 @@
     >
       <div class="ui-panel-elevated w-full max-w-md overflow-hidden overscroll-contain max-h-[90vh] overflow-y-auto" @click.stop>
         <div class="px-6 py-4 border-b border-black/[0.06] flex justify-between items-center">
-          <div>
-            <h3 class="text-base font-bold text-[#1C1917]">{{ modalStudent.name }}</h3>
+          <div class="min-w-0">
+            <div class="flex items-center gap-2 flex-wrap">
+              <h3 :class="['text-base font-bold', modalStudent.status === 'keluar' ? 'line-through text-[#78716C]' : 'text-[#1C1917]']">
+                {{ modalStudent.name }}
+              </h3>
+              <span
+                :class="[
+                  'text-[10px] font-bold px-2 py-0.5 rounded-full',
+                  modalStudent.status === 'keluar' ? 'bg-[#FDF2F4] text-[#9F1239]' : 'bg-[#F9EFE7] text-[#A8551E]'
+                ]"
+              >
+                {{ modalStudent.status === 'keluar' ? 'Keluar' : 'Aktif' }}
+              </span>
+            </div>
             <p class="text-xs text-[#78716C] font-mono tabular-nums">NIS {{ modalStudent.nis || '-' }}</p>
           </div>
           <button
@@ -179,6 +218,16 @@
         </div>
 
         <div class="p-6 space-y-4 text-sm">
+          <div v-if="modalStudent.status === 'keluar'" class="flex justify-between gap-3">
+            <span class="text-[#78716C]">Keluar Pada</span>
+            <span class="font-semibold text-[#9F1239] text-right">
+              {{ modalStudent.tanggal_keluar ? formatTanggalIndo(modalStudent.tanggal_keluar) : (modalStudent.keluar_label || '-') }}
+            </span>
+          </div>
+          <div class="flex justify-between gap-3">
+            <span class="text-[#78716C]">Infak Terakhir</span>
+            <span class="font-semibold text-[#1C1917] text-right">{{ formatLastInfak(modalStudent.last_infak) }}</span>
+          </div>
           <div class="flex justify-between gap-3">
             <span class="text-[#78716C]">Blok / Alamat</span>
             <span class="font-semibold text-[#1C1917] text-right">{{ modalStudent.blok || '-' }}</span>
@@ -230,21 +279,82 @@
             </button>
           </div>
 
-          <div class="pt-3 border-t border-black/[0.06] flex flex-col sm:flex-row gap-2.5">
-            <button class="ui-btn-danger ui-btn-icon-l flex-1" @click="confirmDelete(modalStudent)">
-              <UiIcon name="delete" :size="16" :weight="600" />
-              <span>Hapus Siswa</span>
+          <div class="pt-3 border-t border-black/[0.06] flex flex-col gap-2.5">
+            <div class="flex flex-col sm:flex-row gap-2.5">
+              <button
+                v-if="modalStudent.status !== 'keluar'"
+                type="button"
+                class="ui-btn-danger ui-btn-icon-l flex-1"
+                @click="openKeluarModal(modalStudent)"
+              >
+                <UiIcon name="person_off" :size="16" :weight="600" />
+                <span>Tandai Keluar</span>
+              </button>
+              <button
+                v-else
+                type="button"
+                class="ui-btn-primary ui-btn-icon-l flex-1"
+                :disabled="isUpdatingStatus"
+                @click="reactivateStudent(modalStudent)"
+              >
+                <UiIcon name="refresh" :size="16" :weight="600" />
+                <span>{{ isUpdatingStatus ? 'Mengaktifkan...' : 'Aktifkan Kembali' }}</span>
+              </button>
+
+              <router-link :to="`/admin/siswa/${modalStudent.id}/edit`" class="ui-btn-secondary ui-btn-icon-l flex-1">
+                <UiIcon name="edit" :size="16" :weight="600" />
+                <span>{{ modalStudent.status === 'keluar' ? 'Lihat Data & Riwayat' : 'Edit & Infak' }}</span>
+              </router-link>
+            </div>
+
+            <button
+              v-if="modalStudent.status !== 'keluar' && !modalStudent.has_infak"
+              type="button"
+              class="text-xs font-semibold text-[#9F1239] hover:underline self-center py-1"
+              @click="confirmDelete(modalStudent)"
+            >
+              Hapus Permanen (Belum Ada Riwayat Infak)
             </button>
-            <router-link :to="`/admin/siswa/${modalStudent.id}/edit`" class="ui-btn-secondary ui-btn-icon-l flex-1">
-              <UiIcon name="edit" :size="16" :weight="600" />
-              <span>Edit Data</span>
-            </router-link>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Delete Confirmation Modal -->
+    <!-- Tandai Keluar Confirmation Modal -->
+    <div
+      v-if="studentToExit"
+      class="fixed inset-0 z-[110] flex items-center justify-center bg-[#1C1917]/50 backdrop-blur-[2px] p-4 overscroll-contain"
+      @click="cancelKeluar"
+    >
+      <div class="ui-panel-elevated w-full max-w-md p-6 overscroll-contain" @click.stop>
+        <div class="mx-auto w-14 h-14 bg-[#FAF4E4] text-[#9A6B16] rounded-full flex items-center justify-center mb-4">
+          <UiIcon name="person_off" :size="24" :weight="600" />
+        </div>
+        <h3 class="text-lg font-bold text-[#1C1917] text-center">Tandai Siswa Keluar?</h3>
+        <p class="text-sm text-[#57534E] mt-2 leading-relaxed text-center">
+          Nama <strong>{{ studentToExit.name }}</strong> akan dicoret di daftar kelas dan tidak bisa diinput infak baru. Seluruh riwayat pembayaran, laporan bulanan, dan grafik tetap terjaga.
+        </p>
+
+        <div class="mt-4 flex flex-col gap-1.5">
+          <label class="text-xs font-semibold text-[#44403C]" for="tanggalKeluarInput">Tanggal Keluar</label>
+          <input id="tanggalKeluarInput" v-model="exitDate" type="date" class="ui-input" />
+        </div>
+
+        <div class="flex gap-3 mt-6">
+          <button type="button" class="ui-btn-secondary flex-1" @click="cancelKeluar">Batal</button>
+          <button
+            type="button"
+            class="ui-btn-danger flex-1"
+            :disabled="isUpdatingStatus"
+            @click="executeMarkKeluar"
+          >
+            {{ isUpdatingStatus ? 'Menyimpan...' : 'Ya, Tandai Keluar' }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Delete Confirmation Modal (only for students with 0 infak) -->
     <div
       v-if="studentToDelete"
       class="fixed inset-0 z-[110] flex items-center justify-center bg-[#1C1917]/50 backdrop-blur-[2px] p-4 overscroll-contain"
@@ -254,9 +364,9 @@
         <div class="mx-auto w-14 h-14 bg-[#FDF2F4] shadow-[var(--shadow-btn-danger)] rounded-full flex items-center justify-center mb-4 text-[#9F1239]">
           <UiIcon name="warning" :size="24" :weight="600" />
         </div>
-        <h3 class="text-lg font-bold text-[#1C1917]">Hapus Siswa?</h3>
+        <h3 class="text-lg font-bold text-[#1C1917]">Hapus Siswa Permanen?</h3>
         <p class="text-sm text-[#57534E] mt-2 mb-6 leading-relaxed">
-          Data <strong>{{ studentToDelete.name }}</strong> beserta seluruh catatan infaknya akan dihapus permanen.
+          Data <strong>{{ studentToDelete.name }}</strong> akan dihapus permanen karena belum memiliki riwayat pembayaran infak.
         </p>
         <div class="flex gap-3">
           <button class="ui-btn-secondary flex-1" @click="cancelDelete">Batal</button>
@@ -272,6 +382,7 @@ import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
 import axios from 'axios';
 import { drainOutbox } from '../../utils/waOutbox';
 import { notify } from '@/utils/toast';
+import { formatTanggalIndo, formatLastInfak, isMonthAfterExit } from '@/utils/studentStatus';
 
 const months = ['Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des', 'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun'];
 
@@ -289,6 +400,9 @@ const blastProgress = ref(null);
 const blastDelay = ref(60);
 const modalStudent = ref(null);
 const studentToDelete = ref(null);
+const studentToExit = ref(null);
+const exitDate = ref(new Date().toISOString().split('T')[0]);
+const isUpdatingStatus = ref(false);
 const isProvisioning = ref(false);
 const provisionedCredential = ref(null);
 
@@ -364,6 +478,14 @@ const filteredStudents = computed(() => {
   if (!currentClassObj.value) return [];
   return students.value.filter(s => s.kelas === currentClassObj.value.nama_kelas);
 });
+
+const activeCount = computed(() => filteredStudents.value.filter(s => s.status !== 'keluar').length);
+const keluarCount = computed(() => filteredStudents.value.filter(s => s.status === 'keluar').length);
+
+const currentAcadStart = (() => {
+  const now = new Date();
+  return now.getMonth() >= 6 ? now.getFullYear() : now.getFullYear() - 1;
+})();
 
 const exportSiswa = async () => {
   try {
@@ -451,6 +573,50 @@ const provisionWaliAccount = async (student) => {
   }
 };
 
+const openKeluarModal = (student) => {
+  studentToExit.value = student;
+  exitDate.value = new Date().toISOString().split('T')[0];
+  closeModal();
+};
+
+const cancelKeluar = () => {
+  studentToExit.value = null;
+};
+
+const executeMarkKeluar = async () => {
+  if (!studentToExit.value || isUpdatingStatus.value) return;
+  isUpdatingStatus.value = true;
+  try {
+    await axios.post(`/siswa/${studentToExit.value.id}/keluar`, {
+      tanggal_keluar: exitDate.value || new Date().toISOString().split('T')[0],
+    });
+    studentToExit.value = null;
+    notify('Siswa ditandai keluar. Riwayat infak tetap tersimpan.', 'success');
+    await fetchStudents();
+  } catch (error) {
+    console.error('Failed to mark student keluar:', error);
+    notify(error.response?.data?.message || 'Gagal menandai siswa keluar.', 'error');
+  } finally {
+    isUpdatingStatus.value = false;
+  }
+};
+
+const reactivateStudent = async (student) => {
+  if (!student || isUpdatingStatus.value) return;
+  isUpdatingStatus.value = true;
+  try {
+    await axios.post(`/siswa/${student.id}/aktifkan`);
+    closeModal();
+    notify('Siswa berhasil diaktifkan kembali.', 'success');
+    await fetchStudents();
+  } catch (error) {
+    console.error('Failed to reactivate student:', error);
+    notify(error.response?.data?.message || 'Gagal mengaktifkan kembali siswa.', 'error');
+  } finally {
+    isUpdatingStatus.value = false;
+  }
+};
+
 const confirmDelete = (student) => {
   studentToDelete.value = student;
   closeModal();
@@ -461,17 +627,21 @@ const cancelDelete = () => {
 };
 
 const executeDelete = async () => {
-  if (studentToDelete.value) {
-    try {
-      await axios.delete(`/siswa/${studentToDelete.value.id}`);
+  if (!studentToDelete.value) return;
+  try {
+    const res = await axios.delete(`/siswa/${studentToDelete.value.id}`);
+    if (res.data?.action === 'keluar') {
+      notify(res.data.message || 'Siswa ditandai keluar.', 'info');
+      await fetchStudents();
+    } else {
       students.value = students.value.filter(s => s.id !== studentToDelete.value.id);
-      notify('Data siswa berhasil dihapus.', 'info');
-    } catch (error) {
-      console.error('Failed to delete student:', error);
-      notify('Gagal menghapus siswa.', 'error');
-    } finally {
-      studentToDelete.value = null;
+      notify('Data siswa berhasil dihapus permanen.', 'success');
     }
+  } catch (error) {
+    console.error('Failed to delete student:', error);
+    notify(error.response?.data?.message || 'Gagal menghapus siswa.', 'error');
+  } finally {
+    studentToDelete.value = null;
   }
 };
 
