@@ -15,6 +15,10 @@ use App\Http\Controllers\Api\PembayaranManageController;
 use App\Http\Controllers\Api\MidtransWebhookController;
 use App\Models\Kelas;
 
+Route::get('/csrf-token', [\App\Http\Controllers\AuthController::class, 'csrfToken'])
+    ->middleware('web')
+    ->withoutMiddleware(\Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class);
+
 Route::post('/midtrans/webhook', [MidtransWebhookController::class, 'handle']);
 
 Route::get('/setup-kelas', function () {

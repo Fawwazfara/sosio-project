@@ -12,9 +12,18 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 window.axios.defaults.withCredentials = true;
 window.axios.defaults.withXSRFToken = true;
 window.axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL || '/api';
+const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
+if (csrfToken) {
+    window.axios.defaults.headers.common['X-CSRF-TOKEN'] = csrfToken;
+}
 
 window.axios.interceptors.response.use(
-    response => response,
+    response => {
+        if (typeof response.data?.csrf_token === 'string') {
+            window.axios.defaults.headers.common['X-CSRF-TOKEN'] = response.data.csrf_token;
+        }
+        return response;
+    },
     error => {
         if (error.response && error.response.status === 401) {
             if (router.currentRoute.value.path !== '/login') {
