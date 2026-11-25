@@ -1,27 +1,21 @@
 {
-  "name": "Infak Madrasah",
-  "short_name": "Infak",
+  "name": "As-Sajjaad Portal Infak",
+  "short_name": "As-Sajjaad",
   "description": "Aplikasi pencatatan infak madrasah",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#292524",
+  "theme_color": "#1264c7",
   "icons": [
     {
-      "src": "/icon-192x192.png",
+      "src": "/icon-192x192.png?v=2",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "/icon-512x512.png",
+      "src": "/icon-512x512.png?v=2",
       "sizes": "512x512",
       "type": "image/png"
-    },
-    {
-      "src": "/icon-512x512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
     }
   ]
 }

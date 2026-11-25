@@ -6,7 +6,7 @@
     :absolute-stroke-width="true"
     :fill="filled ? 'currentColor' : 'none'"
     :fill-opacity="filled ? 0.16 : undefined"
-    :class="['shrink-0', directional ? 'rtl:-scale-x-100' : '']"
+    :class="['ui-icon shrink-0', directional ? 'rtl:-scale-x-100' : '']"
     aria-hidden="true"
   />
 </template>
@@ -182,9 +182,9 @@ const iconComponent = computed(() => ICONS[props.name] || Info);
 // Match rendered SVG stroke weight to adjacent typography weight per better-ui/icons.md
 const computedStrokeWidth = computed(() => {
   const w = Number(props.weight);
-  if (w >= 700) return 2.4;
-  if (w >= 500) return 1.95;
-  return 1.55;
+  if (w >= 700) return 2.5;
+  if (w >= 500) return 2.1;
+  return 1.75;
 });
 </script>
 

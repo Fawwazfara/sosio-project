@@ -3,7 +3,7 @@
     <!-- Header & Concentric Mode Switch -->
     <div class="ui-stagger ui-stagger-1 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
       <div>
-        <h1 class="text-2xl sm:text-[26px] font-bold text-[#1C1917] tracking-tight">Catat Infak Siswa</h1>
+        <h1 class="text-2xl sm:text-[26px] font-bold text-[#172b4d] tracking-tight">Catat Infak Siswa</h1>
       </div>
 
       <div class="ui-segmented self-start sm:self-auto">
@@ -12,7 +12,7 @@
           @click="setInputMode('satuan')"
           :class="[
             'ui-segmented-item text-xs sm:text-sm',
-            inputMode === 'satuan' ? 'ui-segmented-item-active' : 'ui-segmented-item-idle hover:text-[#1C1917]'
+            inputMode === 'satuan' ? 'ui-segmented-item-active' : 'ui-segmented-item-idle hover:text-[#172b4d]'
           ]"
         >
           Mode Satuan
@@ -22,7 +22,7 @@
           @click="setInputMode('massal')"
           :class="[
             'ui-segmented-item text-xs sm:text-sm',
-            inputMode === 'massal' ? 'ui-segmented-item-active' : 'ui-segmented-item-idle hover:text-[#1C1917]'
+            inputMode === 'massal' ? 'ui-segmented-item-active' : 'ui-segmented-item-idle hover:text-[#172b4d]'
           ]"
         >
           Mode Massal
@@ -34,10 +34,10 @@
     <div
       v-if="isSuccess"
       role="status"
-      class="rounded-[14px] border border-transparent bg-[#F9EFE7] shadow-[0_0_0_1px_oklch(0.55_0.13_42_/_0.22)] p-5 flex items-center gap-3 text-[#7C3A10]"
+      class="rounded-[14px] border border-transparent bg-[#e8f2ff] shadow-[0_0_0_1px_oklch(0.55_0.13_42_/_0.22)] p-5 flex items-center gap-3 text-[#144b88]"
     >
-      <UiIcon name="check_circle" :size="22" :weight="600" filled class="text-[#A8551E]" />
-      <p class="text-sm font-semibold">Transaksi infak berhasil dicatat dan ditambahkan ke antrean konfirmasi WhatsApp.</p>
+      <UiIcon name="check_circle" :size="22" :weight="600" filled class="text-[#1264c7]" />
+      <p class="text-sm font-semibold">Infak tersimpan. Konfirmasi WhatsApp masuk antrean.</p>
     </div>
 
     <div class="ui-stagger ui-stagger-2 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
@@ -46,24 +46,24 @@
         <section class="ui-panel-padded space-y-5">
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div class="flex flex-col gap-1.5">
-              <label class="text-xs font-semibold text-[#44403C]" for="infakKelas">Pilih Kelas</label>
+              <label class="text-xs font-semibold text-[#354c68]" for="infakKelas">Pilih Kelas</label>
               <div class="relative">
                 <select id="infakKelas" v-model="form.kelas_id" class="ui-select">
                   <option value="" disabled>-- Pilih Kelas --</option>
                   <option v-for="k in kelasi" :key="k.id" :value="k.id">{{ k.nama_kelas }}</option>
                 </select>
-                <UiIcon name="expand_more" :size="17" :weight="600" class="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-[#78716C]" />
+                <UiIcon name="expand_more" :size="17" :weight="600" class="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-[#52657d]" />
               </div>
             </div>
             <div class="flex flex-col gap-1.5">
-              <label class="text-xs font-semibold text-[#44403C]" for="infakTanggal">Tanggal Terima</label>
+              <label class="text-xs font-semibold text-[#354c68]" for="infakTanggal">Tanggal Terima</label>
               <input id="infakTanggal" v-model="form.tanggal" type="date" class="ui-input">
             </div>
           </div>
 
           <!-- Month Grid -->
           <div class="pt-4 border-t border-black/[0.06]">
-            <label class="block text-sm font-bold text-[#1C1917] mb-3">
+            <label class="block text-sm font-bold text-[#172b4d] mb-3">
               {{ inputMode === 'satuan' ? 'Pilih Bulan Dibayar' : 'Pilih Bulan Tagihan Massal' }}
             </label>
             <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2.5">
@@ -76,10 +76,10 @@
                 :class="[
                   'min-h-[46px] px-3 rounded-[10px] border border-transparent text-xs font-bold transition-[background-color,color,box-shadow,transform] duration-150 ease-out',
                   inputMode === 'satuan' && paidMonths.includes(m)
-                    ? 'bg-[#F9EFE7] shadow-[inset_0_0_0_1px_oklch(0.55_0.13_42_/_0.22)] text-[#A8551E] opacity-70 cursor-not-allowed'
+                    ? 'bg-[#e8f2ff] shadow-[inset_0_0_0_1px_oklch(0.55_0.13_42_/_0.22)] text-[#1264c7] opacity-70 cursor-not-allowed'
                     : form.selectedMonths.includes(m)
-                      ? 'bg-[#292524] text-[#FDFCF9] shadow-[var(--shadow-btn-navy)] enabled:active:scale-[0.96]'
-                      : 'bg-[#F7F4ED] text-[#1C1917] shadow-[var(--shadow-border)] hover:bg-[#FDFCF9] hover:shadow-[var(--shadow-border-hover)] enabled:active:scale-[0.96]'
+                      ? 'bg-[#17385f] text-[#ffffff] shadow-[var(--shadow-btn-navy)] enabled:active:scale-[0.96]'
+                      : 'bg-[#f3f8fe] text-[#172b4d] shadow-[var(--shadow-border)] hover:bg-[#ffffff] hover:shadow-[var(--shadow-border-hover)] enabled:active:scale-[0.96]'
                 ]"
               >
                 {{ m }}
@@ -90,18 +90,18 @@
           <!-- Student Selection -->
           <div class="pt-4 border-t border-black/[0.06]" v-if="form.kelas_id">
             <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
-              <label class="text-sm font-bold text-[#1C1917]" for="siswaSearch">
+              <label class="text-sm font-bold text-[#172b4d]" for="siswaSearch">
                 {{ inputMode === 'satuan' ? 'Pilih Siswa' : 'Pilih Siswa Belum Lunas' }}
               </label>
               <div v-if="inputMode === 'massal' && filteredStudents.length > 0" class="flex gap-2">
-                <button type="button" @click="selectAllSiswa" class="text-xs font-semibold text-[#A8551E] hover:underline">Pilih Semua</button>
-                <span class="text-[#A8A29E]">|</span>
-                <button type="button" @click="deselectAllSiswa" class="text-xs font-semibold text-[#78716C] hover:underline">Kosongkan</button>
+                <button type="button" @click="selectAllSiswa" class="text-xs font-semibold text-[#1264c7] hover:underline">Pilih Semua</button>
+                <span class="text-[#61758f]">|</span>
+                <button type="button" @click="deselectAllSiswa" class="text-xs font-semibold text-[#52657d] hover:underline">Kosongkan</button>
               </div>
             </div>
 
             <div class="relative mb-3">
-              <UiIcon name="search" :size="17" :weight="500" class="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#78716C]" />
+              <UiIcon name="search" :size="17" :weight="500" class="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#52657d]" />
               <input
                 id="siswaSearch"
                 v-model="searchQuery"
@@ -111,10 +111,10 @@
               >
             </div>
 
-            <div v-if="isFetchingStudents" class="p-6 text-center text-sm text-[#78716C]">Memuat daftar siswa...</div>
+            <div v-if="isFetchingStudents" class="p-6 text-center text-sm text-[#52657d]">Memuat daftar siswa...</div>
             <div
               v-else-if="filteredStudents.length === 0"
-              class="p-6 text-center rounded-[12px] bg-[#F7F4ED] shadow-[inset_0_1px_2px_0_oklch(0.22_0.015_65_/_0.05),0_0_0_1px_oklch(0.22_0.015_65_/_0.07)] text-sm text-[#78716C]"
+              class="p-6 text-center rounded-[12px] bg-[#f3f8fe] shadow-[inset_0_1px_2px_0_oklch(0.22_0.015_65_/_0.05),0_0_0_1px_oklch(0.22_0.015_65_/_0.07)] text-sm text-[#52657d]"
             >
               {{ inputMode === 'massal' && form.selectedMonths.length === 0 ? 'Pilih minimal satu bulan untuk menampilkan siswa yang belum lunas.' : 'Tidak ada siswa yang sesuai.' }}
             </div>
@@ -129,14 +129,14 @@
                 :class="[
                   'min-h-[54px] p-3.5 rounded-[11px] text-left transition-[background-color,border-color,box-shadow,transform] duration-150 ease-out active:scale-[0.97] flex items-center gap-3',
                   form.siswa_id === s.id
-                    ? 'bg-[#F9EFE7] border border-[#A8551E] shadow-[0_0_0_2px_oklch(0.55_0.13_42_/_0.14)]'
-                    : 'bg-[#F7F4ED] border border-transparent shadow-[var(--shadow-border)] hover:bg-[#FDFCF9] hover:shadow-[var(--shadow-border-hover)]'
+                    ? 'bg-[#e8f2ff] border border-[#1264c7] shadow-[0_0_0_2px_oklch(0.55_0.13_42_/_0.14)]'
+                    : 'bg-[#f3f8fe] border border-transparent shadow-[var(--shadow-border)] hover:bg-[#ffffff] hover:shadow-[var(--shadow-border-hover)]'
                 ]"
               >
-                <div class="w-9 h-9 rounded-[9px] bg-[#292524] text-[#FDFCF9] text-xs font-bold flex items-center justify-center shrink-0">
+                <div class="w-9 h-9 rounded-[9px] bg-[#17385f] text-[#ffffff] text-xs font-bold flex items-center justify-center shrink-0">
                   {{ getInitials(s.fullName) }}
                 </div>
-                <span class="text-sm font-semibold text-[#1C1917] truncate">{{ s.fullName }}</span>
+                <span class="text-sm font-semibold text-[#172b4d] truncate">{{ s.fullName }}</span>
               </button>
             </div>
 
@@ -147,21 +147,21 @@
                 :key="s.id"
                 class="min-h-[50px] p-3 rounded-[11px] cursor-pointer flex items-center gap-3 transition-[background-color,border-color,box-shadow] duration-150 ease-out"
                 :class="form.siswa_ids.includes(s.id)
-                  ? 'bg-[#F9EFE7] border border-[#A8551E] shadow-[0_0_0_2px_oklch(0.55_0.13_42_/_0.14)]'
-                  : 'bg-[#F7F4ED] border border-transparent shadow-[var(--shadow-border)] hover:bg-[#FDFCF9] hover:shadow-[var(--shadow-border-hover)]'"
+                  ? 'bg-[#e8f2ff] border border-[#1264c7] shadow-[0_0_0_2px_oklch(0.55_0.13_42_/_0.14)]'
+                  : 'bg-[#f3f8fe] border border-transparent shadow-[var(--shadow-border)] hover:bg-[#ffffff] hover:shadow-[var(--shadow-border-hover)]'"
               >
-                <input type="checkbox" :value="s.id" v-model="form.siswa_ids" class="w-4 h-4 rounded border-[#D6D0C4] text-[#A8551E] focus:ring-[#A8551E]">
-                <span class="text-sm font-semibold text-[#1C1917] truncate">{{ s.fullName }}</span>
+                <input type="checkbox" :value="s.id" v-model="form.siswa_ids" class="w-4 h-4 rounded border-[#91a8c3] text-[#1264c7] focus:ring-[#1264c7]">
+                <span class="text-sm font-semibold text-[#172b4d] truncate">{{ s.fullName }}</span>
               </label>
             </div>
-            <p class="text-[11px] text-[#78716C] mt-2">
+            <p class="text-[11px] text-[#52657d] mt-2">
               Hanya siswa aktif yang ditampilkan. Siswa berstatus keluar tidak dapat diinput infak baru.
             </p>
           </div>
 
           <!-- Nominal -->
           <div class="pt-4 border-t border-black/[0.06]">
-            <label class="block text-sm font-bold text-[#1C1917] mb-2.5" for="nominalInput">Nominal per Bulan (Rp)</label>
+            <label class="block text-sm font-bold text-[#172b4d] mb-2.5" for="nominalInput">Nominal per Bulan (Rp)</label>
             <div class="flex flex-wrap gap-2 mb-3">
               <button
                 v-for="preset in [25000, 30000, 50000]"
@@ -171,8 +171,8 @@
                 :class="[
                   'min-h-[40px] px-4 rounded-[10px] border border-transparent text-xs font-mono font-bold tabular-nums transition-[background-color,color,box-shadow,transform] duration-150 ease-out active:scale-[0.96]',
                   Number(form.nominal) === preset
-                    ? 'bg-[#292524] text-[#FDFCF9] shadow-[var(--shadow-btn-navy)]'
-                    : 'bg-[#F7F4ED] text-[#1C1917] shadow-[var(--shadow-border)] hover:bg-[#FDFCF9] hover:shadow-[var(--shadow-border-hover)]'
+                    ? 'bg-[#17385f] text-[#ffffff] shadow-[var(--shadow-btn-navy)]'
+                    : 'bg-[#f3f8fe] text-[#172b4d] shadow-[var(--shadow-border)] hover:bg-[#ffffff] hover:shadow-[var(--shadow-border-hover)]'
                 ]"
               >
                 Rp {{ formatRupiah(preset) }}
@@ -185,30 +185,30 @@
 
       <!-- Summary Panel -->
       <aside class="lg:col-span-4 ui-panel-padded lg:sticky lg:top-24 flex flex-col gap-5">
-        <h2 class="text-base font-bold text-[#1C1917] pb-3 border-b border-black/[0.06]">Ringkasan Input</h2>
+        <h2 class="text-base font-bold text-[#172b4d] pb-3 border-b border-black/[0.06]">Ringkasan Input</h2>
 
         <div class="space-y-3 text-sm">
           <div class="flex justify-between">
-            <span class="text-[#78716C]">Mode Input</span>
-            <span class="font-semibold text-[#1C1917] capitalize">{{ inputMode }}</span>
+            <span class="text-[#52657d]">Mode Input</span>
+            <span class="font-semibold text-[#172b4d] capitalize">{{ inputMode }}</span>
           </div>
           <div class="flex justify-between">
-            <span class="text-[#78716C]">Bulan Dipilih</span>
-            <span class="font-semibold text-[#1C1917] tabular-nums">{{ form.selectedMonths.length }} bulan</span>
+            <span class="text-[#52657d]">Bulan Dipilih</span>
+            <span class="font-semibold text-[#172b4d] tabular-nums">{{ form.selectedMonths.length }} bulan</span>
           </div>
           <div class="flex justify-between">
-            <span class="text-[#78716C]">Jumlah Item Transaksi</span>
-            <span class="font-mono font-semibold text-[#1C1917] tabular-nums">{{ totalTransaksi }}</span>
+            <span class="text-[#52657d]">Jumlah Item Transaksi</span>
+            <span class="font-mono font-semibold text-[#172b4d] tabular-nums">{{ totalTransaksi }}</span>
           </div>
           <div class="flex justify-between">
-            <span class="text-[#78716C]">Nominal / Bulan</span>
-            <span class="font-mono font-semibold text-[#1C1917] tabular-nums">Rp {{ formatRupiah(form.nominal) }}</span>
+            <span class="text-[#52657d]">Nominal / Bulan</span>
+            <span class="font-mono font-semibold text-[#172b4d] tabular-nums">Rp {{ formatRupiah(form.nominal) }}</span>
           </div>
         </div>
 
         <div class="pt-4 border-t border-black/[0.06] flex justify-between items-center">
-          <span class="text-sm font-bold text-[#1C1917]">Total Penerimaan</span>
-          <span class="text-xl font-extrabold font-mono tabular-nums text-[#A8551E]">Rp {{ formatRupiah(totalBayar) }}</span>
+          <span class="text-sm font-bold text-[#172b4d]">Total Penerimaan</span>
+          <span class="text-xl font-extrabold font-mono tabular-nums text-[#1264c7]">Rp {{ formatRupiah(totalBayar) }}</span>
         </div>
 
         <button
@@ -219,7 +219,7 @@
         >
           <UiIcon v-if="isSubmitting" name="progress_activity" :size="17" :weight="600" class="animate-spin" />
           <UiIcon v-else name="save" :size="17" :weight="600" />
-          <span>{{ isSubmitting ? 'Menyimpan...' : 'Simpan Penerimaan Infak' }}</span>
+          <span>{{ isSubmitting ? 'Menyimpan...' : 'Simpan infak' }}</span>
         </button>
       </aside>
     </div>

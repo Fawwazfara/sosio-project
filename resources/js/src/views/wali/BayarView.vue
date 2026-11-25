@@ -4,17 +4,17 @@
     <div class="ui-stagger ui-stagger-1">
       <router-link
         to="/wali/dashboard"
-        class="text-sm font-semibold text-[#57534E] hover:text-[#1C1917] inline-flex items-center gap-1.5 mb-2 transition-[color,transform] duration-150 ease-out active:scale-[0.97]"
+        class="text-sm font-semibold text-[#52657d] hover:text-[#172b4d] inline-flex items-center gap-1.5 mb-2 transition-[color,transform] duration-150 ease-out active:scale-[0.97]"
       >
         <UiIcon name="arrow_back" :size="16" :weight="600" directional />
         <span>Status infak</span>
       </router-link>
-      <h1 class="text-2xl sm:text-[26px] font-bold text-[#1C1917] tracking-tight">Bayar infak</h1>
+      <h1 class="text-2xl sm:text-[26px] font-bold text-[#172b4d] tracking-tight">Bayar infak</h1>
     </div>
 
     <div v-if="isLoading" class="ui-panel-padded space-y-4">
-      <div class="h-6 w-48 bg-[#ECE8DF] rounded-[8px] animate-pulse"></div>
-      <div class="h-32 w-full bg-[#F7F4ED] rounded-[12px] animate-pulse"></div>
+      <div class="h-6 w-48 bg-[#e6eff9] rounded-[8px] animate-pulse"></div>
+      <div class="h-32 w-full bg-[#f3f8fe] rounded-[12px] animate-pulse"></div>
     </div>
 
     <!-- ACTIVE QRIS / OFFLINE SLIP / RECEIPT SCREEN -->
@@ -25,37 +25,37 @@
         <!-- PAID RECEIPT STATE -->
         <template v-if="activeTransaction.status === 'paid'">
           <div class="flex items-center gap-3.5 pb-5 border-b border-black/[0.07]">
-            <div class="w-12 h-12 rounded-[12px] bg-[#F9EFE7] shadow-[inset_0_0_0_1px_oklch(0.55_0.13_42_/_0.2)] text-[#A8551E] flex items-center justify-center shrink-0">
+            <div class="w-12 h-12 rounded-[12px] bg-[#e8f2ff] shadow-[inset_0_0_0_1px_oklch(0.55_0.13_42_/_0.2)] text-[#1264c7] flex items-center justify-center shrink-0">
               <UiIcon name="verified" :size="24" :weight="600" filled />
             </div>
             <div>
-              <h2 class="text-lg font-bold text-[#1C1917]">Pembayaran Lunas Terverifikasi</h2>
-              <p class="text-sm text-[#A8551E] font-medium mt-0.5">Kwitansi Digital Infak Madrasah As-Sajjaad</p>
+              <h2 class="text-lg font-bold text-[#172b4d]">Pembayaran Lunas Terverifikasi</h2>
+              <p class="text-sm text-[#1264c7] font-medium mt-0.5">Kwitansi Digital Infak Madrasah As-Sajjaad</p>
             </div>
           </div>
 
           <div class="py-5 space-y-3.5 text-sm border-b border-black/[0.07]">
             <div class="flex justify-between gap-4">
-              <span class="text-[#78716C]">Nomor Referensi</span>
-              <span class="font-mono font-bold text-[#1C1917]">{{ activeTransaction.kode_referensi }}</span>
+              <span class="text-[#52657d]">Nomor Referensi</span>
+              <span class="font-mono font-bold text-[#172b4d]">{{ activeTransaction.kode_referensi }}</span>
             </div>
             <div class="flex justify-between gap-4">
-              <span class="text-[#78716C]">Nama Siswa</span>
-              <span class="font-semibold text-[#1C1917] text-right">{{ activeTransaction.siswa_nama }} ({{ activeTransaction.kelas_nama }})</span>
+              <span class="text-[#52657d]">Nama Siswa</span>
+              <span class="font-semibold text-[#172b4d] text-right">{{ activeTransaction.siswa_nama }} ({{ activeTransaction.kelas_nama }})</span>
             </div>
             <div class="flex justify-between gap-4">
-              <span class="text-[#78716C]">Bulan Dibayar</span>
-              <span class="font-semibold text-[#1C1917] text-right">{{ activeTransaction.bulan_labels.join(', ') }}</span>
+              <span class="text-[#52657d]">Bulan Dibayar</span>
+              <span class="font-semibold text-[#172b4d] text-right">{{ activeTransaction.bulan_labels.join(', ') }}</span>
             </div>
             <div class="flex justify-between gap-4">
-              <span class="text-[#78716C]">Metode</span>
-              <span class="font-semibold text-[#292524] text-right">
+              <span class="text-[#52657d]">Metode</span>
+              <span class="font-semibold text-[#17385f] text-right">
                 {{ activeTransaction.metode === 'online' ? 'Online · QRIS (Sandbox)' : 'Offline · Tunai Wali Kelas' }}
               </span>
             </div>
-            <div class="flex justify-between items-center pt-3 border-t border-dashed border-[#D6D0C4]">
-              <span class="font-bold text-[#1C1917]">Total Diterima</span>
-              <span class="text-xl font-extrabold font-mono tabular-nums text-[#A8551E]">Rp {{ formatRupiah(activeTransaction.total_nominal) }}</span>
+            <div class="flex justify-between items-center pt-3 border-t border-dashed border-[#91a8c3]">
+              <span class="font-bold text-[#172b4d]">Total Diterima</span>
+              <span class="text-xl font-extrabold font-mono tabular-nums text-[#1264c7]">Rp {{ formatRupiah(activeTransaction.total_nominal) }}</span>
             </div>
           </div>
 
@@ -74,24 +74,23 @@
         <template v-else-if="activeTransaction.metode === 'online'">
           <div class="flex flex-wrap items-start justify-between gap-3 pb-5 border-b border-black/[0.07]">
             <div>
-              <h2 class="text-lg font-bold text-[#1C1917]">Scan Barcode QRIS untuk Membayar</h2>
-              <p class="text-sm text-[#78716C] mt-0.5">Pembayaran Online Instan</p>
+              <h2 class="text-lg font-bold text-[#172b4d]">Scan Barcode QRIS untuk Membayar</h2>
             </div>
-            <div class="px-3 py-1.5 rounded-[10px] bg-[#F9EFE7] shadow-[inset_0_0_0_1px_oklch(0.55_0.13_42_/_0.2)] text-right">
-              <span class="block text-xs text-[#57534E]">Kode Tagihan</span>
-              <span class="text-xs font-mono font-bold text-[#7C3A10]">{{ activeTransaction.kode_referensi }}</span>
+            <div class="px-3 py-1.5 rounded-[10px] bg-[#e8f2ff] shadow-[inset_0_0_0_1px_oklch(0.55_0.13_42_/_0.2)] text-right">
+              <span class="block text-xs text-[#52657d]">Kode Tagihan</span>
+              <span class="text-xs font-mono font-bold text-[#144b88]">{{ activeTransaction.kode_referensi }}</span>
             </div>
           </div>
 
           <div class="py-6 flex flex-col items-center text-center">
             <!-- Concentric QRIS Ticket: p-5 (20px) keeps independent radius token, inner p-3 (12px) + rounded-[8px] = rounded-[20px] -->
-            <div class="bg-[#F7F4ED] rounded-[20px] p-5 flex flex-col items-center w-full max-w-sm shadow-[inset_0_1px_2px_0_oklch(0.22_0.015_65_/_0.05),0_0_0_1px_oklch(0.22_0.015_65_/_0.07)]">
+            <div class="bg-[#f3f8fe] rounded-[20px] p-5 flex flex-col items-center w-full max-w-sm shadow-[inset_0_1px_2px_0_oklch(0.22_0.015_65_/_0.05),0_0_0_1px_oklch(0.22_0.015_65_/_0.07)]">
               <div class="flex items-center gap-2 mb-4">
-                <span class="text-sm font-extrabold tracking-widest text-[#292524]">QRIS</span>
-                <span class="text-xs text-[#78716C]">· MADRASAH AS-SAJJAAD</span>
+                <span class="text-sm font-extrabold tracking-widest text-[#17385f]">QRIS</span>
+                <span class="text-xs text-[#52657d]">· MADRASAH AS-SAJJAAD</span>
               </div>
 
-              <div class="bg-[#FDFCF9] p-3 rounded-[14px] shadow-[var(--shadow-border)]">
+              <div class="bg-[#ffffff] p-3 rounded-[14px] shadow-[var(--shadow-border)]">
                 <QrCodeSvg v-if="activeTransaction.qr_payload" :value="activeTransaction.qr_payload" :size="208" />
                 <img
                   v-else-if="activeTransaction.qr_image_url"
@@ -101,13 +100,13 @@
                 />
               </div>
 
-              <p class="text-xs font-mono text-[#78716C] mt-4 tabular-nums">
+              <p class="text-xs font-mono text-[#52657d] mt-4 tabular-nums">
                 {{ isMidtransTx ? 'Powered by Midtrans QRIS' : 'NMID: ID1026000881920' }}
               </p>
-              <p class="text-2xl font-extrabold font-mono tabular-nums text-[#1C1917] mt-1">
+              <p class="text-2xl font-extrabold font-mono tabular-nums text-[#172b4d] mt-1">
                 Rp {{ formatRupiah(activeTransaction.total_nominal) }}
               </p>
-              <p class="text-xs text-[#57534E] mt-2 leading-relaxed">
+              <p class="text-xs text-[#52657d] mt-2 leading-relaxed">
                 Dukung GoPay, OVO, DANA, ShopeePay, BCA, BRI, Mandiri, BSI &amp; seluruh mobile banking.
               </p>
             </div>
@@ -115,25 +114,25 @@
             <!-- Midtrans Live / Sandbox Panel -->
             <div
               v-if="isMidtransTx"
-              class="mt-6 w-full bg-[#F9EFE7] rounded-[14px] p-5 text-left border border-transparent shadow-[0_0_0_1px_oklch(0.55_0.13_42_/_0.22)]"
+              class="mt-6 w-full bg-[#e8f2ff] rounded-[14px] p-5 text-left border border-transparent shadow-[0_0_0_1px_oklch(0.55_0.13_42_/_0.22)]"
             >
               <div class="flex items-start gap-3">
-                <div class="w-9 h-9 rounded-[9px] bg-[#F2DFCF] text-[#A8551E] flex items-center justify-center shrink-0">
+                <div class="w-9 h-9 rounded-[9px] bg-[#d5e8ff] text-[#1264c7] flex items-center justify-center shrink-0">
                   <UiIcon :name="sandboxEnabled ? 'science' : 'qr_code_scanner'" :size="18" :weight="600" />
                 </div>
                 <div class="flex-1 min-w-0">
                   <div class="flex flex-wrap items-center gap-2">
-                    <p class="text-sm font-bold text-[#1C1917]">
+                    <p class="text-sm font-bold text-[#172b4d]">
                       {{ sandboxEnabled ? 'Midtrans QRIS Sandbox Aktif' : 'Menunggu Pembayaran QRIS' }}
                     </p>
-                    <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-[#FDFCF9] text-[#7C3A10]">
+                    <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-[#ffffff] text-[#144b88]">
                       Cek otomatis aktif
                     </span>
                   </div>
-                  <p class="text-xs text-[#57534E] mt-1 leading-relaxed">
+                  <p class="text-xs text-[#52657d] mt-1 leading-relaxed">
                     <template v-if="sandboxEnabled">
                       Untuk uji coba tanpa uang asli, salin URL QR di bawah lalu bayar di
-                      <a href="https://simulator.sandbox.midtrans.com/v2/qris/index" target="_blank" rel="noopener" class="font-semibold text-[#A8551E] underline">Simulator Midtrans</a>,
+                      <a href="https://simulator.sandbox.midtrans.com/v2/qris/index" target="_blank" rel="noopener" class="font-semibold text-[#1264c7] underline">Simulator Midtrans</a>,
                       kemudian klik Cek Status (atau tunggu pembaruan otomatis).
                     </template>
                     <template v-else>
@@ -141,12 +140,12 @@
                     </template>
                   </p>
 
-                  <div v-if="sandboxEnabled && activeTransaction.qr_image_url" class="mt-3 p-2.5 rounded-[10px] bg-[#FDFCF9] border border-[#E6E1D6] flex items-center justify-between gap-2">
-                    <span class="text-[11px] font-mono text-[#57534E] truncate">{{ activeTransaction.qr_image_url }}</span>
+                  <div v-if="sandboxEnabled && activeTransaction.qr_image_url" class="mt-3 p-2.5 rounded-[10px] bg-[#ffffff] border border-[#dfe9f5] flex items-center justify-between gap-2">
+                    <span class="text-[11px] font-mono text-[#52657d] truncate">{{ activeTransaction.qr_image_url }}</span>
                     <button
                       type="button"
                       @click="copyQrUrl"
-                      class="px-2.5 py-1.5 rounded-[8px] bg-[#ECE8DF] hover:bg-[#E2DDD2] text-[#1C1917] text-xs font-semibold shrink-0"
+                      class="px-2.5 py-1.5 rounded-[8px] bg-[#e6eff9] hover:bg-[#cbdced] text-[#172b4d] text-xs font-semibold shrink-0"
                     >
                       Salin URL QR
                     </button>
@@ -195,15 +194,15 @@
             <!-- Local Sandbox Simulation Panel (when MIDTRANS_SERVER_KEY is not set) -->
             <div
               v-else-if="sandboxEnabled"
-              class="mt-6 w-full bg-[#F9EFE7] rounded-[14px] p-5 text-left border border-transparent shadow-[0_0_0_1px_oklch(0.55_0.13_42_/_0.22)]"
+              class="mt-6 w-full bg-[#e8f2ff] rounded-[14px] p-5 text-left border border-transparent shadow-[0_0_0_1px_oklch(0.55_0.13_42_/_0.22)]"
             >
               <div class="flex items-start gap-3">
-                <div class="w-9 h-9 rounded-[9px] bg-[#F2DFCF] text-[#A8551E] flex items-center justify-center shrink-0">
+                <div class="w-9 h-9 rounded-[9px] bg-[#d5e8ff] text-[#1264c7] flex items-center justify-center shrink-0">
                   <UiIcon name="science" :size="18" :weight="600" />
                 </div>
                 <div class="flex-1">
-                  <p class="text-sm font-bold text-[#1C1917]">Mode Sandbox Payment Gateway</p>
-                  <p class="text-xs text-[#57534E] mt-1 leading-relaxed">
+                  <p class="text-sm font-bold text-[#172b4d]">Mode Sandbox Payment Gateway</p>
+                  <p class="text-xs text-[#52657d] mt-1 leading-relaxed">
                     Koneksi penyedia QRIS live belum diaktifkan. Tekan tombol di bawah untuk menguji verifikasi pembayaran otomatis.
                   </p>
                   <div class="flex flex-wrap items-center gap-3 mt-4">
@@ -252,16 +251,15 @@
         <template v-else>
           <div class="flex flex-wrap items-start justify-between gap-3 pb-5 border-b border-black/[0.07]">
             <div>
-              <h2 class="text-lg font-bold text-[#1C1917]">Slip Rencana Setoran Tunai</h2>
-              <p class="text-sm text-[#9A6B16] font-medium mt-0.5">Pembayaran Offline via Wali Kelas</p>
+              <h2 class="text-lg font-bold text-[#172b4d]">Slip Rencana Setoran Tunai</h2>
             </div>
-            <span class="text-xs font-mono font-bold px-3 py-1.5 rounded-[9px] bg-[#FAF4E4] shadow-[inset_0_0_0_1px_oklch(0.62_0.12_75_/_0.28)] text-[#6E4A0B]">
+            <span class="text-xs font-mono font-bold px-3 py-1.5 rounded-[9px] bg-[#fff3df] shadow-[inset_0_0_0_1px_oklch(0.62_0.12_75_/_0.28)] text-[#9a3d0a]">
               {{ activeTransaction.kode_referensi }}
             </span>
           </div>
 
           <div class="py-5 space-y-5">
-            <div class="bg-[#FAF4E4] rounded-[12px] p-5 text-sm text-[#6E4A0B] shadow-[inset_0_0_0_1px_oklch(0.62_0.12_75_/_0.25)]">
+            <div class="bg-[#fff3df] rounded-[12px] p-5 text-sm text-[#9a3d0a] shadow-[inset_0_0_0_1px_oklch(0.62_0.12_75_/_0.25)]">
               <p class="font-bold mb-2">Langkah Penyerahan Tunai:</p>
               <ol class="list-decimal list-inside space-y-1.5 text-sm leading-relaxed">
                 <li>Siapkan uang tunai pas sejumlah <strong class="font-mono tabular-nums">Rp {{ formatRupiah(activeTransaction.total_nominal) }}</strong>.</li>
@@ -270,26 +268,26 @@
               </ol>
             </div>
 
-            <div class="bg-[#F7F4ED] rounded-[12px] p-5 space-y-3 text-sm shadow-[inset_0_1px_2px_0_oklch(0.22_0.015_65_/_0.05),0_0_0_1px_oklch(0.22_0.015_65_/_0.07)]">
+            <div class="bg-[#f3f8fe] rounded-[12px] p-5 space-y-3 text-sm shadow-[inset_0_1px_2px_0_oklch(0.22_0.015_65_/_0.05),0_0_0_1px_oklch(0.22_0.015_65_/_0.07)]">
               <div class="flex justify-between gap-4">
-                <span class="text-[#78716C]">Siswa</span>
-                <span class="font-semibold text-[#1C1917] text-right">{{ activeTransaction.siswa_nama }} ({{ activeTransaction.kelas_nama }})</span>
+                <span class="text-[#52657d]">Siswa</span>
+                <span class="font-semibold text-[#172b4d] text-right">{{ activeTransaction.siswa_nama }} ({{ activeTransaction.kelas_nama }})</span>
               </div>
               <div class="flex justify-between gap-4">
-                <span class="text-[#78716C]">Wali Kelas Penerima</span>
-                <span class="font-semibold text-[#1C1917] text-right">{{ activeTransaction.wali_kelas_nama }}</span>
+                <span class="text-[#52657d]">Wali Kelas Penerima</span>
+                <span class="font-semibold text-[#172b4d] text-right">{{ activeTransaction.wali_kelas_nama }}</span>
               </div>
               <div class="flex justify-between gap-4">
-                <span class="text-[#78716C]">Bulan</span>
-                <span class="font-semibold text-[#1C1917] text-right">{{ activeTransaction.bulan_labels.join(', ') }}</span>
+                <span class="text-[#52657d]">Bulan</span>
+                <span class="font-semibold text-[#172b4d] text-right">{{ activeTransaction.bulan_labels.join(', ') }}</span>
               </div>
               <div v-if="activeTransaction.catatan" class="flex justify-between gap-4">
-                <span class="text-[#78716C]">Catatan</span>
-                <span class="text-right text-[#1C1917]">{{ activeTransaction.catatan }}</span>
+                <span class="text-[#52657d]">Catatan</span>
+                <span class="text-right text-[#172b4d]">{{ activeTransaction.catatan }}</span>
               </div>
               <div class="flex justify-between items-center pt-3 border-t border-black/[0.07]">
-                <span class="font-bold text-[#1C1917]">Total Tunai Diserahkan</span>
-                <span class="font-mono font-bold text-[#9A6B16] text-lg tabular-nums">Rp {{ formatRupiah(activeTransaction.total_nominal) }}</span>
+                <span class="font-bold text-[#172b4d]">Total Tunai Diserahkan</span>
+                <span class="font-mono font-bold text-[#aa480e] text-lg tabular-nums">Rp {{ formatRupiah(activeTransaction.total_nominal) }}</span>
               </div>
             </div>
 
@@ -329,28 +327,28 @@
 
       <!-- Right Summary Box -->
       <aside class="lg:col-span-5 ui-panel-padded space-y-4">
-        <h3 class="text-base font-bold text-[#1C1917]">Rincian Tagihan</h3>
-        <div class="space-y-3 text-sm text-[#57534E] border-b border-black/[0.07] pb-4">
+        <h3 class="text-base font-bold text-[#172b4d]">Rincian Tagihan</h3>
+        <div class="space-y-3 text-sm text-[#52657d] border-b border-black/[0.07] pb-4">
           <div class="flex justify-between gap-3">
             <span>Siswa</span>
-            <span class="font-semibold text-[#1C1917] text-right">{{ activeTransaction.siswa_nama }}</span>
+            <span class="font-semibold text-[#172b4d] text-right">{{ activeTransaction.siswa_nama }}</span>
           </div>
           <div class="flex justify-between gap-3">
             <span>Kelas</span>
-            <span class="font-semibold text-[#1C1917] text-right">{{ activeTransaction.kelas_nama }}</span>
+            <span class="font-semibold text-[#172b4d] text-right">{{ activeTransaction.kelas_nama }}</span>
           </div>
           <div class="flex justify-between gap-3">
             <span>Jumlah Bulan</span>
-            <span class="font-semibold text-[#1C1917] tabular-nums">{{ activeTransaction.bulan_labels.length }} bulan</span>
+            <span class="font-semibold text-[#172b4d] tabular-nums">{{ activeTransaction.bulan_labels.length }} bulan</span>
           </div>
           <div class="flex justify-between gap-3">
             <span>Nominal / Bulan</span>
-            <span class="font-mono font-semibold text-[#1C1917] tabular-nums">Rp {{ formatRupiah(activeTransaction.nominal_per_bulan) }}</span>
+            <span class="font-mono font-semibold text-[#172b4d] tabular-nums">Rp {{ formatRupiah(activeTransaction.nominal_per_bulan) }}</span>
           </div>
         </div>
         <div class="flex justify-between items-center pt-1">
-          <span class="text-sm font-bold text-[#1C1917]">Total</span>
-          <span class="text-xl font-extrabold font-mono tabular-nums text-[#292524]">Rp {{ formatRupiah(activeTransaction.total_nominal) }}</span>
+          <span class="text-sm font-bold text-[#172b4d]">Total</span>
+          <span class="text-xl font-extrabold font-mono tabular-nums text-[#17385f]">Rp {{ formatRupiah(activeTransaction.total_nominal) }}</span>
         </div>
       </aside>
     </div>
@@ -371,7 +369,7 @@
 
         <!-- Step 1: Pilih Siswa (jika >1) -->
         <section v-if="students.length > 1" class="ui-panel-padded ui-stagger ui-stagger-2">
-          <h2 class="text-base font-bold text-[#1C1917] mb-3.5">Pilih siswa</h2>
+          <h2 class="text-base font-bold text-[#172b4d] mb-3.5">Pilih siswa</h2>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <button
               v-for="s in students"
@@ -381,12 +379,12 @@
               :class="[
                 'min-h-[64px] p-4 rounded-[12px] text-left transition-[background-color,box-shadow,transform] duration-150 ease-out active:scale-[0.96]',
                 form.siswa_id === s.id
-                  ? 'bg-[#F9EFE7] border border-[#A8551E] shadow-[0_0_0_2px_oklch(0.55_0.13_42_/_0.14)]'
-                  : 'bg-[#F7F4ED] border border-transparent shadow-[var(--shadow-border)] hover:shadow-[var(--shadow-border-hover)] hover:bg-[#FDFCF9]'
+                  ? 'bg-[#e8f2ff] border border-[#1264c7] shadow-[0_0_0_2px_oklch(0.55_0.13_42_/_0.14)]'
+                  : 'bg-[#f3f8fe] border border-transparent shadow-[var(--shadow-border)] hover:shadow-[var(--shadow-border-hover)] hover:bg-[#ffffff]'
               ]"
             >
-              <p class="text-sm font-bold text-[#1C1917]">{{ s.nama_lengkap }}</p>
-              <p class="text-xs text-[#57534E] mt-1 tabular-nums">{{ s.kelas }} · {{ s.unpaid_count }} bulan belum dibayar</p>
+              <p class="text-sm font-bold text-[#172b4d]">{{ s.nama_lengkap }}</p>
+              <p class="text-xs text-[#52657d] mt-1 tabular-nums">{{ s.kelas }} · {{ s.unpaid_count }} bulan belum dibayar</p>
             </button>
           </div>
         </section>
@@ -395,8 +393,8 @@
         <section class="ui-panel-padded ui-stagger ui-stagger-2">
           <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
             <div>
-              <h2 class="text-base font-bold text-[#1C1917]">Pilih Bulan Infak</h2>
-              <p class="text-xs text-[#78716C] mt-0.5" v-if="currentStudent">
+              <h2 class="text-base font-bold text-[#172b4d]">Pilih Bulan Infak</h2>
+              <p class="text-xs text-[#52657d] mt-0.5" v-if="currentStudent">
                 {{ currentStudent.nama_lengkap }} ({{ currentStudent.kelas }})
               </p>
             </div>
@@ -404,7 +402,7 @@
               v-if="selectableMonths.length > 0"
               type="button"
               @click="toggleAllSelectable"
-              class="min-h-[38px] px-3.5 rounded-[10px] border border-transparent bg-[#F7F4ED] shadow-[var(--shadow-border)] hover:shadow-[var(--shadow-border-hover)] hover:bg-[#FDFCF9] text-xs font-semibold text-[#A8551E] transition-[background-color,box-shadow,transform] duration-150 ease-out active:scale-[0.96]"
+              class="min-h-[38px] px-3.5 rounded-[10px] border border-transparent bg-[#f3f8fe] shadow-[var(--shadow-border)] hover:shadow-[var(--shadow-border-hover)] hover:bg-[#ffffff] text-xs font-semibold text-[#1264c7] transition-[background-color,box-shadow,transform] duration-150 ease-out active:scale-[0.96]"
             >
               {{ form.months.length === selectableMonths.length ? 'Kosongkan Pilihan' : 'Pilih Semua Tersedia' }}
             </button>
@@ -412,7 +410,7 @@
 
           <div
             v-if="currentStudent && currentStudent.months.every(m => m.paid)"
-            class="p-4 rounded-[12px] bg-[#F9EFE7] text-sm text-[#7C3A10] shadow-[inset_0_0_0_1px_oklch(0.55_0.13_42_/_0.2)]"
+            class="p-4 rounded-[12px] bg-[#e8f2ff] text-sm text-[#144b88] shadow-[inset_0_0_0_1px_oklch(0.55_0.13_42_/_0.2)]"
           >
             Alhamdulillah, seluruh 12 bulan infak tahun ajaran ini sudah lunas.
           </div>
@@ -428,19 +426,19 @@
               :class="[
                 'p-3.5 rounded-[12px] text-left transition-[background-color,color,box-shadow,border-color,transform] duration-150 ease-out flex flex-col justify-between min-h-[84px]',
                 m.paid
-                  ? 'bg-[#F9EFE7] border border-transparent shadow-[inset_0_0_0_1px_oklch(0.55_0.13_42_/_0.2)] text-[#7C3A10] opacity-75 cursor-not-allowed'
+                  ? 'bg-[#e8f2ff] border border-transparent shadow-[inset_0_0_0_1px_oklch(0.55_0.13_42_/_0.2)] text-[#144b88] opacity-75 cursor-not-allowed'
                   : m.pending
-                    ? 'bg-[#FAF4E4] border border-transparent shadow-[inset_0_0_0_1px_oklch(0.62_0.12_75_/_0.28)] text-[#7D5714] opacity-85 cursor-not-allowed'
+                    ? 'bg-[#fff3df] border border-transparent shadow-[inset_0_0_0_1px_oklch(0.62_0.12_75_/_0.28)] text-[#99410c] opacity-85 cursor-not-allowed'
                     : form.months.includes(m.english)
-                      ? 'bg-[#292524] border border-transparent text-white shadow-[var(--shadow-btn-navy)] enabled:active:scale-[0.96]'
-                      : 'bg-[#F7F4ED] border border-transparent shadow-[var(--shadow-border)] text-[#1C1917] hover:bg-[#FDFCF9] hover:shadow-[var(--shadow-border-hover)] enabled:active:scale-[0.96]'
+                      ? 'bg-[#17385f] border border-transparent text-white shadow-[var(--shadow-btn-navy)] enabled:active:scale-[0.96]'
+                      : 'bg-[#f3f8fe] border border-transparent shadow-[var(--shadow-border)] text-[#172b4d] hover:bg-[#ffffff] hover:shadow-[var(--shadow-border-hover)] enabled:active:scale-[0.96]'
               ]"
             >
               <div class="flex items-center justify-between w-full gap-1">
                 <span class="text-sm font-bold">{{ m.label }}</span>
                 <UiIcon v-if="form.months.includes(m.english)" name="check_circle" :size="17" :weight="600" />
               </div>
-              <span class="text-xs mt-1.5" :class="form.months.includes(m.english) ? 'text-[#E7C0A1]' : 'text-[#78716C]'">
+              <span class="text-xs mt-1.5" :class="form.months.includes(m.english) ? 'text-[#bfdbfe]' : 'text-[#52657d]'">
                 {{ m.paid ? 'Sudah Lunas' : m.pending ? 'Sedang Proses' : 'Belum Bayar' }}
               </span>
             </button>
@@ -448,7 +446,7 @@
 
           <!-- Nominal per bulan -->
           <div class="mt-6 pt-6 border-t border-black/[0.07]">
-            <label class="block text-sm font-bold text-[#1C1917] mb-3" for="nominalInput">Nominal Infak per Bulan</label>
+            <label class="block text-sm font-bold text-[#172b4d] mb-3" for="nominalInput">Nominal Infak per Bulan</label>
             <div class="flex flex-wrap gap-2.5 mb-3.5">
               <button
                 v-for="preset in [25000, 30000, 50000, 100000]"
@@ -458,15 +456,15 @@
                 :class="[
                   'min-h-[42px] px-4 rounded-[10px] border border-transparent text-xs font-mono font-bold tabular-nums transition-[background-color,color,box-shadow,transform] duration-150 ease-out active:scale-[0.96]',
                   Number(form.nominal_per_bulan) === preset
-                    ? 'bg-[#292524] text-white shadow-[var(--shadow-btn-navy)]'
-                    : 'bg-[#F7F4ED] text-[#1C1917] shadow-[var(--shadow-border)] hover:bg-[#FDFCF9] hover:shadow-[var(--shadow-border-hover)]'
+                    ? 'bg-[#17385f] text-white shadow-[var(--shadow-btn-navy)]'
+                    : 'bg-[#f3f8fe] text-[#172b4d] shadow-[var(--shadow-border)] hover:bg-[#ffffff] hover:shadow-[var(--shadow-border-hover)]'
                 ]"
               >
                 Rp {{ formatRupiah(preset) }}
               </button>
             </div>
             <div class="relative max-w-xs">
-              <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs font-mono font-bold text-[#78716C]">Rp</span>
+              <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs font-mono font-bold text-[#52657d]">Rp</span>
               <input
                 id="nominalInput"
                 v-model.number="form.nominal_per_bulan"
@@ -481,7 +479,7 @@
 
         <!-- Step 3: Metode Pembayaran (Online QRIS vs Offline Wali Kelas) -->
         <section class="ui-panel-padded ui-stagger ui-stagger-3">
-          <h2 class="text-base font-bold text-[#1C1917] mb-4">Pilih Metode Pembayaran</h2>
+          <h2 class="text-base font-bold text-[#172b4d] mb-4">Pilih Metode Pembayaran</h2>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <!-- Opsi Online QRIS -->
@@ -492,20 +490,20 @@
               :class="[
                 'p-4 sm:p-5 rounded-[14px] text-left transition-[background-color,border-color,box-shadow,transform] duration-150 ease-out active:scale-[0.96] flex flex-col gap-3',
                 form.metode === 'online'
-                  ? 'border border-[#A8551E] bg-[#F9EFE7] shadow-[0_0_0_2px_oklch(0.55_0.13_42_/_0.14)]'
-                  : 'border border-transparent bg-[#F7F4ED] shadow-[var(--shadow-border)] hover:bg-[#FDFCF9] hover:shadow-[var(--shadow-border-hover)]'
+                  ? 'border border-[#1264c7] bg-[#e8f2ff] shadow-[0_0_0_2px_oklch(0.55_0.13_42_/_0.14)]'
+                  : 'border border-transparent bg-[#f3f8fe] shadow-[var(--shadow-border)] hover:bg-[#ffffff] hover:shadow-[var(--shadow-border-hover)]'
               ]"
             >
               <div class="flex items-center justify-between gap-2 w-full">
                 <div class="flex items-center gap-2.5">
-                  <UiIcon name="qr_code_2" :size="22" :weight="600" class="text-[#A8551E]" />
-                  <span class="text-sm font-bold text-[#1C1917]">QRIS online</span>
+                  <UiIcon name="qr_code_2" :size="22" :weight="600" class="text-[#1264c7]" />
+                  <span class="text-sm font-bold text-[#172b4d]">QRIS online</span>
                 </div>
-                <span class="text-xs font-semibold px-2.5 py-0.5 rounded-[7px] bg-[#F2DFCF] text-[#7C3A10]">
+                <span class="text-xs font-semibold px-2.5 py-0.5 rounded-[7px] bg-[#d5e8ff] text-[#144b88]">
                   Otomatis
                 </span>
               </div>
-              <p class="text-xs text-[#57534E] leading-relaxed">
+              <p class="text-xs text-[#52657d] leading-relaxed">
                 Bayar melalui e-wallet atau mobile banking. Tersedia simulasi sandbox.
               </p>
             </button>
@@ -518,27 +516,27 @@
               :class="[
                 'p-4 sm:p-5 rounded-[14px] text-left transition-[background-color,border-color,box-shadow,transform] duration-150 ease-out active:scale-[0.96] flex flex-col gap-3',
                 form.metode === 'offline'
-                  ? 'border border-[#9A6B16] bg-[#FAF4E4] shadow-[0_0_0_2px_oklch(0.62_0.12_75_/_0.15)]'
-                  : 'border border-transparent bg-[#F7F4ED] shadow-[var(--shadow-border)] hover:bg-[#FDFCF9] hover:shadow-[var(--shadow-border-hover)]'
+                  ? 'border border-[#aa480e] bg-[#fff3df] shadow-[0_0_0_2px_oklch(0.62_0.12_75_/_0.15)]'
+                  : 'border border-transparent bg-[#f3f8fe] shadow-[var(--shadow-border)] hover:bg-[#ffffff] hover:shadow-[var(--shadow-border-hover)]'
               ]"
             >
               <div class="flex items-center justify-between gap-2 w-full">
                 <div class="flex items-center gap-2.5">
-                  <UiIcon name="handshake" :size="22" :weight="600" class="text-[#9A6B16]" />
-                  <span class="text-sm font-bold text-[#1C1917]">Tunai ke wali kelas</span>
+                  <UiIcon name="handshake" :size="22" :weight="600" class="text-[#aa480e]" />
+                  <span class="text-sm font-bold text-[#172b4d]">Tunai ke wali kelas</span>
                 </div>
-                <span class="text-xs font-semibold px-2.5 py-0.5 rounded-[7px] bg-[#F0DFB0] text-[#6E4A0B]">
+                <span class="text-xs font-semibold px-2.5 py-0.5 rounded-[7px] bg-[#ffcf91] text-[#9a3d0a]">
                   Tatap Muka
                 </span>
               </div>
-              <p class="text-xs text-[#57534E] leading-relaxed">
+              <p class="text-xs text-[#52657d] leading-relaxed">
                 Buat slip, lalu serahkan uang ke <strong>{{ currentStudent?.wali_kelas || 'wali kelas' }}</strong>.
               </p>
             </button>
           </div>
 
           <div class="mt-5">
-            <label class="block text-xs font-semibold text-[#44403C] mb-1.5" for="catatan">
+            <label class="block text-xs font-semibold text-[#354c68] mb-1.5" for="catatan">
               Catatan (opsional)
             </label>
             <input
@@ -554,32 +552,32 @@
 
       <!-- Right Sticky Summary -->
       <aside class="lg:col-span-4 ui-panel-padded lg:sticky lg:top-24 flex flex-col gap-5 ui-stagger ui-stagger-3">
-        <h2 class="text-base font-bold text-[#1C1917] pb-3.5 border-b border-black/[0.07]">Ringkasan Pembayaran</h2>
+        <h2 class="text-base font-bold text-[#172b4d] pb-3.5 border-b border-black/[0.07]">Ringkasan Pembayaran</h2>
 
         <div class="space-y-3 text-sm">
           <div class="flex justify-between gap-2">
-            <span class="text-[#78716C]">Siswa</span>
-            <span class="font-semibold text-[#1C1917] text-right">{{ currentStudent?.nama_lengkap || '-' }}</span>
+            <span class="text-[#52657d]">Siswa</span>
+            <span class="font-semibold text-[#172b4d] text-right">{{ currentStudent?.nama_lengkap || '-' }}</span>
           </div>
           <div class="flex justify-between gap-2">
-            <span class="text-[#78716C]">Metode</span>
-            <span class="font-semibold" :class="form.metode === 'online' ? 'text-[#A8551E]' : 'text-[#9A6B16]'">
+            <span class="text-[#52657d]">Metode</span>
+            <span class="font-semibold" :class="form.metode === 'online' ? 'text-[#1264c7]' : 'text-[#aa480e]'">
               {{ form.metode === 'online' ? 'Online (QRIS)' : 'Offline (Wali Kelas)' }}
             </span>
           </div>
           <div class="flex justify-between gap-2">
-            <span class="text-[#78716C]">Bulan Dipilih</span>
-            <span class="font-semibold text-[#1C1917] text-right tabular-nums">{{ form.months.length }} bulan</span>
+            <span class="text-[#52657d]">Bulan Dipilih</span>
+            <span class="font-semibold text-[#172b4d] text-right tabular-nums">{{ form.months.length }} bulan</span>
           </div>
           <div class="flex justify-between gap-2">
-            <span class="text-[#78716C]">Nominal / Bulan</span>
-            <span class="font-mono font-semibold text-[#1C1917] tabular-nums">Rp {{ formatRupiah(form.nominal_per_bulan) }}</span>
+            <span class="text-[#52657d]">Nominal / Bulan</span>
+            <span class="font-mono font-semibold text-[#172b4d] tabular-nums">Rp {{ formatRupiah(form.nominal_per_bulan) }}</span>
           </div>
         </div>
 
         <div class="pt-4 border-t border-black/[0.07] flex justify-between items-center">
-          <span class="text-sm font-bold text-[#1C1917]">Total Bayar</span>
-          <span class="text-xl font-extrabold font-mono tabular-nums text-[#292524]">
+          <span class="text-sm font-bold text-[#172b4d]">Total Bayar</span>
+          <span class="text-xl font-extrabold font-mono tabular-nums text-[#17385f]">
             Rp {{ formatRupiah(totalBayar) }}
           </span>
         </div>
@@ -590,8 +588,8 @@
           :disabled="isSubmitting || form.months.length === 0 || !form.siswa_id"
           class="ui-btn-base ui-btn-icon-l w-full min-h-[48px] text-white"
           :class="form.metode === 'online'
-            ? 'bg-[#A8551E] hover:bg-[#8D4415] shadow-[var(--shadow-btn-primary)]'
-            : 'bg-[#292524] hover:bg-[#1C1917] shadow-[var(--shadow-btn-navy)]'"
+            ? 'bg-[#1264c7] hover:bg-[#0b53aa] shadow-[var(--shadow-btn-primary)]'
+            : 'bg-[#17385f] hover:bg-[#172b4d] shadow-[var(--shadow-btn-navy)]'"
         >
           <UiIcon v-if="isSubmitting" name="progress_activity" :size="18" :weight="600" class="animate-spin" />
           <UiIcon v-else :name="form.metode === 'online' ? 'qr_code_2' : 'receipt_long'" :size="18" :weight="600" />

@@ -3,8 +3,7 @@
     <!-- Header & Print Action -->
     <div class="ui-stagger ui-stagger-1 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
       <div>
-        <h1 class="text-2xl sm:text-[26px] font-bold text-[#1C1917] tracking-tight">Laporan Keuangan Bulanan</h1>
-        <p class="text-sm text-[#57534E] mt-1">Rekap pemasukan per kelas, daftar pengeluaran, dan ekspor PDF periode {{ activeMonth }}.</p>
+        <h1 class="text-2xl sm:text-[26px] font-bold text-[#172b4d] tracking-tight">Laporan Keuangan Bulanan</h1>
       </div>
 
       <button @click="cetakPdf" :disabled="isDownloading" class="ui-btn-navy ui-btn-icon-l self-start sm:self-auto">
@@ -15,7 +14,7 @@
     </div>
 
     <!-- Month Switcher (Concentric pill rail) -->
-    <div class="ui-stagger ui-stagger-2 flex gap-1.5 overflow-x-auto p-1 rounded-[14px] bg-[#ECE8DF] shadow-[inset_0_1px_2px_0_oklch(0.22_0.015_65_/_0.06),0_0_0_1px_oklch(0.22_0.015_65_/_0.06)] no-scrollbar">
+    <div class="ui-stagger ui-stagger-2 flex gap-1.5 overflow-x-auto p-1 rounded-[14px] bg-[#e6eff9] shadow-[inset_0_1px_2px_0_oklch(0.22_0.015_65_/_0.06),0_0_0_1px_oklch(0.22_0.015_65_/_0.06)] no-scrollbar">
       <button
         v-for="m in months"
         :key="m"
@@ -23,8 +22,8 @@
         :class="[
           'min-h-[38px] px-3.5 rounded-[10px] border border-transparent text-xs font-semibold shrink-0 transition-[background-color,color,box-shadow,transform] duration-150 ease-out active:scale-[0.96]',
           activeMonth === m
-            ? 'bg-[#FDFCF9] text-[#1C1917] shadow-[var(--shadow-border)]'
-            : 'text-[#57534E] hover:text-[#1C1917]'
+            ? 'bg-[#ffffff] text-[#172b4d] shadow-[var(--shadow-border)]'
+            : 'text-[#52657d] hover:text-[#172b4d]'
         ]"
       >
         {{ m }}
@@ -34,20 +33,20 @@
     <!-- Monthly Balance Summary -->
     <section class="ui-stagger ui-stagger-3 grid grid-cols-1 sm:grid-cols-3 gap-4">
       <div class="ui-panel p-5">
-        <p class="text-xs font-semibold text-[#78716C]">Total Pemasukan ({{ activeMonth }})</p>
-        <p class="text-2xl font-extrabold font-mono tabular-nums text-[#A8551E] mt-2">
+        <p class="text-xs font-semibold text-[#52657d]">Total Pemasukan ({{ activeMonth }})</p>
+        <p class="text-2xl font-extrabold font-mono tabular-nums text-[#1264c7] mt-2">
           Rp {{ formatRupiah(totalPemasukan) }}
         </p>
       </div>
       <div class="ui-panel p-5">
-        <p class="text-xs font-semibold text-[#78716C]">Total Pengeluaran ({{ activeMonth }})</p>
+        <p class="text-xs font-semibold text-[#52657d]">Total Pengeluaran ({{ activeMonth }})</p>
         <p class="text-2xl font-extrabold font-mono tabular-nums text-[#9F1239] mt-2">
           Rp {{ formatRupiah(totalPengeluaran) }}
         </p>
       </div>
       <div class="ui-panel p-5">
-        <p class="text-xs font-semibold text-[#78716C]">Surplus / Saldo Periode</p>
-        <p class="text-2xl font-extrabold font-mono tabular-nums mt-2" :class="saldoAkhir >= 0 ? 'text-[#1C1917]' : 'text-[#9F1239]'">
+        <p class="text-xs font-semibold text-[#52657d]">Surplus / Saldo Periode</p>
+        <p class="text-2xl font-extrabold font-mono tabular-nums mt-2" :class="saldoAkhir >= 0 ? 'text-[#172b4d]' : 'text-[#9F1239]'">
           Rp {{ formatRupiah(saldoAkhir) }}
         </p>
       </div>
@@ -81,13 +80,13 @@
     <div class="ui-stagger ui-stagger-4 grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
       <!-- Pemasukan per Kelas -->
       <section v-show="mobileView === 'pemasukan' || isDesktop" class="flex flex-col gap-3.5">
-        <h2 class="text-base font-bold text-[#1C1917]">Pemasukan per Kelas</h2>
+        <h2 class="text-base font-bold text-[#172b4d]">Pemasukan per Kelas</h2>
 
         <div v-if="isLoading" class="ui-panel-padded space-y-3">
-          <div v-for="n in 4" :key="n" class="h-14 bg-[#F7F4ED] rounded-[10px] animate-pulse"></div>
+          <div v-for="n in 4" :key="n" class="h-14 bg-[#f3f8fe] rounded-[10px] animate-pulse"></div>
         </div>
 
-        <div v-else-if="pemasukanList.length === 0" class="ui-panel-padded text-center py-10 text-sm text-[#78716C]">
+        <div v-else-if="pemasukanList.length === 0" class="ui-panel-padded text-center py-10 text-sm text-[#52657d]">
           Belum ada data pemasukan untuk bulan {{ activeMonth }}.
         </div>
 
@@ -99,18 +98,18 @@
               :aria-expanded="openKelasId === item.kelas_id"
               class="ui-panel ui-panel-interactive p-4 sm:p-5 flex items-center gap-3.5 text-left transition-[box-shadow,transform] duration-150 ease-out active:scale-[0.98]"
             >
-              <div class="w-10 h-10 rounded-[10px] bg-[#F9EFE7] text-[#A8551E] flex items-center justify-center shrink-0">
+              <div class="w-10 h-10 rounded-[10px] bg-[#e8f2ff] text-[#1264c7] flex items-center justify-center shrink-0">
                 <UiIcon name="account_balance_wallet" :size="18" :weight="600" />
               </div>
-              <span class="text-sm font-bold text-[#1C1917] flex-1">{{ item.kelas }}</span>
-              <span class="text-base font-bold font-mono tabular-nums text-[#292524] shrink-0">
+              <span class="text-sm font-bold text-[#172b4d] flex-1">{{ item.kelas }}</span>
+              <span class="text-base font-bold font-mono tabular-nums text-[#17385f] shrink-0">
                 Rp {{ formatRupiah(item.nominal) }}
               </span>
               <UiIcon
                 name="expand_more"
                 :size="18"
                 :weight="600"
-                class="text-[#78716C] transition-transform duration-150 ease-out shrink-0"
+                class="text-[#52657d] transition-transform duration-150 ease-out shrink-0"
                 :class="{ 'rotate-180': openKelasId === item.kelas_id }"
               />
             </button>
@@ -118,9 +117,9 @@
             <!-- Drill-down Rincian -->
             <div
               v-if="openKelasId === item.kelas_id"
-              class="mt-2 rounded-[14px] bg-[#F7F4ED] shadow-[inset_0_1px_2px_0_oklch(0.22_0.015_65_/_0.05),0_0_0_1px_oklch(0.22_0.015_65_/_0.07)] p-4"
+              class="mt-2 rounded-[14px] bg-[#f3f8fe] shadow-[inset_0_1px_2px_0_oklch(0.22_0.015_65_/_0.05),0_0_0_1px_oklch(0.22_0.015_65_/_0.07)] p-4"
             >
-              <div v-if="detailLoading" class="flex items-center gap-2 py-2 text-xs text-[#78716C]">
+              <div v-if="detailLoading" class="flex items-center gap-2 py-2 text-xs text-[#52657d]">
                 <UiIcon name="sync" :size="16" :weight="600" class="animate-spin" />
                 <span>Memuat rincian pembayaran...</span>
               </div>
@@ -131,10 +130,10 @@
 
               <template v-else-if="detailData">
                 <div class="flex items-center justify-between pb-2.5 mb-2 border-b border-black/[0.07]">
-                  <span class="text-xs font-medium text-[#78716C] tabular-nums">
+                  <span class="text-xs font-medium text-[#52657d] tabular-nums">
                     {{ detailData.jumlah_transaksi }} transaksi · {{ detailData.bulan }}
                   </span>
-                  <span class="text-xs font-bold font-mono tabular-nums text-[#A8551E]">
+                  <span class="text-xs font-bold font-mono tabular-nums text-[#1264c7]">
                     Rp {{ formatRupiah(detailData.total) }}
                   </span>
                 </div>
@@ -147,25 +146,25 @@
                   >
                     <div class="min-w-0">
                       <div class="flex items-center gap-1.5 flex-wrap">
-                        <p class="text-sm font-semibold text-[#1C1917] truncate">{{ row.siswa }}</p>
+                        <p class="text-sm font-semibold text-[#172b4d] truncate">{{ row.siswa }}</p>
                         <span
                           v-if="row.is_keluar"
-                          class="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-[#ECE8DF] text-[#57534E]"
+                          class="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-[#e6eff9] text-[#52657d]"
                         >
                           Keluar
                         </span>
                       </div>
-                      <p class="text-xs text-[#78716C]">
+                      <p class="text-xs text-[#52657d]">
                         {{ formatTanggal(row.tanggal_bayar) }} · {{ row.bulan }}
                       </p>
                     </div>
-                    <span class="text-sm font-bold font-mono tabular-nums text-[#292524] shrink-0">
+                    <span class="text-sm font-bold font-mono tabular-nums text-[#17385f] shrink-0">
                       Rp {{ formatRupiah(row.jumlah) }}
                     </span>
                   </div>
                 </div>
 
-                <p v-else class="text-xs text-[#78716C] py-2">
+                <p v-else class="text-xs text-[#52657d] py-2">
                   Belum ada pembayaran tercatat untuk bulan ini.
                 </p>
               </template>
@@ -176,13 +175,13 @@
 
       <!-- Pengeluaran Bulan Ini -->
       <section v-show="mobileView === 'pengeluaran' || isDesktop" class="flex flex-col gap-3.5">
-        <h2 class="text-base font-bold text-[#1C1917]">Riwayat Pengeluaran</h2>
+        <h2 class="text-base font-bold text-[#172b4d]">Riwayat Pengeluaran</h2>
 
         <div v-if="isLoading" class="ui-panel-padded space-y-3">
-          <div v-for="n in 3" :key="n" class="h-14 bg-[#F7F4ED] rounded-[10px] animate-pulse"></div>
+          <div v-for="n in 3" :key="n" class="h-14 bg-[#f3f8fe] rounded-[10px] animate-pulse"></div>
         </div>
 
-        <div v-else-if="pengeluaranList.length === 0" class="ui-panel-padded text-center py-10 text-sm text-[#78716C]">
+        <div v-else-if="pengeluaranList.length === 0" class="ui-panel-padded text-center py-10 text-sm text-[#52657d]">
           Tidak ada catatan pengeluaran di bulan {{ activeMonth }}.
         </div>
 
@@ -192,13 +191,13 @@
             :key="item.id"
             class="ui-panel p-4 sm:p-5 flex items-center gap-4"
           >
-            <div class="w-12 h-14 bg-[#F7F4ED] shadow-[inset_0_1px_2px_0_oklch(0.22_0.015_65_/_0.05),0_0_0_1px_oklch(0.22_0.015_65_/_0.07)] rounded-[11px] flex flex-col items-center justify-center shrink-0">
-              <span class="text-sm font-extrabold font-mono text-[#1C1917] leading-tight tabular-nums">{{ getDay(item.tanggal) }}</span>
-              <span class="text-xs font-medium text-[#78716C] leading-tight">{{ getMonthShort(item.tanggal) }}</span>
+            <div class="w-12 h-14 bg-[#f3f8fe] shadow-[inset_0_1px_2px_0_oklch(0.22_0.015_65_/_0.05),0_0_0_1px_oklch(0.22_0.015_65_/_0.07)] rounded-[11px] flex flex-col items-center justify-center shrink-0">
+              <span class="text-sm font-extrabold font-mono text-[#172b4d] leading-tight tabular-nums">{{ getDay(item.tanggal) }}</span>
+              <span class="text-xs font-medium text-[#52657d] leading-tight">{{ getMonthShort(item.tanggal) }}</span>
             </div>
 
             <div class="flex-1 min-w-0">
-              <p class="text-sm font-bold text-[#1C1917] truncate">{{ item.keterangan }}</p>
+              <p class="text-sm font-bold text-[#172b4d] truncate">{{ item.keterangan }}</p>
             </div>
 
             <span class="text-base font-bold font-mono tabular-nums text-[#9F1239] shrink-0">
