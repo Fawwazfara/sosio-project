@@ -127,11 +127,7 @@ const handleLogin = async () => {
   isLoading.value = true;
   errorMessage.value = '';
   try {
-    const apiOrigin = new URL(
-      axios.defaults.baseURL || '/api',
-      window.location.origin,
-    ).origin;
-    await axios.get('/sanctum/csrf-cookie', { baseURL: apiOrigin });
+    await axios.get('/csrf-token');
     const { data } = await axios.post('/login', {
       ...form,
       email: form.email.trim(),

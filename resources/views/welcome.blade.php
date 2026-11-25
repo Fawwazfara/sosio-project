@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>As-Sajjaad | Portal Infak Madrasah</title>
     <meta name="theme-color" content="#1264c7">
     <meta name="description" content="Sistem Informasi Pencatatan & Pembayaran Infak Madrasah As-Sajjad">

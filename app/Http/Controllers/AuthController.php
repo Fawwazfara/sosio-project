@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Siswa;
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -11,6 +12,13 @@ use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
+    public function csrfToken(Request $request): JsonResponse
+    {
+        return response()->json([
+            'csrf_token' => $request->session()->token(),
+        ])->header('Cache-Control', 'no-store, private');
+    }
+
     public function login(Request $request)
     {
         $request->validate([
@@ -44,6 +52,7 @@ class AuthController extends Controller
                     'role' => $user->role,
                 ],
                 'message' => 'Login successful',
+                'csrf_token' => $request->session()->token(),
             ]);
         }
 
@@ -58,7 +67,10 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return response()->json(['message' => 'Logout successful']);
+        return response()->json([
+            'message' => 'Logout successful',
+            'csrf_token' => $request->session()->token(),
+        ]);
     }
 
     public function me(Request $request)
