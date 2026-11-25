@@ -15,8 +15,8 @@
       <div class="edu-main-column">
         <EducationHero
           :name="firstName"
-          action="Catat infak baru"
-          to="/admin/infak/create"
+          action="Kelola siswa & wali"
+          to="/admin/siswa"
         />
         <section aria-labelledby="admin-stat-title">
           <div class="edu-section-title">
