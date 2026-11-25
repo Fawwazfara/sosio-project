@@ -9,6 +9,7 @@ use App\Models\Pembayaran;
 use App\Models\Siswa;
 use App\Services\PaymentGatewayService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 class WaliPortalController extends Controller
@@ -338,6 +339,40 @@ class WaliPortalController extends Controller
             ->map(fn (Pembayaran $p) => $this->formatPayment($p));
 
         return response()->json($list);
+    }
+
+    public function changePassword(Request $request)
+    {
+        $request->validate([
+            'current_password' => 'required|string',
+            'password' => 'required|string|min:6|confirmed',
+        ], [
+            'current_password.required' => 'Kata sandi saat ini wajib diisi.',
+            'password.required' => 'Kata sandi baru wajib diisi.',
+            'password.min' => 'Kata sandi baru minimal 6 karakter.',
+            'password.confirmed' => 'Konfirmasi kata sandi baru tidak cocok.',
+        ]);
+
+        $user = $request->user();
+        if (!Hash::check($request->input('current_password'), $user->password)) {
+            return response()->json([
+                'message' => 'Kata sandi saat ini tidak sesuai.',
+            ], 422);
+        }
+
+        if (Hash::check($request->input('password'), $user->password)) {
+            return response()->json([
+                'message' => 'Kata sandi baru harus berbeda dari kata sandi sebelumnya.',
+            ], 422);
+        }
+
+        $user->update([
+            'password' => Hash::make($request->input('password')),
+        ]);
+
+        return response()->json([
+            'message' => 'Kata sandi berhasil diperbarui.',
+        ]);
     }
 
     private function formatPayment(Pembayaran $p): array

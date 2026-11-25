@@ -104,6 +104,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // Portal Orang Tua / Wali Siswa
     Route::prefix('wali')->group(function () {
         Route::get('/dashboard', [WaliPortalController::class, 'dashboard']);
+        Route::post('/change-password', [WaliPortalController::class, 'changePassword']);
         Route::post('/pembayaran', [WaliPortalController::class, 'createPayment']);
         Route::post('/pembayaran/{id}/check-status', [WaliPortalController::class, 'checkStatus']);
         Route::post('/pembayaran/{id}/simulate-paid', [WaliPortalController::class, 'simulateSandboxPay']);
