@@ -4,6 +4,7 @@ import router from './src/router';
 import App from './src/App.vue';
 import UiIcon from './src/components/shared/UiIcon.vue';
 import '../css/app.css';
+import '../css/education.css';
 import axios from 'axios';
 
 window.axios = axios;

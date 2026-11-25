@@ -1,218 +1,223 @@
 <template>
-  <main class="ui-page flex flex-col gap-6">
-    <!-- Page Heading -->
-    <div class="ui-stagger ui-stagger-1 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+  <main class="edu-dashboard">
+    <div class="edu-page-heading">
       <div>
-        <h1 class="text-2xl sm:text-[26px] font-bold text-[#1C1917] tracking-tight">Ringkasan kas</h1>
+        <h1>Dashboard</h1>
       </div>
-      <div class="flex flex-wrap gap-2.5">
-        <router-link to="/admin/infak/create" class="ui-btn-primary ui-btn-icon-l">
-          <UiIcon name="add_circle" :size="17" :weight="600" />
-          <span>Catat infak</span>
-        </router-link>
-        <router-link to="/admin/laporan" class="ui-btn-secondary ui-btn-icon-l">
-          <UiIcon name="account_balance" :size="17" :weight="600" />
-          <span>Laporan Kas</span>
-        </router-link>
-      </div>
+      <router-link to="/admin/laporan" class="ui-btn-secondary"
+        ><UiIcon name="picture_as_pdf" :size="17" /> Laporan kas</router-link
+      >
     </div>
-
-    <!-- Action Bar: Pengingat & Verifikasi Setoran -->
-    <section
-      class="ui-stagger ui-stagger-2 bg-gradient-to-br from-[#292524] to-[#1C1917] text-white rounded-[16px] p-5 sm:p-6 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 border border-transparent shadow-[var(--shadow-navy-card)]"
-    >
-      <div class="flex items-start sm:items-center gap-3.5">
-        <div class="w-11 h-11 rounded-[11px] bg-[#A8551E] ring-1 ring-inset ring-white/20 flex items-center justify-center shrink-0">
-          <UiIcon name="notifications_active" :size="20" :weight="600" class="text-white" />
-        </div>
-        <div>
-          <h2 class="text-base font-bold text-white">Setoran &amp; pengingat</h2>
-        </div>
+    <div v-if="loadError" role="alert" class="edu-data-error">
+      {{ loadError }}<button @click="loadDashboard">Coba lagi</button>
+    </div>
+    <div class="edu-dashboard-grid">
+      <div class="edu-main-column">
+        <EducationHero
+          :name="firstName"
+          action="Catat infak baru"
+          to="/admin/infak/create"
+        />
+        <section aria-labelledby="admin-stat-title">
+          <div class="edu-section-title">
+            <h2 id="admin-stat-title">Ringkasan kas</h2>
+          </div>
+          <div class="edu-stats-grid">
+            <article class="edu-stat edu-stat-blue">
+              <span class="edu-stat-icon"
+                ><UiIcon name="account_balance_wallet" :size="21"
+              /></span>
+              <p>Kas masuk</p>
+              <strong>Rp {{ formatRupiah(stats.pemasukan_all_time) }}</strong
+              ><small
+                ><UiIcon name="trending_up" :size="14" /> Bulan ini Rp
+                {{ formatRupiah(stats.pemasukan_bulan_ini) }}</small
+              >
+            </article>
+            <article class="edu-stat edu-stat-peach">
+              <span class="edu-stat-icon"
+                ><UiIcon name="money_off" :size="21"
+              /></span>
+              <p>Pengeluaran bulan ini</p>
+              <strong>Rp {{ formatRupiah(stats.pengeluaran_bulan_ini) }}</strong
+              ><small
+                >{{ stats.persen_pengeluaran >= 0 ? '+' : ''
+                }}{{ stats.persen_pengeluaran }}% dari bulan lalu</small
+              >
+            </article>
+            <article class="edu-stat edu-stat-teal">
+              <span class="edu-stat-icon"
+                ><UiIcon name="savings" :size="21"
+              /></span>
+              <p>Saldo kas</p>
+              <strong>Rp {{ formatRupiah(stats.saldo_all_time) }}</strong>
+            </article>
+          </div>
+        </section>
+        <section class="edu-chart-card">
+          <div class="edu-section-title">
+            <div>
+              <h2>Arus kas</h2>
+              <p>6 bulan terakhir</p>
+            </div>
+            <div class="edu-chart-legend">
+              <span><i class="bg-blue-500"></i>Masuk</span
+              ><span><i class="bg-[#C03961]"></i>Keluar</span>
+            </div>
+          </div>
+          <div v-if="chartReady" class="edu-chart">
+            <Line :data="chartData" :options="chartOptions" />
+          </div>
+          <div v-else class="edu-chart-placeholder" role="status">
+            {{ loadError ? 'Grafik belum tersedia' : 'Memuat ringkasan kas…' }}
+          </div>
+        </section>
+        <section>
+          <div class="edu-section-title">
+            <h2>Akses cepat</h2>
+          </div>
+          <div class="edu-quick-grid">
+            <router-link to="/admin/siswa" class="edu-quick-link"
+              ><span class="edu-quick-icon bg-blue-100 text-blue-600"
+                ><UiIcon name="groups" :size="22" /></span
+              ><span><strong>Siswa & wali</strong></span
+              ><UiIcon name="arrow_forward" :size="18" /></router-link
+            ><router-link to="/admin/guru" class="edu-quick-link"
+              ><span class="edu-quick-icon bg-teal-100 text-teal-600"
+                ><UiIcon name="badge" :size="22" /></span
+              ><span><strong>Data guru</strong></span
+              ><UiIcon name="arrow_forward" :size="18"
+            /></router-link>
+          </div>
+        </section>
       </div>
-
-      <div class="flex flex-wrap items-center gap-2.5 shrink-0 w-full lg:w-auto justify-end">
-        <router-link
-          to="/admin/setoran"
-          class="min-h-[42px] ps-3.5 pe-4 rounded-[10px] bg-white/12 hover:bg-white/20 ring-1 ring-inset ring-white/15 text-white text-xs sm:text-sm font-semibold flex items-center gap-2 transition-[background-color,transform] duration-150 ease-out active:scale-[0.96]"
-        >
-          <UiIcon name="qr_code_scanner" :size="17" :weight="600" />
-          <span>Cek setoran</span>
-        </router-link>
-
-        <template v-if="confirmReminder">
-          <button
-            @click="executeReminder"
-            :disabled="isSending"
-            class="min-h-[42px] px-4 rounded-[10px] bg-[#A8551E] hover:bg-[#8D4415] text-white text-xs sm:text-sm font-semibold flex items-center gap-2 transition-[background-color,transform] duration-150 ease-out enabled:active:scale-[0.96] disabled:opacity-50"
+      <aside class="edu-right-column" aria-label="Pantauan dan tindakan">
+        <section class="edu-side-card">
+          <div class="edu-section-title">
+            <h2>Kepatuhan infak</h2>
+            <span class="edu-small-badge">{{
+              currentMonth || 'Bulan ini'
+            }}</span>
+          </div>
+          <template v-if="klassesData.length"
+            ><div class="edu-donut">
+              <Doughnut
+                :data="klassesData[currentSlide].pieData"
+                :options="pieOptions"
+                :key="'pie-' + currentSlide"
+              />
+              <div>
+                <strong
+                  >{{ klassesData[currentSlide].persentase
+                  }}<small>%</small></strong
+                ><span>Sudah lunas</span>
+              </div>
+            </div>
+            <div class="edu-class-switch">
+              <button
+                @click="prevSlide"
+                :disabled="currentSlide === 0"
+                aria-label="Kelas sebelumnya"
+              >
+                <UiIcon name="chevron_left" :size="18" /></button
+              ><strong>{{ klassesData[currentSlide].nama_kelas }}</strong
+              ><button
+                @click="nextSlide"
+                :disabled="currentSlide === klassesData.length - 1"
+                aria-label="Kelas berikutnya"
+              >
+                <UiIcon name="chevron_right" :size="18" />
+              </button>
+            </div>
+            <div class="edu-payment-counts">
+              <span
+                ><i class="bg-blue-500"></i
+                >{{ klassesData[currentSlide].lunas }} lunas</span
+              ><span
+                ><i class="bg-slate-200"></i
+                >{{ klassesData[currentSlide].nunggak }} belum</span
+              >
+            </div></template
           >
-            {{ isSending ? 'Mengirim...' : 'Kirim ke semua guru' }}
-          </button>
+          <p v-else class="edu-empty">
+            {{
+              loadError ? 'Data kelas belum tersedia.' : 'Memuat data kelas…'
+            }}
+          </p>
+        </section>
+        <section class="edu-side-card">
+          <div class="edu-section-title">
+            <h2>Pantauan kelas</h2>
+            <router-link to="/admin/siswa" aria-label="Lihat semua siswa"
+              ><UiIcon name="arrow_forward" :size="17"
+            /></router-link>
+          </div>
+          <div class="edu-class-list">
+            <router-link
+              v-for="(kelas, index) in klassesData.slice(0, 4)"
+              :key="kelas.nama_kelas"
+              to="/admin/siswa"
+              ><span
+                class="edu-class-number"
+                :class="['class-tone-' + index]"
+                >{{ index + 1 }}</span
+              ><span
+                ><strong>{{ kelas.nama_kelas }}</strong
+                ><small
+                  >{{ kelas.lunas + kelas.nunggak }} siswa ·
+                  {{ kelas.lunas }} lunas</small
+                ></span
+              ><b>{{ kelas.persentase }}%</b></router-link
+            >
+          </div>
+        </section>
+        <section class="edu-reminder-card">
+          <span class="edu-reminder-icon"
+            ><UiIcon name="notifications_active" :size="25"
+          /></span>
+          <h2>Setoran &amp; pengingat</h2>
+          <router-link to="/admin/setoran" class="ui-btn-primary"
+            >Cek setoran<UiIcon name="arrow_forward" :size="17"
+          /></router-link>
+          <div v-if="confirmReminder" class="edu-confirm-actions">
+            <p>Kirim pengingat ke semua guru?</p>
+            <button
+              @click="executeReminder"
+              :disabled="isSending"
+              class="ui-btn-secondary"
+            >
+              {{ isSending ? 'Mengirim…' : 'Ya, kirim pengingat' }}</button
+            ><button
+              @click="confirmReminder = false"
+              :disabled="isSending"
+              class="edu-text-button"
+            >
+              Batal
+            </button>
+          </div>
           <button
-            @click="confirmReminder = false"
-            :disabled="isSending"
-            class="min-h-[42px] px-3.5 rounded-[10px] bg-white/10 hover:bg-white/20 text-white text-xs sm:text-sm font-semibold transition-[background-color,transform] duration-150 ease-out enabled:active:scale-[0.96]"
+            v-else
+            @click="confirmReminder = true"
+            class="edu-text-button"
           >
-            Batal
+            <UiIcon name="send" :size="15" /> Ingatkan guru
           </button>
-        </template>
-        <button
-          v-else
-          @click="confirmReminder = true"
-          :disabled="isSending"
-          class="min-h-[42px] ps-3.5 pe-4 rounded-[10px] bg-[#A8551E] hover:bg-[#8D4415] shadow-[inset_0_1px_0_0_oklch(1_0_0_/_0.18)] text-white text-xs sm:text-sm font-semibold flex items-center gap-2 transition-[background-color,transform] duration-150 ease-out enabled:active:scale-[0.96] disabled:opacity-50"
-        >
-          <UiIcon name="send" :size="16" :weight="600" directional />
-          <span>Ingatkan guru</span>
-        </button>
-      </div>
-    </section>
-
-    <!-- Row 1: KPI Cards -->
-    <section class="ui-stagger ui-stagger-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
-      <div class="ui-panel ui-panel-interactive p-5 sm:p-6 flex flex-col justify-between min-h-[144px]">
-        <div class="flex items-center justify-between gap-2">
-          <span class="text-xs font-semibold text-[#78716C]">Total Kas Masuk</span>
-          <div class="w-8 h-8 rounded-[8px] bg-[#F9EFE7] text-[#A8551E] flex items-center justify-center">
-            <UiIcon name="account_balance_wallet" :size="17" :weight="600" />
-          </div>
-        </div>
-        <div class="mt-4">
-          <p class="text-2xl font-extrabold font-mono tabular-nums text-[#1C1917]">
-            Rp {{ formatRupiah(stats.pemasukan_all_time) }}
-          </p>
-          <p class="text-xs text-[#78716C] mt-2 flex items-center gap-1.5">
-            <UiIcon
-              :name="stats.persen_pemasukan >= 0 ? 'trending_up' : 'trending_down'"
-              :size="15"
-              :weight="600"
-              :class="stats.persen_pemasukan >= 0 ? 'text-[#A8551E]' : 'text-[#9F1239]'"
-            />
-            <span class="font-semibold tabular-nums" :class="stats.persen_pemasukan >= 0 ? 'text-[#A8551E]' : 'text-[#9F1239]'">
-              {{ stats.persen_pemasukan >= 0 ? '+' : '' }}{{ stats.persen_pemasukan }}%
-            </span>
-            <span>· Bulan ini Rp {{ formatRupiah(stats.pemasukan_bulan_ini) }}</span>
-          </p>
-        </div>
-      </div>
-
-      <div class="ui-panel ui-panel-interactive p-5 sm:p-6 flex flex-col justify-between min-h-[144px]">
-        <div class="flex items-center justify-between gap-2">
-          <span class="text-xs font-semibold text-[#78716C]">Pengeluaran Bulan Ini</span>
-          <div class="w-8 h-8 rounded-[8px] bg-[#FDF2F4] text-[#9F1239] flex items-center justify-center">
-            <UiIcon name="money_off" :size="17" :weight="600" />
-          </div>
-        </div>
-        <div class="mt-4">
-          <p class="text-2xl font-extrabold font-mono tabular-nums text-[#1C1917]">
-            Rp {{ formatRupiah(stats.pengeluaran_bulan_ini) }}
-          </p>
-          <p class="text-xs text-[#78716C] mt-2 flex items-center gap-1.5">
-            <UiIcon
-              :name="stats.persen_pengeluaran >= 0 ? 'trending_up' : 'trending_down'"
-              :size="15"
-              :weight="600"
-              :class="stats.persen_pengeluaran >= 0 ? 'text-[#9F1239]' : 'text-[#A8551E]'"
-            />
-            <span class="font-semibold tabular-nums" :class="stats.persen_pengeluaran >= 0 ? 'text-[#9F1239]' : 'text-[#A8551E]'">
-              {{ stats.persen_pengeluaran >= 0 ? '+' : '' }}{{ stats.persen_pengeluaran }}%
-            </span>
-            <span>dibanding bulan lalu</span>
-          </p>
-        </div>
-      </div>
-
-      <div class="ui-panel ui-panel-interactive p-5 sm:p-6 flex flex-col justify-between min-h-[144px] sm:col-span-2 lg:col-span-1">
-        <div class="flex items-center justify-between gap-2">
-          <span class="text-xs font-semibold text-[#78716C]">Saldo Bersih Saat Ini</span>
-          <div class="w-8 h-8 rounded-[8px] bg-[#ECE8DF] text-[#292524] flex items-center justify-center">
-            <UiIcon name="savings" :size="17" :weight="600" />
-          </div>
-        </div>
-        <div class="mt-4">
-          <p class="text-2xl font-extrabold font-mono tabular-nums text-[#1C1917]">
-            Rp {{ formatRupiah(stats.saldo_all_time) }}
-          </p>
-          <p class="text-xs text-[#78716C] mt-2">Pemasukan dikurangi pengeluaran</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- Kepatuhan Kelas Carousel -->
-    <section v-if="klassesData.length > 0" class="ui-stagger ui-stagger-3 ui-panel-padded flex items-center justify-between gap-4">
-      <button
-        @click="prevSlide"
-        :disabled="currentSlide === 0"
-        aria-label="Kelas sebelumnya"
-        class="min-h-[44px] min-w-[44px] rounded-[11px] border border-transparent bg-[#F7F4ED] shadow-[var(--shadow-border)] hover:bg-[#FDFCF9] hover:shadow-[var(--shadow-border-hover)] text-[#1C1917] flex items-center justify-center shrink-0 transition-[background-color,box-shadow,transform] duration-150 ease-out enabled:active:scale-[0.96] disabled:opacity-40 disabled:cursor-not-allowed"
-      >
-        <UiIcon name="chevron_left" :size="20" :weight="600" directional />
-      </button>
-
-      <div class="flex-1 flex flex-col sm:flex-row items-center justify-center gap-6 px-2">
-        <div class="w-[128px] h-[128px] relative shrink-0">
-          <Doughnut :data="klassesData[currentSlide].pieData" :options="pieOptions" :key="'pie-' + currentSlide" />
-          <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-            <span class="text-lg font-extrabold font-mono tabular-nums text-[#1C1917]">
-              {{ klassesData[currentSlide].persentase }}%
-            </span>
-          </div>
-        </div>
-
-        <div class="flex flex-col gap-3 text-center sm:text-left">
-          <div>
-            <h3 class="text-base font-bold text-[#1C1917]">
-              Kepatuhan {{ klassesData[currentSlide].nama_kelas }}
-            </h3>
-            <p class="text-xs text-[#78716C] mt-0.5">Rekap bulan {{ currentMonth }}</p>
-          </div>
-          <div class="flex flex-wrap items-center justify-center sm:justify-start gap-4 text-sm">
-            <span class="flex items-center gap-2 font-semibold text-[#1C1917] tabular-nums">
-              <span class="w-2.5 h-2.5 rounded-[3px] bg-[#A8551E]"></span>
-              {{ klassesData[currentSlide].lunas }} Lunas
-            </span>
-            <span class="flex items-center gap-2 font-semibold text-[#57534E] tabular-nums">
-              <span class="w-2.5 h-2.5 rounded-[3px] bg-[#D6CFC2]"></span>
-              {{ klassesData[currentSlide].nunggak }} Menunggak
-            </span>
-          </div>
-        </div>
-      </div>
-
-      <button
-        @click="nextSlide"
-        :disabled="currentSlide === klassesData.length - 1"
-        aria-label="Kelas berikutnya"
-        class="min-h-[44px] min-w-[44px] rounded-[11px] border border-transparent bg-[#F7F4ED] shadow-[var(--shadow-border)] hover:bg-[#FDFCF9] hover:shadow-[var(--shadow-border-hover)] text-[#1C1917] flex items-center justify-center shrink-0 transition-[background-color,box-shadow,transform] duration-150 ease-out enabled:active:scale-[0.96] disabled:opacity-40 disabled:cursor-not-allowed"
-      >
-        <UiIcon name="chevron_right" :size="20" :weight="600" directional />
-      </button>
-    </section>
-
-    <!-- Chart -->
-    <section class="ui-stagger ui-stagger-4 ui-panel-padded flex flex-col gap-5">
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-        <div>
-          <h2 class="text-lg font-bold text-[#1C1917]">Arus Kas 6 Bulan Terakhir</h2>
-        </div>
-        <div class="flex items-center gap-4 text-xs font-medium text-[#57534E]">
-          <span class="flex items-center gap-1.5"><span class="w-3 h-1 rounded-full bg-[#A8551E]"></span> Pemasukan</span>
-          <span class="flex items-center gap-1.5"><span class="w-3 h-1 rounded-full bg-[#9F1239]"></span> Pengeluaran</span>
-        </div>
-      </div>
-
-      <div class="w-full overflow-x-auto pb-2" v-if="chartReady">
-        <div class="min-w-[560px] h-[260px] relative">
-          <Line :data="chartData" :options="chartOptions" />
-        </div>
-      </div>
-      <div v-else class="h-[260px] bg-[#F7F4ED] rounded-[12px] animate-pulse"></div>
-    </section>
+        </section>
+      </aside>
+    </div>
   </main>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
+import EducationHero from '@/components/shared/EducationHero.vue';
+import { getStoredUser } from '@/utils/auth';
+
+const user = getStoredUser();
+const firstName =
+  user?.name?.split(' ').slice(0, 2).join(' ') || 'Sahabat madrasah';
+const loadError = ref('');
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -222,7 +227,7 @@ import {
   ArcElement,
   Title,
   Tooltip,
-  Filler
+  Filler,
 } from 'chart.js';
 import { Line, Doughnut } from 'vue-chartjs';
 import { notify } from '@/utils/toast';
@@ -235,7 +240,7 @@ ChartJS.register(
   ArcElement,
   Title,
   Tooltip,
-  Filler
+  Filler,
 );
 
 const stats = ref({
@@ -244,7 +249,7 @@ const stats = ref({
   pengeluaran_bulan_ini: 0,
   saldo_all_time: 0,
   persen_pemasukan: 0,
-  persen_pengeluaran: 0
+  persen_pengeluaran: 0,
 });
 
 const chartReady = ref(false);
@@ -256,7 +261,11 @@ const executeReminder = async () => {
   try {
     const res = await axios.post('/push-send-reminders');
     confirmReminder.value = false;
-    notify(res.data.message || 'Notifikasi pengingat berhasil dikirim ke wali kelas.', 'success');
+    notify(
+      res.data.message ||
+        'Notifikasi pengingat berhasil dikirim ke wali kelas.',
+      'success',
+    );
   } catch (err) {
     console.error(err);
     notify('Gagal mengirim notifikasi pengingat.', 'error');
@@ -266,7 +275,9 @@ const executeReminder = async () => {
 };
 
 const formatRupiah = (angka) => {
-  return Number(angka || 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  return Number(angka || 0)
+    .toString()
+    .replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 };
 
 const chartData = ref({
@@ -274,31 +285,31 @@ const chartData = ref({
   datasets: [
     {
       label: 'Pemasukan',
-      backgroundColor: 'rgba(168, 85, 30, 0.10)',
-      borderColor: '#A8551E',
+      backgroundColor: 'rgba(36, 133, 245, 0.10)',
+      borderColor: '#176FE0',
       borderWidth: 2,
-      pointBackgroundColor: '#FDFCF9',
-      pointBorderColor: '#A8551E',
+      pointBackgroundColor: '#FFFFFF',
+      pointBorderColor: '#176FE0',
       pointBorderWidth: 2,
       pointRadius: 4,
       fill: true,
       data: [],
-      tension: 0.3
+      tension: 0.3,
     },
     {
       label: 'Pengeluaran',
-      backgroundColor: 'rgba(159, 18, 57, 0.0)',
-      borderColor: '#9F1239',
+      backgroundColor: 'rgba(241, 142, 156, 0.0)',
+      borderColor: '#C03961',
       borderWidth: 1.75,
-      pointBackgroundColor: '#FDFCF9',
-      pointBorderColor: '#9F1239',
+      pointBackgroundColor: '#FFFFFF',
+      pointBorderColor: '#C03961',
       pointBorderWidth: 1.5,
       pointRadius: 3,
       fill: false,
       data: [],
-      tension: 0.3
-    }
-  ]
+      tension: 0.3,
+    },
+  ],
 });
 
 const currentSlide = ref(0);
@@ -324,20 +335,30 @@ const pieOptions = ref({
   plugins: {
     legend: { display: false },
     tooltip: {
-      backgroundColor: '#1C1917',
+      backgroundColor: '#172B4D',
       padding: 10,
       cornerRadius: 8,
       callbacks: {
-        label: (context) => ` ${context.label}: ${context.parsed} Siswa`
-      }
-    }
-  }
+        label: (context) => ` ${context.label}: ${context.parsed} Siswa`,
+      },
+    },
+  },
 });
 
-onMounted(async () => {
+const loadDashboard = async () => {
+  loadError.value = '';
   try {
     const resKepatuhan = await axios.get('/dashboard/kepatuhan');
-    klassesData.value = resKepatuhan.data.kepatuhan_per_kelas;
+    klassesData.value = resKepatuhan.data.kepatuhan_per_kelas.map((kelas) => ({
+      ...kelas,
+      pieData: {
+        ...kelas.pieData,
+        datasets: kelas.pieData.datasets.map((dataset) => ({
+          ...dataset,
+          backgroundColor: ['#176FE0', '#E4EEFA'],
+        })),
+      },
+    }));
     currentMonth.value = resKepatuhan.data.bulan;
 
     const res = await axios.get('/dashboard/statistik');
@@ -349,9 +370,11 @@ onMounted(async () => {
 
     chartReady.value = true;
   } catch (err) {
+    loadError.value = 'Ringkasan belum dapat dimuat. Silakan coba lagi.';
     console.error('Gagal mengambil statistik', err);
   }
-});
+};
+onMounted(loadDashboard);
 
 const chartOptions = ref({
   responsive: true,
@@ -359,7 +382,7 @@ const chartOptions = ref({
   plugins: {
     legend: { display: false },
     tooltip: {
-      backgroundColor: '#1C1917',
+      backgroundColor: '#172B4D',
       padding: 10,
       cornerRadius: 8,
       displayColors: true,
@@ -367,22 +390,25 @@ const chartOptions = ref({
         label: (context) => {
           let label = context.dataset.label ? `${context.dataset.label}: ` : '';
           if (context.parsed.y !== null) {
-            label += new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(context.parsed.y);
+            label += new Intl.NumberFormat('id-ID', {
+              style: 'currency',
+              currency: 'IDR',
+            }).format(context.parsed.y);
           }
           return label;
-        }
-      }
-    }
+        },
+      },
+    },
   },
   scales: {
     y: {
       beginAtZero: true,
-      grid: { color: '#E6E1D6', drawBorder: false },
-      ticks: { display: false }
+      grid: { color: '#EAF0F8', drawBorder: false },
+      ticks: { display: false },
     },
     x: {
-      grid: { display: false, drawBorder: false }
-    }
-  }
+      grid: { display: false, drawBorder: false },
+    },
+  },
 });
 </script>
